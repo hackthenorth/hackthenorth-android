@@ -5,6 +5,7 @@ appcompat_v7/bin/
 appcompat_v7/gen/
 
 .idea/
+.gradle/
 
 build/
 app/build/
