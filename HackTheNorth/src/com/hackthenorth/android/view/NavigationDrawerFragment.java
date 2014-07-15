@@ -32,12 +32,12 @@ import com.hackthenorth.android.R;
  * implemented here.
  */
 public class NavigationDrawerFragment extends Fragment {
-    
+
     /**
      * Remember the position of the selected item.
      */
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
-    
+
     /**
      * Per the design guidelines, you should show the drawer on launch until the
      * user manually expands it. This shared preference tracks this.
