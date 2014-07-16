@@ -60,7 +60,8 @@ public class InfoListFragment extends Fragment {
             @Override
             public void onSuccess(String json) {
                 // Save the list and set up the adapter if we're ready.
-                mData = Update.loadUpdateArrayFromJSON(json);
+                //mData = Update.loadUpdateArrayFromJSON(json);
+                mData = Update.loadDummyList();
                 setupAdapterIfReady();
             }
             

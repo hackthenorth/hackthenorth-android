@@ -1,9 +1,6 @@
 package com.hackthenorth.android.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +16,10 @@ public class Update {
     // JSON keys for fields
     public static final String TITLE = "title";
     public static final String BODY = "body";
+
+    public Update() {
+
+    }
     
     public Update(String id, String json) {
         JSONObject obj = null;
@@ -47,9 +48,22 @@ public class Update {
             throw new RuntimeException(e);
         }
     }
+
+    public static ArrayList<Update> loadDummyList() {
+        ArrayList<Update> updates = new ArrayList<Update>();
+
+        for (int i = 0; i < 10; i++) {
+            Update update = new Update();
+            update.title = "title " + i;
+            update.body = "body " + i;
+            updates.add(update);
+        }
+
+        return updates;
+    }
     
     public static ArrayList<Update> loadUpdateArrayFromJSON(String json) {
-        
+
         // Open the JSON object from string
         JSONObject obj;
         try {
