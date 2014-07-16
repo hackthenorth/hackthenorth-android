@@ -14,7 +14,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:textColor="@android:color/white"
-        android:textSize="28sp"
-        app:typeface="roboto_thin" />
+        android:textSize="18sp"
+        app:typeface="roboto_regular" />
 
 </RelativeLayout>

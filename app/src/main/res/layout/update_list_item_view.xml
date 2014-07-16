@@ -10,11 +10,11 @@
     <com.hackthenorth.android.ui.TextView
         android:id="@+id/update_title"
         style="@style/TextViewStylePrimary"
-        app:typeface="roboto_light" />
+        app:typeface="roboto_regular" />
 
     <com.hackthenorth.android.ui.TextView
         android:id="@+id/update_body"
         style="@style/TextViewStyleSecondary"
-        app:typeface="roboto_light" />
+        app:typeface="roboto_regular" />
 
 </LinearLayout>
