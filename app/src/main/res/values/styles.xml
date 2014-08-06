@@ -4,7 +4,6 @@
     </style>
 
     <style name="AppBaseTheme" parent="@android:Theme.Holo.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/ActionBar</item>
     </style>
 
     <style name="TextViewStylePrimary" parent="@android:style/Widget.Holo.Light.TextView">
@@ -19,12 +18,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/text_color_secondary</item>
         <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="ActionBar" parent="android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <!--<item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@color/theme_primary</item>-->
-        <item name="android:height">56dp</item>
     </style>
 
 </resources>

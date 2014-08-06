@@ -54,16 +54,25 @@ public class Update {
         ArrayList<Update> updates = new ArrayList<Update>();
 
         String[] descriptions = {
+                "Who are you? How did I get here? What's going on?!",
+                "Hackathon cancelled. Party time!!!",
+                "Is this thing on?",
                 "Food will be ready in a few minutes. It's time to take a break.",
                 "Wifi is currently being interrupted by malicious attacks. Our secret agents are working to resolve the issue."
         };
 
         String[] names = {
+                "Homeless man who hacked in",
+                "Shane Creighton-Young",
+                "Moez Bhatti",
                 "Si Te Feng",
                 "Kartik Talwar"
         };
 
         String[] dates = {
+                "2014-08-06T19:30:11-04:00",
+                "2014-08-06T18:30:11-04:00",
+                "2014-08-06T17:30:11-04:00",
                 "2014-08-06T15:30:11-04:00",
                 "2014-06-21T19:30:11-04:00"
         };

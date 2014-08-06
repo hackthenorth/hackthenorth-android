@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -126,14 +128,32 @@ public class InfoListFragment extends Fragment {
             Update update = mData.get(position);
             
             // Set the data in the view
-            ((TextView) convertView.findViewById(R.id.update_name)).setText(update.body + " • " + getRelativeTimestamp(update.date));
+            ((ImageView) convertView.findViewById(R.id.update_avatar)).setImageDrawable(getAvatar(update.body));
+            ((TextView) convertView.findViewById(R.id.update_name)).setText(update.body);
+            ((TextView) convertView.findViewById(R.id.update_date)).setText(getRelativeTimestamp(update.date));
             ((TextView) convertView.findViewById(R.id.update_description)).setText(update.title);
+            
 
             return convertView;
         }
         
         public int getCount() {
             return mData.size();
+        }
+        
+        private Drawable getAvatar(String name) {
+            int id = R.drawable.ic_launcher;
+
+            if (name.equals("Kartik Talwar"))
+                id = R.drawable.avatar_kartik;
+            else if (name.equals("Moez Bhatti"))
+                id = R.drawable.avatar_moez;
+            else if (name.equals("Shane Creighton-Young"))
+                id = R.drawable.avatar_shane;
+            else if (name.equals("Si Te Feng"))
+                id = R.drawable.avatar_site;
+
+            return getContext().getResources().getDrawable(id);
         }
 
         private String getRelativeTimestamp(String s) {
