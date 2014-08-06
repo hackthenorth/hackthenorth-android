@@ -1,10 +1,14 @@
 package com.hackthenorth.android.ui;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,14 +126,30 @@ public class InfoListFragment extends Fragment {
             Update update = mData.get(position);
             
             // Set the data in the view
-            ((TextView) convertView.findViewById(R.id.update_title)).setText(update.title);
-            ((TextView) convertView.findViewById(R.id.update_body)).setText(update.body);
-            
+            ((TextView) convertView.findViewById(R.id.update_name)).setText(update.body + " • " + getRelativeTimestamp(update.date));
+            ((TextView) convertView.findViewById(R.id.update_description)).setText(update.title);
+
             return convertView;
         }
         
         public int getCount() {
             return mData.size();
+        }
+
+        private String getRelativeTimestamp(String s) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ssZZZZZ");
+
+            long date = 0;
+            try {
+                date = formatter.parse(s).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            String relativeTimestamp = (String) DateUtils.getRelativeTimeSpanString(date);
+            if (relativeTimestamp.equals("in 0 minutes") || relativeTimestamp.equals("0 minutes ago"))
+                return "Just now";
+            return relativeTimestamp;
         }
     }
 }
