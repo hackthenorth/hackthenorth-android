@@ -1,5 +1,7 @@
 package com.hackthenorth.android.model;
 
+import android.util.Log;
+
 import java.util.*;
 
 import org.json.JSONException;
@@ -10,16 +12,18 @@ public class Update {
     public String id;
 
     // Fields
-    public String title;
-    public String body;
-    public String date;
+    public String description;
+    public String name;
+    public String datetime;
+    public String avatarUrl;
 
     // JSON keys for fields
-    public static final String TITLE = "title";
-    public static final String BODY = "body";
+    public static final String NAME = "name";
+    public static final String DESCRIPTION = "description";
+    public static final String DATETIME = "time";
+    public static final String AVATAR_URL = "avatar";
 
     public Update() {
-
     }
 
     public Update(String id, String json) {
@@ -31,19 +35,29 @@ public class Update {
             this.id = id;
 
             // Note: When adding new fields, make sure to add them here!
-            title = obj.getString(TITLE);
-            body = obj.getString(BODY);
+            name = obj.getString(NAME);
+            description = obj.getString(DESCRIPTION);
+            datetime = obj.getString(DATETIME);
+            avatarUrl = obj.getString(AVATAR_URL);
+
         } catch (JSONException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    public Update(JSONObject obj) {
+    public Update(String id, JSONObject obj) {
         try {
+
+            // Save ID
+            this.id = id;
+
             // Note: When adding new fields, make sure to add them here!
-            title = obj.getString(TITLE);
-            body = obj.getString(BODY);
+            name = obj.getString(NAME);
+            description = obj.getString(DESCRIPTION);
+            datetime = obj.getString(DATETIME);
+            avatarUrl = obj.getString(AVATAR_URL);
+
         } catch (JSONException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -79,15 +93,17 @@ public class Update {
 
         for (int i = 0; i < descriptions.length; i++) {
             Update update = new Update();
-            update.title = descriptions[i];
-            update.body = names[i];
-            update.date = dates[i];
+            update.description = descriptions[i];
+            update.name = names[i];
+            update.datetime = dates[i];
             updates.add(update);
         }
 
         return updates;
     }
 
+    // This method takes a JSON string and returns an ArrayList of Update from
+    // the JSON data.
     public static ArrayList<Update> loadUpdateArrayFromJSON(String json) {
 
         // Open the JSON object from string
@@ -101,7 +117,7 @@ public class Update {
 
         ArrayList<Update> updates = new ArrayList<Update>(obj.length());
 
-        // Note: The JSONObject API returns an Interator<String>, so this is a
+        // Note: The JSONObject API returns an Iterator<String>, so this is a
         // safe cast.
         @SuppressWarnings("unchecked")
         Iterator<String> it = obj.keys();
@@ -119,8 +135,7 @@ public class Update {
             }
 
             // Load the update from that object and add it to the result
-            Update update = new Update(updateJSON);
-            update.id = id;
+            Update update = new Update(id, updateJSON);
             updates.add(update);
         }
 

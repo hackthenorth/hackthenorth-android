@@ -66,8 +66,7 @@ public class InfoListFragment extends Fragment {
             @Override
             public void onSuccess(String json) {
                 // Save the list and set up the adapter if we're ready.
-                //mData = Update.loadUpdateArrayFromJSON(json);
-                mData = Update.loadDummyList();
+                mData = Update.loadUpdateArrayFromJSON(json);
                 setupAdapterIfReady();
             }
             
@@ -93,14 +92,14 @@ public class InfoListFragment extends Fragment {
     }
     
     private void setupAdapterIfReady() {
-        // Only set up adapter if our data and our listview are ready.
+        // Only set up adapter if our data and our ListView are ready.
         if (mListView != null && mData != null) {
             
             // Create adapter
             mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.update_list_item_view,
                     mData);
             
-            // Hook it up to the listview
+            // Hook it up to the ListView
             mListView.setAdapter(mAdapter);
         }
     }
@@ -128,11 +127,14 @@ public class InfoListFragment extends Fragment {
             Update update = mData.get(position);
             
             // Set the data in the view
-            ((ImageView) convertView.findViewById(R.id.update_avatar)).setImageDrawable(getAvatar(update.body));
-            ((TextView) convertView.findViewById(R.id.update_name)).setText(update.body);
-            ((TextView) convertView.findViewById(R.id.update_date)).setText(getRelativeTimestamp(update.date));
-            ((TextView) convertView.findViewById(R.id.update_description)).setText(update.title);
-            
+            ((ImageView) convertView.findViewById(R.id.update_avatar))
+                    .setImageDrawable(getAvatar(update.name));
+            ((TextView) convertView.findViewById(R.id.update_name))
+                    .setText(update.name);
+            ((TextView) convertView.findViewById(R.id.update_date))
+                    .setText(getRelativeTimestamp(update.datetime));
+            ((TextView) convertView.findViewById(R.id.update_description))
+                    .setText(update.description);
 
             return convertView;
         }

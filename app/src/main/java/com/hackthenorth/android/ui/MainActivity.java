@@ -15,7 +15,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-public class MainActivity extends SlidingFragmentActivity implements SlidingMenu.OnOpenListener, SlidingMenu.OnCloseListener {
+public class MainActivity extends SlidingFragmentActivity {
 
     private SlidingMenu mSlidingMenu;
     private Resources mResources;
@@ -52,7 +52,7 @@ public class MainActivity extends SlidingFragmentActivity implements SlidingMenu
         if (savedInstanceState != null) {
             mContent = getFragmentManager().getFragment(savedInstanceState, "content");
         } else {
-            mContent = InfoListFragment.newInstance("data");
+            mContent = InfoListFragment.newInstance("updates");
         }
 
         mSlidingMenu = getSlidingMenu();
@@ -61,8 +61,6 @@ public class MainActivity extends SlidingFragmentActivity implements SlidingMenu
         mSlidingMenu.setBehindOffset(mResources.getDimensionPixelSize(R.dimen.navigation_drawer_offset));
         mSlidingMenu.setBehindScrollScale(0.5f);
         mSlidingMenu.setFadeDegree(0.5f);
-        mSlidingMenu.setOnOpenListener(this);
-        mSlidingMenu.setOnCloseListener(this);
         mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         setSlidingActionBarEnabled(true);
 
@@ -95,15 +93,5 @@ public class MainActivity extends SlidingFragmentActivity implements SlidingMenu
     public void setTitle(CharSequence chars) {
         mTitle.setText(chars);
         super.setTitle(chars);
-    }
-
-    @Override
-    public void onOpen() {
-
-    }
-
-    @Override
-    public void onClose() {
-
     }
 }
