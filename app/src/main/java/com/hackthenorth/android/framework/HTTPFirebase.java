@@ -1,16 +1,7 @@
 package com.hackthenorth.android.framework;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * An HTTP module for Firebase.
@@ -47,61 +38,51 @@ public class HTTPFirebase {
                 // Specify the path of the firebase data
                 String path = strings[0];
                 
-                // TODO: validation?
-                // Note: Firebase seems to be pretty good at doing sane things,
-                // even when your
-                // paths suck. i.e. https://foo.firebaseio.com///////data/.json
-                // works fine.
                 String url = String.format("https://%s.firebaseio.com/%s.json", FIREBASE_ID, path);
-                return GET(url);
+                return HTTPRequests.GET(url);
             }
             
             @Override
             protected void onPostExecute(String result) {
-                if (result != null) {
+                if (result != null && callback != null) {
                     callback.onSuccess(result);
                 }
             }
         }.execute(path);
     }
-    
+
     /**
-     * 
-     * @param url
-     *            The url to GET
-     * @return The string contents of the response, or null if error.
+     *
+     * @param path
+     *            The path of the Firebase data to PUT
+     * @param data
+     *            The data to push to the Firebase ref
+     * @param callback
+     *            The callback for when the data is returned
      */
-    private static String GET(String url) {
-        String result = null;
-        
-        try {
-            // Make the HTTP request
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            
-            // Convert inputstream to string
-            if (inputStream != null) {
-                result = convertInputStreamToString(inputStream);
+    public static void PUT(String path, String data, final Callback callback) {
+
+        Log.d(TAG, String.format("Issuing PUT request to %s with data %s", path, data));
+
+        // Start an AsyncTask to PUT the string
+        new AsyncTask<String, Void, String>() {
+            @Override
+            protected String doInBackground(String... strings) {
+                // Specify the path of the firebase data
+                String path = strings[0];
+                String data = strings[1];
+
+                String url = String.format("https://%s.firebaseio.com/%s.json",
+                        FIREBASE_ID, path);
+                return HTTPRequests.PUT(url, data);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return result;
-    }
-    
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        
-        // Reads the input stream to a string line by line
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = bufferedReader.readLine();
-        String result = "";
-        while (line != null) {
-            result += line;
-            line = bufferedReader.readLine();
-        }
-        inputStream.close();
-        return result;
+
+            @Override
+            protected void onPostExecute(String result) {
+                if (result != null && callback != null) {
+                    callback.onSuccess(result);
+                }
+            }
+        }.execute(path, data);
     }
 }

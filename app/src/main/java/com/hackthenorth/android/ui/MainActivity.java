@@ -2,20 +2,30 @@ package com.hackthenorth.android.ui;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.framework.GCMRegistrationManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class MainActivity extends SlidingFragmentActivity {
+
+    private static final String TAG = "MainActivity";
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     private SlidingMenu mSlidingMenu;
     private Resources mResources;
@@ -70,6 +80,26 @@ public class MainActivity extends SlidingFragmentActivity {
                 .commit();
 
         setBehindContentView(R.layout.menu_frame);
+
+        if (checkPlayServices()) {
+            if (GCMRegistrationManager.getRegistrationId(this) == null) {
+                // Register with GCM
+                GCMRegistrationManager.registerInBackground(this);
+            }
+
+            // Clear all notifications
+            // TODO: This is ugly. We should put this constant (1) somewhere where
+            // TODO: both the GCMBroadcastReceiver and this module can access it.
+            NotificationManager notificationManager = (NotificationManager)
+                    getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(1);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
     }
 
     @Override
@@ -93,5 +123,23 @@ public class MainActivity extends SlidingFragmentActivity {
     public void setTitle(CharSequence chars) {
         mTitle.setText(chars);
         super.setTitle(chars);
+    }
+
+    // Copied from the GCM Client tutorial [1].
+    // [1]: https://developer.android.com/google/gcm/client.html
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(this, "You must have Play Services to use this app.",
+                        Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 }
