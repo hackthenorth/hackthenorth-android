@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <ImageView
+    <com.hackthenorth.android.ui.component.CircleFadeNetworkImageView
         android:id="@+id/update_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"

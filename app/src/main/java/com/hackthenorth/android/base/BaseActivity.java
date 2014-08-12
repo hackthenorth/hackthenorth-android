@@ -3,6 +3,7 @@ package com.hackthenorth.android.base;
 import android.app.Activity;
 
 import com.hackthenorth.android.HackTheNorthApplication;
+import com.hackthenorth.android.framework.VisibilityManager;
 
 /**
  * A base class for activities. This is used to determine if our app is in the foreground.
@@ -17,12 +18,12 @@ public class BaseActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        HackTheNorthApplication.activityResumed();
+        VisibilityManager.activityResumed();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        HackTheNorthApplication.activityPaused();
+        VisibilityManager.activityPaused();
     }
 }

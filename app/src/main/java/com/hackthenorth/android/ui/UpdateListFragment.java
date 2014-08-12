@@ -18,9 +18,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.framework.HTTPFirebase;
+import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Update;
 
 /**
@@ -139,10 +142,21 @@ public class UpdateListFragment extends Fragment {
             
             // Get the data for this position
             Update update = mData.get(position);
-            
-            // Set the data in the view
-            ((ImageView) convertView.findViewById(R.id.update_avatar))
-                    .setImageDrawable(getAvatar(update.name));
+
+            // Set up the image view with the avatar URLs
+            NetworkImageView networkImageView = (NetworkImageView)
+                    convertView.findViewById(R.id.update_avatar);
+            networkImageView.setDefaultImageResId(R.drawable.ic_launcher);
+
+            // If we have an avatar URL, load it here.
+            ImageLoader loader = NetworkManager.getImageLoader();
+            if (!"".equals(update.avatar)) {
+                networkImageView.setImageUrl(update.avatar, loader);
+            } else {
+                networkImageView.setImageUrl(null, loader);
+            }
+
+            // Set the data in the TextViews
             ((TextView) convertView.findViewById(R.id.update_name))
                     .setText(update.name);
             ((TextView) convertView.findViewById(R.id.update_date))
@@ -155,21 +169,6 @@ public class UpdateListFragment extends Fragment {
         
         public int getCount() {
             return mData.size();
-        }
-        
-        private Drawable getAvatar(String name) {
-            int id = R.drawable.ic_launcher;
-
-            if (name.equals("Kartik Talwar"))
-                id = R.drawable.avatar_kartik;
-            else if (name.equals("Moez Bhatti"))
-                id = R.drawable.avatar_moez;
-            else if (name.equals("Shane Creighton-Young"))
-                id = R.drawable.avatar_shane;
-            else if (name.equals("Si Te Feng"))
-                id = R.drawable.avatar_site;
-
-            return getContext().getResources().getDrawable(id);
         }
 
         private String getRelativeTimestamp(String s) {
