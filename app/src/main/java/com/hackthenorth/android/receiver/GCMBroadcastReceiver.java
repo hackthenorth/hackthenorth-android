@@ -9,12 +9,11 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.ui.MainActivity;
 
 public class GCMBroadcastReceiver extends BroadcastReceiver {
-
-    private static final int NOTIFICATION_ID = 1;
 
     public GCMBroadcastReceiver() {
     }
@@ -52,7 +51,6 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
                 new Intent(context, MainActivity.class), 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                // TODO: Use the image of the person who authored this update
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle()
@@ -60,6 +58,7 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
                 .setContentText(message);
 
         builder.setContentIntent(contentIntent);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        notificationManager.notify(HackTheNorthApplication.NOTIFICATIONS_ID,
+                builder.build());
     }
 }

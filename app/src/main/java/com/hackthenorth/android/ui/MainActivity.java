@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.framework.GCMRegistrationManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -86,13 +87,6 @@ public class MainActivity extends SlidingFragmentActivity {
                 // Register with GCM
                 GCMRegistrationManager.registerInBackground(this);
             }
-
-            // Clear all notifications
-            // TODO: This is ugly. We should put this constant (1) somewhere where
-            // TODO: both the GCMBroadcastReceiver and this module can access it.
-            NotificationManager notificationManager = (NotificationManager)
-                    getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(1);
         }
     }
 
@@ -100,6 +94,11 @@ public class MainActivity extends SlidingFragmentActivity {
     protected void onResume() {
         super.onResume();
         checkPlayServices();
+
+        // Close notifications here
+        NotificationManager notificationManager = (NotificationManager)
+                getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(HackTheNorthApplication.NOTIFICATIONS_ID);
     }
 
     @Override
