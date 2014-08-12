@@ -53,7 +53,7 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 // TODO: Use the image of the person who authored this update
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(message))

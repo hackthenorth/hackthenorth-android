@@ -2,7 +2,7 @@
 <resources>
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 </resources>
