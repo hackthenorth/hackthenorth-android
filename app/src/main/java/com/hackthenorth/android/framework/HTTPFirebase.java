@@ -1,14 +1,13 @@
 package com.hackthenorth.android.framework;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 
 /**
- * An HTTP module for Firebase.
- * 
- * Fun fact: Firebase doesn't put any limits on the number of GET requests you
- * issue! This is why we're using the REST API instead of the realtime API,
- * which can be throttled and is generally unscalable.
+ * An HTTP / Intent-based module for Firebase.
  * 
  * @author Shane Creighton-Young
  * 
@@ -16,39 +15,57 @@ import android.util.Log;
 public class HTTPFirebase {
     
     private static final String FIREBASE_ID = "shane-hackthenorth";
+    private static final String FIREBASE_CACHE_KEY = "FIREBASE_CACHE";
+
     protected static final String TAG = "HTTPFirebase";
-    
-    public static interface Callback {
-        public void onSuccess(String json);
-        public void onError();
-    }
-    
+
     /**
-     * 
      * @param path
      *            The path of the Firebase data to GET
-     * @param callback
-     *            The callback for when the data is returned
+     * @param context
+     *            Application context for broadcasting the intent
+     * @param action
+     *            The action string which should be passed in the intent to be broadcast
      */
-    public static void GET(String path, final Callback callback) {
+    public static void GET(final String path, final Context context,
+                           final String action) {
+
+        // First, broadcast any cached data that we have.
+        String cached = getCachedJSON(context, path);
+        if (cached != null) {
+            Intent intent = new Intent(action);
+            intent.putExtra(action, cached);
+
+            LocalBroadcastManager manager =
+                    LocalBroadcastManager.getInstance(context);
+            manager.sendBroadcast(intent);
+        }
+
         // Start an AsyncTask to GET the string
-        new AsyncTask<String, Void, String>() {
+        new AsyncTask<Void, Void, String>() {
             @Override
-            protected String doInBackground(String... strings) {
-                // Specify the path of the firebase data
-                String path = strings[0];
-                
-                String url = String.format("https://%s.firebaseio.com/%s.json", FIREBASE_ID, path);
+            protected String doInBackground(Void... nothingness) {
+                String url = String.format("https://%s.firebaseio.com/%s.json",
+                        FIREBASE_ID, path);
                 return HTTPRequests.GET(url);
             }
             
             @Override
             protected void onPostExecute(String result) {
-                if (result != null && callback != null) {
-                    callback.onSuccess(result);
+                if (result != null) {
+                    // Put the data into the cache
+                    setCachedJSON(context, path, result);
+
+                    // Broadcast the new data
+                    Intent intent = new Intent(action);
+                    intent.putExtra(action, result);
+
+                    LocalBroadcastManager manager =
+                            LocalBroadcastManager.getInstance(context);
+                    manager.sendBroadcast(intent);
                 }
             }
-        }.execute(path);
+        }.execute();
     }
 
     /**
@@ -57,12 +74,8 @@ public class HTTPFirebase {
      *            The path of the Firebase data to PUT
      * @param data
      *            The data to push to the Firebase ref
-     * @param callback
-     *            The callback for when the data is returned
      */
-    public static void PUT(String path, String data, final Callback callback) {
-
-        Log.d(TAG, String.format("Issuing PUT request to %s with data %s", path, data));
+    public static void PUT(String path, String data) {
 
         // Start an AsyncTask to PUT the string
         new AsyncTask<String, Void, String>() {
@@ -79,10 +92,20 @@ public class HTTPFirebase {
 
             @Override
             protected void onPostExecute(String result) {
-                if (result != null && callback != null) {
-                    callback.onSuccess(result);
-                }
             }
         }.execute(path, data);
+    }
+
+    private static String getCachedJSON(Context context, String path) {
+        SharedPreferences preferences = context.getSharedPreferences(FIREBASE_CACHE_KEY,
+                Context.MODE_PRIVATE);
+        return preferences.getString(path, null);
+    }
+
+    private static void setCachedJSON(Context context, String path, String json) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(FIREBASE_CACHE_KEY,
+                Context.MODE_PRIVATE).edit();
+        editor.putString(path, json);
+        editor.commit();
     }
 }

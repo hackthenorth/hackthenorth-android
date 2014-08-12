@@ -3,11 +3,13 @@ package com.hackthenorth.android.ui;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,9 +30,11 @@ public class MainActivity extends SlidingFragmentActivity {
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
+    private BroadcastReceiver mBroadcastReceiver;
+
     private SlidingMenu mSlidingMenu;
     private Resources mResources;
-    private Fragment mContent;
+    private UpdateListFragment mContent;
     private Fragment mMenu;
     private ActionBar mActionBar;
     private LayoutInflater mInflater;
@@ -61,9 +65,10 @@ public class MainActivity extends SlidingFragmentActivity {
         tintManager.setNavigationBarTintColor(mResources.getColor(R.color.theme_primary));
 
         if (savedInstanceState != null) {
-            mContent = getFragmentManager().getFragment(savedInstanceState, "content");
+            mContent = (UpdateListFragment)getFragmentManager()
+                    .getFragment(savedInstanceState, "content");
         } else {
-            mContent = InfoListFragment.newInstance("updates");
+            mContent = new UpdateListFragment();
         }
 
         mSlidingMenu = getSlidingMenu();
@@ -88,17 +93,49 @@ public class MainActivity extends SlidingFragmentActivity {
                 GCMRegistrationManager.registerInBackground(this);
             }
         }
+
+        // Set up BroadcastReceiver for updates.
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (HackTheNorthApplication.Actions.SYNC_UPDATES
+                        .equals(intent.getAction())) {
+
+                    // Forward to fragment
+                    String key = HackTheNorthApplication.Actions.SYNC_UPDATES;
+                    String json = intent.getStringExtra(key);
+
+                    mContent.onUpdate(json);
+
+                // else if other kind of fragment update, etc.
+                }
+            }
+        };
+
+        // Register our broadcast receiver.
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(HackTheNorthApplication.Actions.SYNC_UPDATES);
+
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.registerReceiver(mBroadcastReceiver, filter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkPlayServices();
+        HackTheNorthApplication.activityResumed();
 
         // Close notifications here
         NotificationManager notificationManager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(HackTheNorthApplication.NOTIFICATIONS_ID);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        HackTheNorthApplication.activityPaused();
     }
 
     @Override

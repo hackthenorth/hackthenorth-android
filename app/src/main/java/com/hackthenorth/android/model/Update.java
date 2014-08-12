@@ -1,5 +1,7 @@
 package com.hackthenorth.android.model;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -8,6 +10,7 @@ import java.util.*;
 
 public class Update {
 
+    private static final String TAG = "Update";
     public String id;
 
     // Fields
