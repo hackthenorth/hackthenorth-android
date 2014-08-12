@@ -132,7 +132,7 @@ public class InfoListFragment extends Fragment {
             ((TextView) convertView.findViewById(R.id.update_name))
                     .setText(update.name);
             ((TextView) convertView.findViewById(R.id.update_date))
-                    .setText(getRelativeTimestamp(update.datetime));
+                    .setText(getRelativeTimestamp(update.time));
             ((TextView) convertView.findViewById(R.id.update_description))
                     .setText(update.description);
 
