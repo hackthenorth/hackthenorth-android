@@ -1,5 +1,4 @@
 # Built application files
-/*/build/
 build/
  
 # Crashlytics configuations
@@ -22,11 +21,11 @@ local.properties
 .idea/compiler.xml
 .idea/copyright/profiles_settings.xml
 .idea/encodings.xml
+.idea/inspectionProfiles/Project_Default.xml
 .idea/misc.xml
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
-.idea/
 *.iml
  
 # OS-specific files
