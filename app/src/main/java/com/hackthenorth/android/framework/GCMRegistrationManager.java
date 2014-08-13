@@ -104,7 +104,7 @@ public class GCMRegistrationManager {
      */
     private static void sendRegistrationIdToFirebase(Context context, String regid) {
         HTTPFirebase.PUT(String.format("/notifications/android/%s", regid),
-                "\"dummy\"", null);
+                "\"dummy\"");
     }
 
     /**

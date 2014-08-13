@@ -4,12 +4,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Update;
@@ -25,58 +26,32 @@ import com.hackthenorth.android.model.Update;
 /**
  * A fragment for displaying lists of Update.
  */
-public class InfoListFragment extends Fragment {
-    public static final String TAG = "InfoListFragment";
-    
+public class UpdateListFragment extends Fragment {
+    public static final String TAG = "UpdateListFragment";
+
     // Argument keys
     public static final String DATA_ID = "mDataID";
-    
-    private String mDataID;
-    
+
     private ListView mListView;
     private ArrayList<Update> mData;
     private InfoListAdapter mAdapter;
-    
-    /**
-     * @param id The data id of this list. Used to determine which data to sync to.
-     * @return the InfoListFragment for that data id
-     */
-    public static InfoListFragment newInstance(String id) {
-        InfoListFragment f = new InfoListFragment();
-        
-        // Add the data ID to the fragment and return it
-        Bundle args = new Bundle();
-        args.putString(DATA_ID, id);
-        f.setArguments(args);
-        
-        return f;
-    }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         // Extract data from arguments
         Bundle args = getArguments();
-        mDataID = args.getString(DATA_ID);
-        
-        // TODO: Get the list of data from Firebase
-        // Use temporary data for now.
-        HTTPFirebase.GET(String.format("/%s", mDataID), new HTTPFirebase.Callback() {
-            @Override
-            public void onSuccess(String json) {
-                // Save the list and set up the adapter if we're ready.
-                mData = Update.loadUpdateArrayFromJSON(json);
-                setupAdapterIfReady();
-            }
-            
-            @Override
-            public void onError() {
-                // TODO
-            }
-        });
     }
-    
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        HTTPFirebase.GET("/updates", activity,
+                HackTheNorthApplication.Actions.SYNC_UPDATES);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the view and return it
@@ -90,9 +65,48 @@ public class InfoListFragment extends Fragment {
         
         return view;
     }
+
+    // Receive a JSON update
+    public void onUpdate(String json) {
+
+        // Set or update our data
+        if (mData == null) {
+            mData = Update.loadUpdateArrayFromJSON(json);
+
+            // If we're ready, set up the adapter with the list.
+            setupAdapterIfReady();
+
+        } else {
+            // TODO: Is JSON parsing fast enough to be on the main thread?
+            ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
+
+            // Note that both of the data lists are sorted, with the newest items first.
+            // We want to avoid adding a bunch of elements to the front of the ArrayList,
+            // which each takes O(n) time...
+
+            // If there's new data, then copy over all the elements in newData to mData,
+            // and refresh the ListView.
+            if (newData.size() > mData.size()) {
+                int delta = newData.size() - mData.size();
+
+                // Append that many elements to the end of mData
+                // (so mData.size() == newData.size())
+                for (int i = 0; i < delta; i++) {
+                    mData.add(null);
+                }
+
+                // Now, copy all the elements from newData into mData.
+                for (int i = 0; i < newData.size(); i++) {
+                    mData.set(i, newData.get(i));
+                }
+
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
     
     private void setupAdapterIfReady() {
-        // Only set up adapter if our data and our ListView are ready.
+        // Only set up adapter if our ListView and our data are ready.
         if (mListView != null && mData != null) {
             
             // Create adapter
@@ -132,7 +146,7 @@ public class InfoListFragment extends Fragment {
             ((TextView) convertView.findViewById(R.id.update_name))
                     .setText(update.name);
             ((TextView) convertView.findViewById(R.id.update_date))
-                    .setText(getRelativeTimestamp(update.datetime));
+                    .setText(getRelativeTimestamp(update.time));
             ((TextView) convertView.findViewById(R.id.update_description))
                     .setText(update.description);
 

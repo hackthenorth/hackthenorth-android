@@ -1,12 +1,10 @@
 package com.hackthenorth.android.framework;
 
-import android.util.Log;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -57,8 +55,6 @@ public class HTTPRequests {
      */
     public static String PUT(String url, String data) {
 
-        Log.d(TAG, String.format("Issuing PUT request to %s with data %s", url, data));
-
         String result = null;
         try {
             HttpClient httpclient = new DefaultHttpClient();
@@ -82,7 +78,6 @@ public class HTTPRequests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.i(TAG, "result: " + result);
         return result;
     }
 
