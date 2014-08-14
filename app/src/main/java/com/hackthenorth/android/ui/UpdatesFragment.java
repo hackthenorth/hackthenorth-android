@@ -6,9 +6,13 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +33,7 @@ import com.hackthenorth.android.model.Update;
 /**
  * A fragment for displaying lists of Update.
  */
-public class UpdateListFragment extends Fragment {
+public class UpdatesFragment extends Fragment {
     public static final String TAG = "UpdateListFragment";
 
     // Argument keys
@@ -38,6 +42,7 @@ public class UpdateListFragment extends Fragment {
     private ListView mListView;
     private ArrayList<Update> mData;
     private InfoListAdapter mAdapter;
+    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,31 @@ public class UpdateListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        // Set up BroadcastReceiver for updates.
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (HackTheNorthApplication.Actions.SYNC_UPDATES
+                        .equals(intent.getAction())) {
+
+                    // Forward to fragment
+                    String key = HackTheNorthApplication.Actions.SYNC_UPDATES;
+                    String json = intent.getStringExtra(key);
+
+                    onUpdate(json);
+
+                    // else if other kind of fragment update, etc.
+                }
+            }
+        };
+
+        // Register our broadcast receiver.
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(HackTheNorthApplication.Actions.SYNC_UPDATES);
+
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
+        manager.registerReceiver(mBroadcastReceiver, filter);
 
         HTTPFirebase.GET("/updates", activity,
                 HackTheNorthApplication.Actions.SYNC_UPDATES);
