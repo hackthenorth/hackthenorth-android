@@ -7,14 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.ui.MainActivity;
 
 public class GCMBroadcastReceiver extends BroadcastReceiver {
 
-    private static final int NOTIFICATION_ID = 1;
+    private static final String TAG = "GCMBroadcastReceiver";
 
     public GCMBroadcastReceiver() {
     }
@@ -42,24 +45,39 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
 
     private void sendNotification(Context context, Intent intent) {
 
-        Bundle extras = intent.getExtras();
-        String title = extras.getString("name", "Hack The North");
-        String message = extras.getString("description", "Click here for a new update!");
+        // Check if an activity is visible. If so, then don't show the notification at
+        // all; just update the list in realtime.
+        // TODO: Might want to do something different if they have a fragment that
+        // TODO: isn't the updates list open, like a little shake in the UI or something.
+        Log.d(TAG, "visible? " + HackTheNorthApplication.isActivityVisible());
+        if (HackTheNorthApplication.isActivityVisible()) {
 
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, MainActivity.class), 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                // TODO: Use the image of the person who authored this update
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(title)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(message))
-                .setContentText(message);
+            HTTPFirebase.GET("/updates", context,
+                    HackTheNorthApplication.Actions.SYNC_UPDATES);
 
-        builder.setContentIntent(contentIntent);
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
+        } else {
+
+            // Otherwise, show a notification.
+            Bundle extras = intent.getExtras();
+            String title = extras.getString("name", "Hack The North");
+            String message = extras.getString("description", "Click here for a new update!");
+
+            NotificationManager notificationManager = (NotificationManager)
+                    context.getSystemService(Context.NOTIFICATION_SERVICE);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                    new Intent(context, MainActivity.class), 0);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle(title)
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(message))
+                    .setContentText(message);
+
+            builder.setContentIntent(contentIntent);
+            notificationManager.notify(HackTheNorthApplication.NOTIFICATIONS_ID,
+                    builder.build());
+        }
     }
 }

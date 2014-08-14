@@ -21,6 +21,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.framework.GCMRegistrationManager;
+import com.hackthenorth.android.framework.VisibilityManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -124,7 +125,7 @@ public class MainActivity extends SlidingFragmentActivity {
     protected void onResume() {
         super.onResume();
         checkPlayServices();
-        HackTheNorthApplication.activityResumed();
+        VisibilityManager.activityResumed();
 
         // Close notifications here
         NotificationManager notificationManager = (NotificationManager)
@@ -135,7 +136,7 @@ public class MainActivity extends SlidingFragmentActivity {
     @Override
     public void onPause() {
         super.onPause();
-        HackTheNorthApplication.activityPaused();
+        VisibilityManager.activityPaused();
     }
 
     @Override
