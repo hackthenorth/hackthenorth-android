@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
@@ -18,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -143,7 +141,7 @@ public class UpdatesFragment extends Fragment {
         if (mListView != null && mData != null) {
             
             // Create adapter
-            mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.update_list_item_view,
+            mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.update_list_item,
                     mData);
             
             // Hook it up to the ListView
