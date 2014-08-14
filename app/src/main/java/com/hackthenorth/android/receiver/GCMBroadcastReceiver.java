@@ -13,6 +13,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.framework.HTTPFirebase;
+import com.hackthenorth.android.framework.VisibilityManager;
 import com.hackthenorth.android.ui.MainActivity;
 
 public class GCMBroadcastReceiver extends BroadcastReceiver {
@@ -49,8 +50,8 @@ public class GCMBroadcastReceiver extends BroadcastReceiver {
         // all; just update the list in realtime.
         // TODO: Might want to do something different if they have a fragment that
         // TODO: isn't the updates list open, like a little shake in the UI or something.
-        Log.d(TAG, "visible? " + HackTheNorthApplication.isActivityVisible());
-        if (HackTheNorthApplication.isActivityVisible()) {
+        Log.d(TAG, "visible? " + VisibilityManager.isActivityVisible());
+        if (VisibilityManager.isActivityVisible()) {
 
 
             HTTPFirebase.GET("/updates", context,
