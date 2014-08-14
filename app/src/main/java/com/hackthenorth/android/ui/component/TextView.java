@@ -1,4 +1,4 @@
-package com.hackthenorth.android.ui;
+package com.hackthenorth.android.ui.component;
 
 import android.content.Context;
 import android.text.Layout;

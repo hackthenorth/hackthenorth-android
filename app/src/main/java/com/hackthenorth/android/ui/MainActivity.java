@@ -1,15 +1,10 @@
 package com.hackthenorth.android.ui;
 
 import android.app.ActionBar;
-import android.app.Fragment;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +19,7 @@ import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseActivity;
 import com.hackthenorth.android.framework.GCMRegistrationManager;
 import com.hackthenorth.android.framework.VisibilityManager;
+import com.hackthenorth.android.ui.component.TextView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class MainActivity extends BaseActivity {
