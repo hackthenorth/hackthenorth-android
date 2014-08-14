@@ -22,6 +22,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.framework.HTNNotificationManager;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Update;
@@ -67,6 +68,14 @@ public class UpdateListFragment extends Fragment {
         setupAdapterIfReady();
         
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Clear the notifications
+        HTNNotificationManager.clearUpdatesNotification(getActivity());
     }
 
     // Receive a JSON update
