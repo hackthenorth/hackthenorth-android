@@ -104,6 +104,7 @@ public class MentorsFragment extends Fragment {
 
             mData.clear();
             mData.addAll(newData);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
