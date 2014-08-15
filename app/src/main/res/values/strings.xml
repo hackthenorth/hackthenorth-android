@@ -11,4 +11,13 @@
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
 
+    <!--Fragment titles-->
+    <string-array name="fragment_titles">
+        <item>UPDATES</item>
+        <item>SCHEDULE</item>
+        <item>PRIZES</item>
+        <item>MENTORS</item>
+        <item>TEAM</item>
+    </string-array>
+
 </resources>

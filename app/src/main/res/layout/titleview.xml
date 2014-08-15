@@ -6,7 +6,7 @@
     android:paddingLeft="16dp"
     android:background="@color/theme_primary">
 
-    <com.hackthenorth.android.ui.TextView
+    <com.hackthenorth.android.ui.component.TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

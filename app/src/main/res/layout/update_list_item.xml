@@ -15,8 +15,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         android:padding="4dp" />
 
     <LinearLayout
@@ -24,24 +24,24 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         android:layout_toRightOf="@+id/update_avatar"
         android:gravity="left|center_vertical"
         android:orientation="vertical">
 
-        <com.hackthenorth.android.ui.TextView
+        <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/update_name"
             style="@style/TextViewStylePrimary"
             app:typeface="roboto_regular" />
 
-        <com.hackthenorth.android.ui.TextView
+        <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/update_date"
             style="@style/TextViewStyleSecondary"
             app:typeface="roboto_regular" />
     </LinearLayout>
 
-    <com.hackthenorth.android.ui.TextView
+    <com.hackthenorth.android.ui.component.TextView
         android:id="@+id/update_description"
         style="@style/TextViewStylePrimary"
         android:layout_below="@+id/update_avatar"
