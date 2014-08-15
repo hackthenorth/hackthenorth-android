@@ -11,6 +11,8 @@ public class HackTheNorthApplication extends Application {
     public static interface Actions {
         public final static String SYNC_UPDATES =
                 "com.hackthenorth.android.intent.action.SYNC_UPDATES";
+        public final static String SYNC_MENTORS =
+                "com.hackthenorth.android.intent.action.SYNC_UPDATES";
     }
 
     @Override

@@ -11,6 +11,11 @@
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
 
+    <!--Titles for information to go on cards-->
+    <string name="organization">Organization</string>
+    <string name="availability">Availability</string>
+    <string name="skills">Skills</string>
+
     <!--Fragment titles-->
     <string-array name="fragment_titles">
         <item>UPDATES</item>
