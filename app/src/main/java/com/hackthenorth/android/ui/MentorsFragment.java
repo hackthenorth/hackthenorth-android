@@ -243,8 +243,8 @@ public class MentorsFragment extends Fragment {
 
             String skills = skillsList.get(0);
 
-            for (String skill : skillsList) {
-                skills += " • " + skill;
+            for (int i = 1; i < skillsList.size(); i++) {
+                skills += " • " + skillsList.get(i);
             }
 
             return skills;
