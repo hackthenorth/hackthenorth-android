@@ -1,5 +1,6 @@
 package com.hackthenorth.android.model;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -20,6 +21,15 @@ public class Update {
     public String avatar;
 
     public Update() {
+    }
+
+    public static Update fromBundle(Bundle bundle) {
+        Update update = new Update();
+        update.name = bundle.getString("name", null);
+        update.description = bundle.getString("description", null);
+        update.time = bundle.getString("time", null);
+        update.avatar = bundle.getString("avatar", null);
+        return update;
     }
 
     // This method takes a JSON string and returns an ArrayList of Update from
@@ -50,5 +60,11 @@ public class Update {
         });
 
         return updates;
+    }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

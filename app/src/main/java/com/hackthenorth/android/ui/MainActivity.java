@@ -18,6 +18,7 @@ import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseActivity;
 import com.hackthenorth.android.framework.GCMRegistrationManager;
+import com.hackthenorth.android.framework.HTNNotificationManager;
 import com.hackthenorth.android.framework.VisibilityManager;
 import com.hackthenorth.android.ui.component.TextView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -78,11 +79,6 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         checkPlayServices();
         VisibilityManager.activityResumed();
-
-        // Close notifications here
-        NotificationManager notificationManager = (NotificationManager)
-                getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(HackTheNorthApplication.NOTIFICATIONS_ID);
     }
 
     @Override
