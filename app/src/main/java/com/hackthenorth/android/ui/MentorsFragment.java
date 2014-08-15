@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,7 +147,7 @@ public class MentorsFragment extends Fragment {
 
             // If we have an avatar URL, load it here.
             ImageLoader loader = NetworkManager.getImageLoader();
-            if (!"".equals(mentor.image)) {
+            if (!TextUtils.isEmpty(mentor.image)) {
                 networkImageView.setVisibility(View.VISIBLE);
                 networkImageView.setImageUrl(mentor.image, loader);
             } else {
