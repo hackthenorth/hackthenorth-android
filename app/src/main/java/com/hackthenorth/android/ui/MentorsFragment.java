@@ -24,6 +24,7 @@ import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Mentor;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -168,13 +169,15 @@ public class MentorsFragment extends Fragment {
         }
 
         private String getAvailabilityString(ArrayList<ArrayList<String>> timeslots) {
-            String availability = "";
 
-            if (timeslots == null) {
+            if (timeslots == null || timeslots.size() == 0) {
                 return null;
             }
 
-            for (ArrayList<String> timeslotTimes : timeslots) {
+            String availability = "";
+
+            for (int i = 0; i < timeslots.size(); i++) {
+                ArrayList<String> timeslotTimes = timeslots.get(i);
 
                 // Make sure there is and only is a start time and an end time for each timeslot array
                 if (timeslotTimes.size() != 2) {
@@ -205,7 +208,7 @@ public class MentorsFragment extends Fragment {
                             " to " + end.day + ", " + end.hour + ":" + end.minute + end.period;
                 }
 
-                if (timeslots.indexOf(timeslotTimes) != timeslots.size() - 1) {
+                if (i != timeslots.size() - 1) {
                     availability += "\n";
                 }
             }
@@ -232,14 +235,15 @@ public class MentorsFragment extends Fragment {
         }
 
         private String getSkillsString(ArrayList<String> skillsList) {
-            String skills = "";
+
+            if (skillsList == null || skillsList.size() == 0) {
+                return null;
+            }
+
+            String skills = skillsList.get(0);
 
             for (String skill : skillsList) {
-                if (skillsList.indexOf(skill) != 0) {
-                    skills += " • ";
-                }
-
-                skills += skill;
+                skills += " • " + skill;
             }
 
             return skills;
