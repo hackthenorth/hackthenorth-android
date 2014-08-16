@@ -231,17 +231,22 @@ public class MentorsFragment extends Fragment {
         }
 
         private String getSkillsString(ArrayList<String> skillsList) {
-            String skills = "";
+            if (skillsList != null) {
+                String skills = "";
 
-            for (String skill : skillsList) {
-                if (skillsList.indexOf(skill) != 0) {
-                    skills += " • ";
+                for (String skill : skillsList) {
+                    if (skillsList.indexOf(skill) != 0) {
+                        skills += " • ";
+                    }
+
+                    skills += skill;
                 }
 
-                skills += skill;
-            }
+                return skills;
 
-            return skills;
+            } else {
+                return "";
+            }
         }
     }
 
