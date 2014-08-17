@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Mentor;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -104,7 +102,6 @@ public class MentorsFragment extends Fragment {
 
             mData.clear();
             mData.addAll(newData);
-            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -149,7 +146,7 @@ public class MentorsFragment extends Fragment {
 
             // If we have an avatar URL, load it here.
             ImageLoader loader = NetworkManager.getImageLoader();
-            if (!TextUtils.isEmpty(mentor.image)) {
+            if (!"".equals(mentor.image)) {
                 networkImageView.setVisibility(View.VISIBLE);
                 networkImageView.setImageUrl(mentor.image, loader);
             } else {
@@ -170,15 +167,13 @@ public class MentorsFragment extends Fragment {
         }
 
         private String getAvailabilityString(ArrayList<ArrayList<String>> timeslots) {
+            String availability = "";
 
-            if (timeslots == null || timeslots.size() == 0) {
+            if (timeslots == null) {
                 return null;
             }
 
-            String availability = "";
-
-            for (int i = 0; i < timeslots.size(); i++) {
-                ArrayList<String> timeslotTimes = timeslots.get(i);
+            for (ArrayList<String> timeslotTimes : timeslots) {
 
                 // Make sure there is and only is a start time and an end time for each timeslot array
                 if (timeslotTimes.size() != 2) {
@@ -209,7 +204,7 @@ public class MentorsFragment extends Fragment {
                             " to " + end.day + ", " + end.hour + ":" + end.minute + end.period;
                 }
 
-                if (i != timeslots.size() - 1) {
+                if (timeslots.indexOf(timeslotTimes) != timeslots.size() - 1) {
                     availability += "\n";
                 }
             }
@@ -236,15 +231,14 @@ public class MentorsFragment extends Fragment {
         }
 
         private String getSkillsString(ArrayList<String> skillsList) {
+            String skills = "";
 
-            if (skillsList == null || skillsList.size() == 0) {
-                return null;
-            }
+            for (String skill : skillsList) {
+                if (skillsList.indexOf(skill) != 0) {
+                    skills += " • ";
+                }
 
-            String skills = skillsList.get(0);
-
-            for (int i = 1; i < skillsList.size(); i++) {
-                skills += " • " + skillsList.get(i);
+                skills += skill;
             }
 
             return skills;
