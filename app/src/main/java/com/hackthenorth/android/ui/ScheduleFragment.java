@@ -88,9 +88,6 @@ public class ScheduleFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Clear the notifications
-        HTNNotificationManager.clearUpdatesNotification(getActivity());
-
         // Re-GET data from Firebase here
         if (getActivity() != null) {
             HTTPFirebase.GET("/schedule", getActivity(),
