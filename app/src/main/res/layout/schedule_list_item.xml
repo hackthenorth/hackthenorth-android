@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/card_background">
+
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/schedule_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/theme_secondary"
+        android:textSize="32sp"
+        app:typeface="roboto_thin" />
+
+
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/schedule_item_description"
+        style="@style/TextViewStyleSecondary"
+        android:layout_below="@+id/update_name"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/update_avatar"
+        android:textColor="@color/text_color_primary"
+        app:typeface="roboto_light" />
+
+</LinearLayout>

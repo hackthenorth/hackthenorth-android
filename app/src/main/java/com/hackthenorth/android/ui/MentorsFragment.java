@@ -39,11 +39,6 @@ public class MentorsFragment extends Fragment {
     private BroadcastReceiver mBroadcastReceiver;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 

@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,21 +35,10 @@ import com.hackthenorth.android.model.Update;
 public class UpdatesFragment extends Fragment {
     public static final String TAG = "UpdateListFragment";
 
-    // Argument keys
-    public static final String DATA_ID = "mDataID";
-
     private ListView mListView;
     private ArrayList<Update> mData;
     private InfoListAdapter mAdapter;
     private BroadcastReceiver mBroadcastReceiver;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // Extract data from arguments
-        Bundle args = getArguments();
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -85,7 +73,7 @@ public class UpdatesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the view and return it
-        View view = inflater.inflate(R.layout.info_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.updates_fragment, container, false);
         
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
@@ -185,7 +173,6 @@ public class UpdatesFragment extends Fragment {
 
             // If we have an avatar URL, load it here.
             ImageLoader loader = NetworkManager.getImageLoader();
-            Log.i(TAG, update.avatar);
             if (!"".equals(update.avatar)) {
                 networkImageView.setImageUrl(update.avatar, loader);
             } else {
