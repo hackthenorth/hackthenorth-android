@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:background="@drawable/card_background"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -14,38 +13,31 @@
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:padding="4dp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/update_name"
+        style="@style/TextViewStylePrimary"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_toRightOf="@+id/update_avatar"
-        android:gravity="left|center_vertical"
-        android:orientation="vertical">
+        android:layout_marginLeft="16dp"
+        android:layout_toLeftOf="@+id/update_date"
+        android:layout_toRightOf="@id/update_avatar"
+        app:typeface="roboto_regular" />
 
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/update_name"
-            style="@style/TextViewStylePrimary"
-            app:typeface="roboto_regular" />
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/update_date"
-            style="@style/TextViewStyleSecondary"
-            app:typeface="roboto_regular" />
-    </LinearLayout>
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/update_date"
+        style="@style/TextViewStyleSecondary"
+        android:layout_alignBottom="@+id/update_name"
+        android:layout_alignParentRight="true"
+        app:typeface="roboto_light" />
 
     <com.hackthenorth.android.ui.component.TextView
         android:id="@+id/update_description"
-        style="@style/TextViewStylePrimary"
-        android:layout_below="@+id/update_avatar"
-        android:layout_margin="8dp"
-        app:typeface="roboto_regular" />
+        style="@style/TextViewStyleSecondary"
+        android:layout_below="@+id/update_name"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/update_avatar"
+        android:textColor="@color/text_color_primary"
+        app:typeface="roboto_light" />
 
 </RelativeLayout>

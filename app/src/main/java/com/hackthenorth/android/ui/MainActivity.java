@@ -1,26 +1,26 @@
 package com.hackthenorth.android.ui;
 
 import android.app.ActionBar;
-import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseActivity;
 import com.hackthenorth.android.framework.GCMRegistrationManager;
-import com.hackthenorth.android.framework.HTNNotificationManager;
 import com.hackthenorth.android.framework.VisibilityManager;
 import com.hackthenorth.android.ui.component.TextView;
+import com.hackthenorth.android.ui.settings.SettingsActivity;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 public class MainActivity extends BaseActivity {
@@ -89,6 +89,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -99,6 +102,7 @@ public class MainActivity extends BaseActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

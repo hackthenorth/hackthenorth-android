@@ -3,13 +3,9 @@
     tools:context="com.hackthenorth.android.MainActivity">
 
     <item
-        android:id="@+id/action_example"
-        android:title="@string/action_example"
-        android:showAsAction="withText|ifRoom"/>
-    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        android:showAsAction="never"/>
+        android:showAsAction="ifRoom"/>
 
 </menu>

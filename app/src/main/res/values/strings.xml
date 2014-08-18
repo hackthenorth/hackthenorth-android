@@ -25,4 +25,9 @@
         <item>TEAM</item>
     </string-array>
 
+    <!-- Settings Titles -->
+    <string name="setting_notifications">Notifications</string>
+    <string name="setting_notification_sound">Sound</string>
+    <string name="setting_notification_vibrate">Vibrate</string>
+
 </resources>
