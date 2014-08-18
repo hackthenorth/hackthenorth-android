@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,13 +63,10 @@ public class UpdatesFragment extends Fragment {
                 if (HackTheNorthApplication.Actions.SYNC_UPDATES
                         .equals(intent.getAction())) {
 
-                    // Forward to fragment
+                    // Update with the new data
                     String key = HackTheNorthApplication.Actions.SYNC_UPDATES;
                     String json = intent.getStringExtra(key);
-
                     onUpdate(json);
-
-                    // else if other kind of fragment update, etc.
                 }
             }
         };
@@ -187,6 +185,7 @@ public class UpdatesFragment extends Fragment {
 
             // If we have an avatar URL, load it here.
             ImageLoader loader = NetworkManager.getImageLoader();
+            Log.i(TAG, update.avatar);
             if (!"".equals(update.avatar)) {
                 networkImageView.setImageUrl(update.avatar, loader);
             } else {
