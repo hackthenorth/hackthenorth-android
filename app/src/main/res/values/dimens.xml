@@ -1,6 +1,0 @@
-<resources>
-
-    <dimen name="navigation_drawer_shadow_width">8dp</dimen>
-    <dimen name="navigation_drawer_offset">64dp</dimen>
-
-</resources>
