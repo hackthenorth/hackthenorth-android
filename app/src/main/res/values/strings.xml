@@ -30,5 +30,6 @@
     <string name="setting_notifications">Notifications</string>
     <string name="setting_notification_sound">Sound</string>
     <string name="setting_notification_vibrate">Vibrate</string>
+    <string name="send_email_to_prize_contact">Send Email To Prize Contact:</string>
 
 </resources>

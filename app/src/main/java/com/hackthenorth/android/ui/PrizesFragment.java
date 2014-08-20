@@ -140,7 +140,29 @@ public class PrizesFragment extends Fragment {
             }
 
             // Get the data for this position
-            Prize prize = mData.get(position);
+            final Prize prize = mData.get(position);
+
+            // Compose email on tap
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    String[] receipients = { prize.contact };
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("plain/text");
+                    intent.putExtra(Intent.EXTRA_EMAIL, receipients);
+
+                    String subject = String.format("Regarding the Hack The North prize"
+                            + " \"%s\"", prize.name);
+                    intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+
+                    String title = view.getContext()
+                            .getString(R.string.send_email_to_prize_contact);
+                    intent = Intent.createChooser(intent, title);
+                    view.getContext().startActivity(intent);
+                }
+            });
 
             ((TextView)convertView.findViewById(R.id.prize_name))
                     .setText(prize.name);
