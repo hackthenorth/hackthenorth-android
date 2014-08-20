@@ -2,25 +2,36 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:title="@string/setting_notifications"
-        android:defaultValue="true"
-        android:key="PREFERENCE_NOTIFICATIONS"
-        />
+    <PreferenceCategory
+        android:layout="@layout/preference_category"
+        android:title="@string/setting_category_notifications">
 
-    <RingtonePreference
-        android:title="@string/setting_notification_sound"
-        android:defaultValue="content://settings/system/notification_sound"
-        android:key="PREFERENCE_NOTIFICATION_RINGTONE"
-        android:dependency="PREFERENCE_NOTIFICATIONS"
-        android:ringtoneType="notification"
-        />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="PREFERENCE_NOTIFICATIONS"
+            android:layout="@layout/preference"
+            android:summary="@string/setting_notifications_summary"
+            android:title="@string/setting_notifications"
+            android:widgetLayout="@layout/preference_widget_checkbox" />
 
-    <CheckBoxPreference
-        android:title="@string/setting_notification_vibrate"
-        android:defaultValue="true"
-        android:key="PREFERENCE_NOTIFICATION_VIBRATE"
-        android:dependency="PREFERENCE_NOTIFICATIONS"
-        />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="PREFERENCE_NOTIFICATIONS"
+            android:key="PREFERENCE_NOTIFICATION_RINGTONE"
+            android:layout="@layout/preference"
+            android:ringtoneType="notification"
+            android:summary="@string/setting_notification_sound_summary"
+            android:title="@string/setting_notification_sound" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="PREFERENCE_NOTIFICATIONS"
+            android:key="PREFERENCE_NOTIFICATION_VIBRATE"
+            android:layout="@layout/preference"
+            android:summary="@string/setting_notification_vibrate_summary"
+            android:title="@string/setting_notification_vibrate"
+            android:widgetLayout="@layout/preference_widget_checkbox" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

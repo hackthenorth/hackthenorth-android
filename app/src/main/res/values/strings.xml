@@ -26,9 +26,17 @@
         <item>TEAM</item>
     </string-array>
 
-    <!-- Settings Titles -->
+    <!-- Settings categories -->
+    <string name="setting_category_notifications">Notifications</string>
+
+    <!-- Settings titles -->
     <string name="setting_notifications">Notifications</string>
     <string name="setting_notification_sound">Sound</string>
     <string name="setting_notification_vibrate">Vibrate</string>
+
+    <!-- Settings summaries -->
+    <string name="setting_notifications_summary">Notify me when there\'s new updates</string>
+    <string name="setting_notification_sound_summary">Select a notification tone</string>
+    <string name="setting_notification_vibrate_summary">Enable vibration for new notifications</string>
 
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:state_checked="true" android:id="@+id/on">
+        <bitmap android:src="@drawable/button_checked_disabled" android:alpha="?android:attr/disabledAlpha" />
+    </item>
+
+    <item android:state_enabled="false" android:id="@+id/off">
+        <bitmap android:src="@drawable/button_unchecked_disabled" android:alpha="?android:attr/disabledAlpha" />
+    </item>
+
+    <item android:state_checked="true" android:id="@+id/on">
+        <bitmap android:src="@drawable/button_checked" />
+    </item>
+
+    <item android:id="@+id/off">
+        <bitmap android:src="@drawable/button_unchecked" />
+    </item>
+</selector>
