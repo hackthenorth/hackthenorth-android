@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="AppBaseTheme" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowContentOverlay">@null</item>
