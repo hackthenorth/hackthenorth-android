@@ -80,7 +80,7 @@ public class TeamFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the view and return it
-        View view = inflater.inflate(R.layout.info_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.team_list_fragment, container, false);
 
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
@@ -150,21 +150,20 @@ public class TeamFragment extends Fragment {
             TeamMember teamMember = mData.get(position);
 
             // Set up the image view with the avatar URLs
-            NetworkImageView networkImageView = (NetworkImageView)
-                    convertView.findViewById(R.id.update_avatar);
+            NetworkImageView networkImageView = (NetworkImageView) convertView.findViewById(R.id.team_member_avatar);
             networkImageView.setDefaultImageResId(R.drawable.ic_launcher);
 
             // If we have an avatar URL, load it here.
-            /*ImageLoader loader = NetworkManager.getImageLoader();
+            ImageLoader loader = NetworkManager.getImageLoader();
             if (!"".equals(teamMember.avatar)) {
                 networkImageView.setImageUrl(teamMember.avatar, loader);
             } else {
                 networkImageView.setImageUrl(null, loader);
-            }*/
+            }
 
             // Set the data in the TextViews
             ((TextView) convertView.findViewById(R.id.team_member_name)).setText(teamMember.name);
-            ((TextView) convertView.findViewById(R.id.team_member_role)).setText(teamMember.role.toString());
+            ((TextView) convertView.findViewById(R.id.team_member_role)).setText(getRolesString(teamMember.role));
 
             return convertView;
         }
@@ -187,6 +186,21 @@ public class TeamFragment extends Fragment {
             if (relativeTimestamp.equals("in 0 minutes") || relativeTimestamp.equals("0 minutes ago"))
                 return "Just now";
             return relativeTimestamp;
+        }
+
+        private String getRolesString(ArrayList<String> rolesList) {
+
+            if (rolesList == null || rolesList.size() == 0) {
+                return null;
+            }
+
+            String roles = rolesList.get(0);
+
+            for (int i = 1; i < rolesList.size(); i++) {
+                roles += " • " + rolesList.get(i);
+            }
+
+            return roles;
         }
     }
 }

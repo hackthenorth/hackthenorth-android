@@ -13,6 +13,7 @@ public class TeamMember {
 
     // Fields
     public String name;
+    public String avatar;
     public ArrayList<String> role;
     public String Phone;
     public String email;
