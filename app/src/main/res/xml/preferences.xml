@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:title="@string/setting_notifications"
+        android:defaultValue="true"
+        android:key="PREFERENCE_NOTIFICATIONS"
+        />
+
+    <RingtonePreference
+        android:title="@string/setting_notification_sound"
+        android:defaultValue="content://settings/system/notification_sound"
+        android:key="PREFERENCE_NOTIFICATION_RINGTONE"
+        android:dependency="PREFERENCE_NOTIFICATIONS"
+        android:ringtoneType="notification"
+        />
+
+    <CheckBoxPreference
+        android:title="@string/setting_notification_vibrate"
+        android:defaultValue="true"
+        android:key="PREFERENCE_NOTIFICATION_VIBRATE"
+        android:dependency="PREFERENCE_NOTIFICATIONS"
+        />
+
+</PreferenceScreen>
