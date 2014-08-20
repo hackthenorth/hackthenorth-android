@@ -146,12 +146,31 @@ public class PrizesFragment extends Fragment {
                     .setText(prize.name);
             ((TextView)convertView.findViewById(R.id.prize_description))
                     .setText(prize.description);
+            ((TextView)convertView.findViewById(R.id.prize_company))
+                    .setText(prize.company);
+            ((TextView)convertView.findViewById(R.id.prize_prizes))
+                    .setText(getPrizesString(prize.prize));
 
             return convertView;
         }
 
         public int getCount() {
             return mData.size();
+        }
+
+        private String getPrizesString(ArrayList<String> prizesList) {
+
+            if (prizesList == null || prizesList.size() == 0) {
+                return null;
+            }
+
+            String prizes = " • " + prizesList.get(0);
+
+            for (int i = 1; i < prizesList.size(); i++) {
+                prizes += "\n • " + prizesList.get(i);
+            }
+
+            return prizes;
         }
     }
 }

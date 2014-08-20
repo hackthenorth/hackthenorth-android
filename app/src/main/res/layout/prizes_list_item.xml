@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
     android:background="@drawable/card_background">
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/prize_name"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/theme_secondary"
-        android:textSize="32sp"
-        app:typeface="roboto_thin" />
+        android:orientation="vertical"
+        android:layout_margin="16dp">
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/prize_description"
-        style="@style/TextViewStyleSecondary" />
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/prize_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/theme_secondary"
+            android:textSize="32sp"
+            app:typeface="roboto_thin" />
 
-</LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/prize_company"
+            style="@style/TextViewStylePrimary" />
+
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/prize_description"
+            style="@style/TextViewStyleSecondary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <com.hackthenorth.android.ui.component.TextView
+            style="@style/TextViewStylePrimary"
+            android:text="@string/prizes" />
+
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/prize_prizes"
+            style="@style/TextViewStyleSecondary" />
+
+    </LinearLayout>
+
+</FrameLayout>
 
