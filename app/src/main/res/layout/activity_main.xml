@@ -1,16 +1,27 @@
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pager"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.PagerTitleStrip
+    <com.hackthenorth.android.ui.component.PagerTitleStrip
         android:id="@+id/pager_title_strip"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
+        android:layout_height="48dp"
+        android:paddingLeft="60dp"
+        android:clipToPadding="false"
         android:background="@color/theme_secondary"
-        android:textColor="@color/text_color_primary_inverse"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp" />
+        app:pstsDividerColor="@android:color/transparent"
+        app:pstsDividerPadding="12dp"
+        app:pstsIndicatorColor="@android:color/transparent"
+        app:pstsIndicatorHeight="2dp"
+        app:pstsTextAllCaps="true"
+        app:pstsUnderlineColor="@android:color/transparent"
+        app:pstsScrollOffset="40dp" />
 
-</android.support.v4.view.ViewPager>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pager_title_strip" />
+
+</RelativeLayout>

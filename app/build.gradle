@@ -27,5 +27,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:5.0.+'
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.mcxiaoke.volley:library:1.0.+@aar'
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.android.support:support-v13:20.0.0'
 }

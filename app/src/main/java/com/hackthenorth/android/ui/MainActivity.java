@@ -13,12 +13,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.devspark.robototextview.util.RobotoTypefaceManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseActivity;
 import com.hackthenorth.android.framework.GCMRegistrationManager;
 import com.hackthenorth.android.framework.VisibilityManager;
+import com.hackthenorth.android.ui.component.PagerTitleStrip;
 import com.hackthenorth.android.ui.component.TextView;
 import com.hackthenorth.android.ui.settings.SettingsActivity;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -34,6 +36,7 @@ public class MainActivity extends BaseActivity {
     private TextView mTitle;
 
     private ViewPagerAdapter mViewPagerAdapter;
+    private PagerTitleStrip mViewPagerTabs;
     private ViewPager mViewPager;
 
     @Override
@@ -65,6 +68,11 @@ public class MainActivity extends BaseActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mViewPagerAdapter);
+
+        mViewPagerTabs = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+        mViewPagerTabs.setTypeface(RobotoTypefaceManager.obtainTypeface(
+                this, RobotoTypefaceManager.Typeface.ROBOTO_REGULAR), 0);
+        mViewPagerTabs.setViewPager(mViewPager);
 
         if (checkPlayServices()) {
             if (GCMRegistrationManager.getRegistrationId(this) == null) {
