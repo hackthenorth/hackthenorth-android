@@ -25,8 +25,13 @@
     </style>
 
     <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/theme_primary</item>
+        <item name="android:background">@color/background_purple</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitleTextStyle</item>
         <item name="android:height">56dp</item>
+    </style>
+
+    <style name="ActionBarTitleTextStyle">
+        <item name="android:textColor">@color/background_purple</item>
     </style>
 
     <style name="Overflow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
