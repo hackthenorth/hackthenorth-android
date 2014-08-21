@@ -47,33 +47,17 @@ public class ScheduleFragment extends BaseListFragment
     private ListView mListView;
     private ScheduleFragmentAdapter mAdapter;
     private ArrayList<Model> mData = new ArrayList<Model>();
-    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_SCHEDULE
-                        .equals(intent.getAction())) {
+        // Set up adapter
+        mAdapter = new ScheduleFragmentAdapter(activity, R.layout.schedule_list_item, mData);
+        mAdapter.setFragment(this);
 
-                    // Update with the new data
-                    String key = intent.getAction();
-                    String json = intent.getStringExtra(key);
-                    handleJSONInBackground(json, mAdapter);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_SCHEDULE);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        // Register for updates
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE, mAdapter);
 
         HTTPFirebase.GET("/schedule", activity,
                 HackTheNorthApplication.Actions.SYNC_SCHEDULE);
@@ -86,11 +70,6 @@ public class ScheduleFragment extends BaseListFragment
 
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
-
-        // Set up adapter
-        mAdapter = new ScheduleFragmentAdapter(mListView.getContext(),
-                R.layout.schedule_list_item, mData);
-        mAdapter.setFragment(this);
 
         // Hook it up to the ListView
         mListView.setAdapter(mAdapter);

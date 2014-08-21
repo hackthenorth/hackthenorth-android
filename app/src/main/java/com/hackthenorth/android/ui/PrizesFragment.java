@@ -29,33 +29,15 @@ public class PrizesFragment extends BaseListFragment {
     private ListView mListView;
     private ArrayList<Prize> mData = new ArrayList<Prize>();
     private PrizesFragmentAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_PRIZES
-                        .equals(intent.getAction())) {
+        // Create adapter
+        mAdapter = new PrizesFragmentAdapter(activity, R.layout.prizes_list_item, mData);
 
-                    // Update with the new data
-                    String key = HackTheNorthApplication.Actions.SYNC_PRIZES;
-                    String json = intent.getStringExtra(key);
-                    handleJSONInBackground(json, mAdapter);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_PRIZES);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_PRIZES, mAdapter);
 
         HTTPFirebase.GET("/prizes", activity,
                 HackTheNorthApplication.Actions.SYNC_PRIZES);
@@ -66,17 +48,8 @@ public class PrizesFragment extends BaseListFragment {
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.prizes_fragment, container, false);
 
-        // Save a reference to the list view
+        // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-
-        // If we're ready, set up the adapter with the list now.
-        setupAdapterIfReady();
-
-        // Create adapter
-        mAdapter = new PrizesFragmentAdapter(mListView.getContext(),
-                R.layout.prizes_list_item, mData);
-
-        // Hook it up to the ListView
         mListView.setAdapter(mAdapter);
 
         return view;
@@ -90,12 +63,6 @@ public class PrizesFragment extends BaseListFragment {
         if (getActivity() != null) {
             HTTPFirebase.GET("/prizes", getActivity(),
                     HackTheNorthApplication.Actions.SYNC_PRIZES);
-        }
-    }
-
-    private void setupAdapterIfReady() {
-        // Only set up adapter if our ListView and our data are ready.
-        if (mListView != null && mData != null) {
         }
     }
 

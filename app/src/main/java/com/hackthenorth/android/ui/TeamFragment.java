@@ -35,33 +35,16 @@ public class TeamFragment extends BaseListFragment {
     private ListView mListView;
     private ArrayList<TeamMember> mData = new ArrayList<TeamMember>();
     private TeamFragmentAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_TEAM.equals(intent.getAction())) {
+        // Create adapter
+        mAdapter = new TeamFragmentAdapter(activity, R.layout.team_list_item, mData);
 
-                    // Forward to fragment
-                    String key = HackTheNorthApplication.Actions.SYNC_TEAM;
-                    String json = intent.getStringExtra(key);
-
-                    handleJSONInBackground(json, mAdapter);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_TEAM);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        // Register for updates
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_TEAM, mAdapter);
 
         HTTPFirebase.GET("/team", activity, HackTheNorthApplication.Actions.SYNC_TEAM);
     }
@@ -75,9 +58,6 @@ public class TeamFragment extends BaseListFragment {
 
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
-
-        // Create adapter
-        mAdapter = new TeamFragmentAdapter(mListView.getContext(), R.layout.team_list_item, mData);
 
         // Hook it up to the ListView
         mListView.setAdapter(mAdapter);

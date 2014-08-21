@@ -39,34 +39,17 @@ public class UpdatesFragment extends BaseListFragment {
 
     private ListView mListView;
     private ArrayList<Update> mData = new ArrayList<Update>();
-    private InfoListAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
+    private UpdatesFragmentAdapter mAdapter;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_UPDATES
-                        .equals(intent.getAction())) {
+        // Create adapter
+        mAdapter = new UpdatesFragmentAdapter(activity, R.layout.update_list_item, mData);
 
-                    // Update with the new data
-                    String key = HackTheNorthApplication.Actions.SYNC_UPDATES;
-                    String json = intent.getStringExtra(key);
-                    handleJSONInBackground(json, mAdapter);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_UPDATES);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        // Register for updates
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_UPDATES, mAdapter);
 
         HTTPFirebase.GET("/updates", activity,
                 HackTheNorthApplication.Actions.SYNC_UPDATES);
@@ -76,15 +59,9 @@ public class UpdatesFragment extends BaseListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.updates_fragment, container, false);
-        
-        // Save a reference to the list view
+
+        // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-
-        // Create adapter
-        mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.update_list_item,
-                mData);
-
-        // Hook it up to the ListView
         mListView.setAdapter(mAdapter);
 
         return view;
@@ -125,11 +102,11 @@ public class UpdatesFragment extends BaseListFragment {
         }
     }
 
-    public static class InfoListAdapter extends ArrayAdapter<Update> {
+    public static class UpdatesFragmentAdapter extends ArrayAdapter<Update> {
         private int mResource;
         private ArrayList<Update> mData;
         
-        public InfoListAdapter(Context context, int resource, ArrayList<Update> objects) {
+        public UpdatesFragmentAdapter(Context context, int resource, ArrayList<Update> objects) {
             super(context, resource, objects);
             
             mResource = resource;
@@ -163,8 +140,10 @@ public class UpdatesFragment extends BaseListFragment {
             // Set the data in the TextViews
             ((TextView) convertView.findViewById(R.id.update_name))
                     .setText(update.name);
-            ((TextView) convertView.findViewById(R.id.update_date))
-                    .setText(getRelativeTimestamp(update.time));
+            if (update.time != null) {
+                ((TextView) convertView.findViewById(R.id.update_date))
+                        .setText(getRelativeTimestamp(update.time));
+            }
             ((TextView) convertView.findViewById(R.id.update_description))
                     .setText(update.description);
 

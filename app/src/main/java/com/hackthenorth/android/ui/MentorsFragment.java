@@ -38,35 +38,16 @@ public class MentorsFragment extends BaseListFragment {
     private ListView mListView;
     private ArrayList<Mentor> mData = new ArrayList<Mentor>();
     private MentorListAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_MENTORS .equals(intent.getAction())) {
+        // Create adapter
+        mAdapter = new MentorListAdapter(activity, R.layout.mentor_list_item, mData);
 
-                    // Forward to fragment
-                    String key = HackTheNorthApplication.Actions.SYNC_MENTORS;
-                    String json = intent.getStringExtra(key);
-
-                    handleJSONInBackground(json, mAdapter);
-
-                    // else if other kind of fragment update, etc.
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_MENTORS);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        // Register for updates
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_MENTORS, mAdapter);
 
         HTTPFirebase.GET("/mentors", activity, HackTheNorthApplication.Actions.SYNC_MENTORS);
     }
@@ -76,13 +57,8 @@ public class MentorsFragment extends BaseListFragment {
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.mentors_fragment, container, false);
 
-        // Save a reference to the list view
+        // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-
-        // Create adapter
-        mAdapter = new MentorListAdapter(mListView.getContext(), R.layout.mentor_list_item, mData);
-
-        // Hook it up to the ListView
         mListView.setAdapter(mAdapter);
 
         return view;
