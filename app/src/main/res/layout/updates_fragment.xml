@@ -8,4 +8,4 @@
     android:dividerHeight="1dp"
     android:fitsSystemWindows="true"
     android:background="@android:color/white"
-    android:scrollbarStyle="outsideInset"/>
+    android:scrollbarStyle="outsideOverlay"/>

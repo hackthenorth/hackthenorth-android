@@ -8,4 +8,4 @@
     android:dividerHeight="0dp"
     android:fitsSystemWindows="true"
     android:padding="8dp"
-    android:scrollbarStyle="outsideInset"/>
+    android:scrollbarStyle="outsideOverlay"/>

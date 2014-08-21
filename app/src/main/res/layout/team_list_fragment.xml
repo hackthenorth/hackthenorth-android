@@ -9,5 +9,5 @@
     android:fitsSystemWindows="true"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    android:scrollbarStyle="outsideInset"
+    android:scrollbarStyle="outsideOverlay"
     android:background="@android:color/white"/>
