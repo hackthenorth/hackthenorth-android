@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class TeamMember {
+public class TeamMember extends Model {
     private static final String TAG = "TeamMember";
 
     public String id;

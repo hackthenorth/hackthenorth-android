@@ -15,7 +15,7 @@ public abstract class BaseListFragment extends Fragment {
      *
      * @param json json to decode
      */
-    abstract protected void setupFromJSON(String json);
+    abstract protected void onUpdate(String json);
 
     protected void handleJSONInBackground(String json, final ArrayAdapter adapter) {
         final Activity activity = getActivity();
@@ -24,7 +24,7 @@ public abstract class BaseListFragment extends Fragment {
             protected Void doInBackground(String... strings) {
                 String json = strings[0];
 
-                setupFromJSON(json);
+                onUpdate(json);
 
                 if (activity != null && adapter != null) {
                     activity.runOnUiThread(new Runnable() {

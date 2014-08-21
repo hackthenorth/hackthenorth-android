@@ -27,7 +27,7 @@ public class PrizesFragment extends BaseListFragment {
     public static final String TAG = "UpdateListFragment";
 
     private ListView mListView;
-    private ArrayList<Prize> mData;
+    private ArrayList<Prize> mData = new ArrayList<Prize>();
     private PrizesFragmentAdapter mAdapter;
     private BroadcastReceiver mBroadcastReceiver;
 
@@ -45,7 +45,7 @@ public class PrizesFragment extends BaseListFragment {
                     // Update with the new data
                     String key = HackTheNorthApplication.Actions.SYNC_PRIZES;
                     String json = intent.getStringExtra(key);
-                    onUpdate(json);
+                    handleJSONInBackground(json, mAdapter);
                 }
             }
         };
@@ -72,6 +72,13 @@ public class PrizesFragment extends BaseListFragment {
         // If we're ready, set up the adapter with the list now.
         setupAdapterIfReady();
 
+        // Create adapter
+        mAdapter = new PrizesFragmentAdapter(mListView.getContext(),
+                R.layout.prizes_list_item, mData);
+
+        // Hook it up to the ListView
+        mListView.setAdapter(mAdapter);
+
         return view;
     }
 
@@ -86,38 +93,14 @@ public class PrizesFragment extends BaseListFragment {
         }
     }
 
-    // Receive a JSON update
-    public void onUpdate(String json) {
-
-        // Set or update our data
-        if (mData == null) {
-            mData = Prize.loadPrizesFromJSON(json);
-
-            // If we're ready, set up the adapter with the list.
-            setupAdapterIfReady();
-
-        } else {
-
-            // Decode and display data in the background.
-            handleJSONInBackground(json, mAdapter);
-        }
-    }
-
     private void setupAdapterIfReady() {
         // Only set up adapter if our ListView and our data are ready.
         if (mListView != null && mData != null) {
-
-            // Create adapter
-            mAdapter = new PrizesFragmentAdapter(mListView.getContext(),
-                    R.layout.prizes_list_item, mData);
-
-            // Hook it up to the ListView
-            mListView.setAdapter(mAdapter);
         }
     }
 
     @Override
-    protected void setupFromJSON(String json) {
+    protected void onUpdate(String json) {
         ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
         mData.clear();
         mData.addAll(newData);

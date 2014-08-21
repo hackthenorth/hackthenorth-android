@@ -36,7 +36,7 @@ public class MentorsFragment extends BaseListFragment {
     private final String TAG = "MentorsFragment";
 
     private ListView mListView;
-    private ArrayList<Mentor> mData;
+    private ArrayList<Mentor> mData = new ArrayList<Mentor>();
     private MentorListAdapter mAdapter;
     private BroadcastReceiver mBroadcastReceiver;
 
@@ -54,7 +54,7 @@ public class MentorsFragment extends BaseListFragment {
                     String key = HackTheNorthApplication.Actions.SYNC_MENTORS;
                     String json = intent.getStringExtra(key);
 
-                    onUpdate(json);
+                    handleJSONInBackground(json, mAdapter);
 
                     // else if other kind of fragment update, etc.
                 }
@@ -79,42 +79,17 @@ public class MentorsFragment extends BaseListFragment {
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
 
-        // If we're ready, set up the adapter with the list now.
-        setupAdapterIfReady();
+        // Create adapter
+        mAdapter = new MentorListAdapter(mListView.getContext(), R.layout.mentor_list_item, mData);
+
+        // Hook it up to the ListView
+        mListView.setAdapter(mAdapter);
 
         return view;
     }
 
-    // Receive a JSON update
-    public void onUpdate(String json) {
-
-        // Set or update our data
-        if (mData == null) {
-            mData = Mentor.loadMentorArrayFromJSON(json);
-
-            // If we're ready, set up the adapter with the list.
-            setupAdapterIfReady();
-
-        } else {
-            // Decode and display data in the background.
-            handleJSONInBackground(json, mAdapter);
-        }
-    }
-
-    private void setupAdapterIfReady() {
-        // Only set up adapter if our ListView and our data are ready.
-        if (mListView != null && mData != null) {
-
-            // Create adapter
-            mAdapter = new MentorListAdapter(mListView.getContext(), R.layout.mentor_list_item, mData);
-
-            // Hook it up to the ListView
-            mListView.setAdapter(mAdapter);
-        }
-    }
-
     @Override
-    protected void setupFromJSON(String json) {
+    protected void onUpdate(String json) {
         ArrayList<Mentor> newData = Mentor.loadMentorArrayFromJSON(json);
         mData.clear();
         mData.addAll(newData);

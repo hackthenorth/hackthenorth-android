@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ScheduleItem {
+public class ScheduleItem extends Model {
 
     private static final String TAG = "Update";
     public String id;

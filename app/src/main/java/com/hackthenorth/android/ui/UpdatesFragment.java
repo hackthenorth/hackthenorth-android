@@ -38,7 +38,7 @@ public class UpdatesFragment extends BaseListFragment {
     public static final String TAG = "UpdateListFragment";
 
     private ListView mListView;
-    private ArrayList<Update> mData;
+    private ArrayList<Update> mData = new ArrayList<Update>();
     private InfoListAdapter mAdapter;
     private BroadcastReceiver mBroadcastReceiver;
 
@@ -56,7 +56,7 @@ public class UpdatesFragment extends BaseListFragment {
                     // Update with the new data
                     String key = HackTheNorthApplication.Actions.SYNC_UPDATES;
                     String json = intent.getStringExtra(key);
-                    onUpdate(json);
+                    handleJSONInBackground(json, mAdapter);
                 }
             }
         };
@@ -79,10 +79,14 @@ public class UpdatesFragment extends BaseListFragment {
         
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
-        
-        // If we're ready, set up the adapter with the list now.
-        setupAdapterIfReady();
-        
+
+        // Create adapter
+        mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.update_list_item,
+                mData);
+
+        // Hook it up to the ListView
+        mListView.setAdapter(mAdapter);
+
         return view;
     }
 
@@ -94,24 +98,8 @@ public class UpdatesFragment extends BaseListFragment {
         HTNNotificationManager.clearUpdatesNotification(getActivity());
     }
 
-    // Receive a JSON update
-    public void onUpdate(String json) {
-
-        // Set or update our data
-        if (mData == null) {
-            mData = Update.loadUpdateArrayFromJSON(json);
-
-            // If we're ready, set up the adapter with the list.
-            setupAdapterIfReady();
-
-        } else {
-            // Decode and display the data in the background.
-            handleJSONInBackground(json, mAdapter);
-        }
-    }
-
     @Override
-    protected void setupFromJSON(String json) {
+    protected void onUpdate(String json) {
 
         ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
 
@@ -134,19 +122,6 @@ public class UpdatesFragment extends BaseListFragment {
             for (int i = 0; i < newData.size(); i++) {
                 mData.set(i, newData.get(i));
             }
-        }
-    }
-
-    private void setupAdapterIfReady() {
-        // Only set up adapter if our ListView and our data are ready.
-        if (mListView != null && mData != null) {
-            
-            // Create adapter
-            mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.update_list_item,
-                    mData);
-            
-            // Hook it up to the ListView
-            mListView.setAdapter(mAdapter);
         }
     }
 
