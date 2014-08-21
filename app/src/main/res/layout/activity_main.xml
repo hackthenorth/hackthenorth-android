@@ -6,10 +6,10 @@
     <com.hackthenorth.android.ui.component.PagerTitleStrip
         android:id="@+id/pager_title_strip"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="36dp"
         android:paddingLeft="60dp"
         android:clipToPadding="false"
-        android:background="@color/theme_secondary"
+        android:background="@color/background_fullblue"
         app:pstsDividerColor="@android:color/transparent"
         app:pstsDividerPadding="12dp"
         app:pstsIndicatorColor="@android:color/transparent"

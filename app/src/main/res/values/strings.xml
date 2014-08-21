@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Hack The North</string>
+    <string name="app_name">Hack the North</string>
 
+    <!-- ActionBar Item Names -->
     <string name="action_settings">Settings</string>
+
+    <!-- Activity Titles -->
+    <string name="settings_activity">Settings</string>
 
     <!--Titles for information to go on cards-->
     <string name="organization">Organization</string>

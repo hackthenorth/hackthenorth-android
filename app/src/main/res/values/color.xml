@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="theme_primary">#3ab4d7</color>
-    <color name="theme_secondary">#006f95</color>
+    <color name="theme_secondary">#027096</color>
+
     <color name="text_color_primary">#ED000000</color>
     <color name="text_color_secondary">#8A000000</color>
     <color name="text_color_primary_inverse">#EDFFFFFF</color>
     <color name="text_color_secondary_inverse">#8AFFFFFF</color>
+
+    <color name="background_purple">#181244</color>
+    <color name="background_lightblue">#b8e3ed</color>
+    <color name="background_fullblue">#3ab4d7</color>
+    <color name="background_gray">#242424</color>
 </resources>
