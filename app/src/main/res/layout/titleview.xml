@@ -14,6 +14,6 @@
         android:maxLines="1"
         android:singleLine="true"
         android:textColor="@android:color/white"
-        android:textSize="42sp" />
+        android:textSize="34sp" />
 
 </RelativeLayout>
