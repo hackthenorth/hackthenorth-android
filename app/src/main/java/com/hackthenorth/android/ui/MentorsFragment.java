@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Mentor;
@@ -30,7 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MentorsFragment extends Fragment {
+public class MentorsFragment extends BaseListFragment {
     private final String TAG = "MentorsFragment";
 
     private ListView mListView;
@@ -94,12 +96,8 @@ public class MentorsFragment extends Fragment {
             setupAdapterIfReady();
 
         } else {
-            // TODO: Is JSON parsing fast enough to be on the main thread?
-            ArrayList<Mentor> newData = Mentor.loadMentorArrayFromJSON(json);
-
-            mData.clear();
-            mData.addAll(newData);
-            mAdapter.notifyDataSetChanged();
+            // Decode and display data in the background.
+            handleJSONInBackground(json, mAdapter);
         }
     }
 
@@ -113,6 +111,13 @@ public class MentorsFragment extends Fragment {
             // Hook it up to the ListView
             mListView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    protected void setupFromJSON(String json) {
+        ArrayList<Mentor> newData = Mentor.loadMentorArrayFromJSON(json);
+        mData.clear();
+        mData.addAll(newData);
     }
 
     public static class MentorListAdapter extends ArrayAdapter<Mentor> {

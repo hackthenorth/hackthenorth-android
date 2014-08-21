@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
@@ -24,6 +25,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTNNotificationManager;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
@@ -32,7 +34,7 @@ import com.hackthenorth.android.model.Update;
 /**
  * A fragment for displaying lists of Update.
  */
-public class UpdatesFragment extends Fragment {
+public class UpdatesFragment extends BaseListFragment {
     public static final String TAG = "UpdateListFragment";
 
     private ListView mListView;
@@ -103,34 +105,38 @@ public class UpdatesFragment extends Fragment {
             setupAdapterIfReady();
 
         } else {
-            // TODO: Is JSON parsing fast enough to be on the main thread?
-            ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
+            // Decode and display the data in the background.
+            handleJSONInBackground(json, mAdapter);
+        }
+    }
 
-            // Note that both of the data lists are sorted, with the newest items first.
-            // We want to avoid adding a bunch of elements to the front of the ArrayList,
-            // which each takes O(n) time...
+    @Override
+    protected void setupFromJSON(String json) {
 
-            // If there's new data, then copy over all the elements in newData to mData,
-            // and refresh the ListView.
-            if (newData.size() > mData.size()) {
-                int delta = newData.size() - mData.size();
+        ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
 
-                // Append that many elements to the end of mData
-                // (so mData.size() == newData.size())
-                for (int i = 0; i < delta; i++) {
-                    mData.add(null);
-                }
+        // Note that both of the data lists are sorted, with the newest items first.
+        // We want to avoid adding a bunch of elements to the front of the ArrayList,
+        // which each takes O(n) time...
 
-                // Now, copy all the elements from newData into mData.
-                for (int i = 0; i < newData.size(); i++) {
-                    mData.set(i, newData.get(i));
-                }
+        // If there's new data, then copy over all the elements in newData to mData,
+        // and refresh the ListView.
+        if (newData.size() > mData.size()) {
+            int delta = newData.size() - mData.size();
 
-                mAdapter.notifyDataSetChanged();
+            // Append that many elements to the end of mData
+            // (so mData.size() == newData.size())
+            for (int i = 0; i < delta; i++) {
+                mData.add(null);
+            }
+
+            // Now, copy all the elements from newData into mData.
+            for (int i = 0; i < newData.size(); i++) {
+                mData.set(i, newData.get(i));
             }
         }
     }
-    
+
     private void setupAdapterIfReady() {
         // Only set up adapter if our ListView and our data are ready.
         if (mListView != null && mData != null) {
@@ -143,7 +149,7 @@ public class UpdatesFragment extends Fragment {
             mListView.setAdapter(mAdapter);
         }
     }
-    
+
     public static class InfoListAdapter extends ArrayAdapter<Update> {
         private int mResource;
         private ArrayList<Update> mData;

@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.TeamMember;
@@ -27,24 +29,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class TeamFragment extends Fragment {
+public class TeamFragment extends BaseListFragment {
     public static final String TAG = "TeamFragment";
-
-    // Argument keys
-    public static final String DATA_ID = "mDataID";
 
     private ListView mListView;
     private ArrayList<TeamMember> mData;
-    private InfoListAdapter mAdapter;
+    private TeamFragmentAdapter mAdapter;
     private BroadcastReceiver mBroadcastReceiver;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Extract data from arguments
-        Bundle args = getArguments();
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -54,31 +45,31 @@ public class TeamFragment extends Fragment {
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_UPDATES .equals(intent.getAction())) {
+                if (HackTheNorthApplication.Actions.SYNC_TEAM.equals(intent.getAction())) {
 
                     // Forward to fragment
-                    String key = HackTheNorthApplication.Actions.SYNC_UPDATES;
+                    String key = HackTheNorthApplication.Actions.SYNC_TEAM;
                     String json = intent.getStringExtra(key);
 
                     onUpdate(json);
-
-                    // else if other kind of fragment update, etc.
                 }
             }
         };
 
         // Register our broadcast receiver.
         IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_UPDATES);
+        filter.addAction(HackTheNorthApplication.Actions.SYNC_TEAM);
 
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
         manager.registerReceiver(mBroadcastReceiver, filter);
 
-        HTTPFirebase.GET("/team", activity, HackTheNorthApplication.Actions.SYNC_UPDATES);
+        HTTPFirebase.GET("/team", activity, HackTheNorthApplication.Actions.SYNC_TEAM);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.team_list_fragment, container, false);
 
@@ -89,11 +80,6 @@ public class TeamFragment extends Fragment {
         setupAdapterIfReady();
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     // Receive a JSON team member
@@ -107,12 +93,8 @@ public class TeamFragment extends Fragment {
             setupAdapterIfReady();
 
         } else {
-            // TODO: Is JSON parsing fast enough to be on the main thread?
-            ArrayList<TeamMember> newData = TeamMember.loadTeamMemberArrayFromJSON(json);
-
-            mData.clear();
-            mData.addAll(newData);
-            mAdapter.notifyDataSetChanged();
+            // Decode and display data in the background.
+            handleJSONInBackground(json, mAdapter);
         }
     }
 
@@ -121,18 +103,25 @@ public class TeamFragment extends Fragment {
         if (mListView != null && mData != null) {
 
             // Create adapter
-            mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.team_list_item, mData);
+            mAdapter = new TeamFragmentAdapter(mListView.getContext(), R.layout.team_list_item, mData);
 
             // Hook it up to the ListView
             mListView.setAdapter(mAdapter);
         }
     }
 
-    public static class InfoListAdapter extends ArrayAdapter<TeamMember> {
+    @Override
+    protected void setupFromJSON(String json) {
+        ArrayList<TeamMember> newData = TeamMember.loadTeamMemberArrayFromJSON(json);
+        mData.clear();
+        mData.addAll(newData);
+    }
+
+    public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> {
         private int mResource;
         private ArrayList<TeamMember> mData;
 
-        public InfoListAdapter(Context context, int resource, ArrayList<TeamMember> objects) {
+        public TeamFragmentAdapter(Context context, int resource, ArrayList<TeamMember> objects) {
             super(context, resource, objects);
 
             mResource = resource;

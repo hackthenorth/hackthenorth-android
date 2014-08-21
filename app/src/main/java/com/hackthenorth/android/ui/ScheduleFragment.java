@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTNNotificationManager;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.ScheduleItem;
@@ -32,7 +34,7 @@ import com.hackthenorth.android.util.DateTimeUtil;
 /**
  * A fragment for displaying lists of Update.
  */
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment extends BaseListFragment {
     public static final String TAG = "UpdateListFragment";
 
     private ListView mListView;
@@ -107,13 +109,8 @@ public class ScheduleFragment extends Fragment {
             setupAdapterIfReady();
 
         } else {
-            // TODO: Is JSON parsing fast enough to be on the main thread?
-            ArrayList<ScheduleItem> newData = ScheduleItem.loadScheduleFromJSON(json);
-
-            mData.clear();
-            mData.addAll(newData);
-
-            mAdapter.notifyDataSetChanged();
+            // Decode and display data in the background.
+            handleJSONInBackground(json, mAdapter);
         }
     }
 
@@ -128,6 +125,13 @@ public class ScheduleFragment extends Fragment {
             // Hook it up to the ListView
             mListView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    protected void setupFromJSON(String json) {
+        ArrayList<ScheduleItem> newData = ScheduleItem.loadScheduleFromJSON(json);
+        mData.clear();
+        mData.addAll(newData);
     }
 
     public static class ScheduleFragmentAdapter extends ArrayAdapter<ScheduleItem> {

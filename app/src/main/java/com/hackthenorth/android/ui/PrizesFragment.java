@@ -16,13 +16,14 @@ import android.widget.ListView;
 
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Prize;
 import com.hackthenorth.android.ui.component.TextView;
 
 import java.util.ArrayList;
 
-public class PrizesFragment extends Fragment {
+public class PrizesFragment extends BaseListFragment {
     public static final String TAG = "UpdateListFragment";
 
     private ListView mListView;
@@ -96,13 +97,9 @@ public class PrizesFragment extends Fragment {
             setupAdapterIfReady();
 
         } else {
-            // TODO: Is JSON parsing fast enough to be on the main thread?
-            ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
 
-            mData.clear();
-            mData.addAll(newData);
-
-            mAdapter.notifyDataSetChanged();
+            // Decode and display data in the background.
+            handleJSONInBackground(json, mAdapter);
         }
     }
 
@@ -117,6 +114,13 @@ public class PrizesFragment extends Fragment {
             // Hook it up to the ListView
             mListView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    protected void setupFromJSON(String json) {
+        ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
+        mData.clear();
+        mData.addAll(newData);
     }
 
     public static class PrizesFragmentAdapter extends ArrayAdapter<Prize> {
