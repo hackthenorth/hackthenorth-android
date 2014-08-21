@@ -17,9 +17,24 @@
         android:textSize="32sp"
         app:typeface="roboto_thin" />
 
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/schedule_item_speaker"
+        style="@style/TextViewStylePrimary" />
 
     <com.hackthenorth.android.ui.component.TextView
         android:id="@+id/schedule_item_description"
+        style="@style/TextViewStyleSecondary" />
+
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/schedule_item_type"
+        style="@style/TextViewStyleSecondary" />
+
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/schedule_item_start_time"
+        style="@style/TextViewStyleSecondary" />
+
+    <com.hackthenorth.android.ui.component.TextView
+        android:id="@+id/schedule_item_end_time"
         style="@style/TextViewStyleSecondary" />
 
 </LinearLayout>

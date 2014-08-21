@@ -220,6 +220,17 @@ public class ScheduleFragment extends BaseListFragment
                     .setText(scheduleItem.name);
             ((TextView)convertView.findViewById(R.id.schedule_item_description))
                     .setText(scheduleItem.description);
+            ((TextView)convertView.findViewById(R.id.schedule_item_speaker))
+                    .setText(scheduleItem.speaker);
+
+            // TODO: This probably shouldn't be text; use the string to display an icon,
+            // TODO: or style the card accordingly.
+            ((TextView)convertView.findViewById(R.id.schedule_item_type))
+                    .setText(scheduleItem.type);
+            ((TextView)convertView.findViewById(R.id.schedule_item_start_time))
+                    .setText(scheduleItem.start_time);
+            ((TextView)convertView.findViewById(R.id.schedule_item_end_time))
+                    .setText(scheduleItem.end_time);
 
             return convertView;
         }
