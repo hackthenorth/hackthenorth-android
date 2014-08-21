@@ -11,7 +11,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
@@ -26,16 +25,21 @@ import android.widget.TextView;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
-import com.hackthenorth.android.framework.HTNNotificationManager;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.ScheduleItem;
 import com.hackthenorth.android.util.DateTimeUtil;
+import com.hackthenorth.android.ui.ConfirmDialogFragment.ConfirmDialogFragmentListener;
 
 /**
  * A fragment for displaying lists of Update.
  */
-public class ScheduleFragment extends BaseListFragment {
+public class ScheduleFragment extends BaseListFragment
+        implements ConfirmDialogFragmentListener {
+
     public static final String TAG = "UpdateListFragment";
+
+    public static final String CONFIRM_DIALOG_TAG = "ConfirmDialog";
+    public static final String CONFIRM_DIALOG_POSITION_KEY = "position";
 
     private ListView mListView;
     private ArrayList<ScheduleItem> mData;
@@ -121,6 +125,7 @@ public class ScheduleFragment extends BaseListFragment {
             // Create adapter
             mAdapter = new ScheduleFragmentAdapter(mListView.getContext(),
                     R.layout.schedule_list_item, mData);
+            mAdapter.setFragment(this);
 
             // Hook it up to the ListView
             mListView.setAdapter(mAdapter);
@@ -134,9 +139,22 @@ public class ScheduleFragment extends BaseListFragment {
         mData.addAll(newData);
     }
 
+    @Override
+    public void onPositiveClick(ConfirmDialogFragment fragment) {
+        // Get the email intent from the ScheduleFragmentAdapter and start it.
+        int position = fragment.getArguments().getInt(CONFIRM_DIALOG_POSITION_KEY);
+        startActivity(mAdapter.getIntent(position));
+    }
+
+    @Override
+    public void onNegativeClick(ConfirmDialogFragment fragment) {
+        // Do nothing
+    }
+
     public static class ScheduleFragmentAdapter extends ArrayAdapter<ScheduleItem> {
         private int mResource;
         private ArrayList<ScheduleItem> mData;
+        private Fragment mFragment;
 
         public ScheduleFragmentAdapter(Context context, int resource,
                                        ArrayList<ScheduleItem> objects) {
@@ -146,7 +164,11 @@ public class ScheduleFragment extends BaseListFragment {
             mData = objects;
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public void setFragment(Fragment fragment) {
+            mFragment = fragment;
+        }
+
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 // If we don't have a view to reuse, inflate a new one.
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
@@ -157,10 +179,37 @@ public class ScheduleFragment extends BaseListFragment {
             // Set up the click event
             final Intent intent = getIntent(position);
             final Context context = convertView.getContext();
+
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    context.startActivity(intent);
+                    ConfirmDialogFragmentListener listener =
+                            new ConfirmDialogFragmentListener() {
+                                @Override
+                                public void onPositiveClick(ConfirmDialogFragment fragment) {
+                                    context.startActivity(intent);
+                                }
+
+                                @Override
+                                public void onNegativeClick(ConfirmDialogFragment fragment) {
+                                    // do nothing
+                                }
+                            };
+                    ConfirmDialogFragment dialog = ConfirmDialogFragment.getInstance(
+                            "Send email?", "Would you like to send an email to the contact for this prize?",
+                            "YES", "CANCEL");
+
+                    // Set the target fragment for the callback
+                    dialog.setTargetFragment(mFragment, 0);
+
+                    // Keep track of the position here so the fragment knows which
+                    // intent to send off.
+                    Bundle args = dialog.getArguments();
+                    args.putInt(CONFIRM_DIALOG_POSITION_KEY, position);
+                    dialog.setArguments(args);
+
+                    // Add the dialog to the fragment.
+                    dialog.show(mFragment.getFragmentManager(), CONFIRM_DIALOG_TAG);
                 }
             });
 

@@ -10,6 +10,11 @@ import com.hackthenorth.android.R;
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     private final String TAG = "FragmentStatePagerAdapter";
 
+    public static final String MENTORS_FRAGMENT_TAG = "MentorsFragment";
+    public static final String PRIZES_FRAGMENT_TAG = "PrizesFragment";
+    public static final String SCHEDULE_FRAGMENT_TAG = "ScheduleFragment";
+    public static final String TEAM_FRAGMENT_TAG = "TeamFragment";
+    public static final String UPDATES_FRAGMENT_TAG = "UpdatesFragment";
 
     private Fragment[] mFragments = new Fragment[5];
     private String[] mFragmentTitles;
