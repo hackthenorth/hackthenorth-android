@@ -65,10 +65,31 @@ public class MentorsFragment extends BaseListFragment {
     }
 
     @Override
-    protected void onUpdate(String json) {
-        ArrayList<Mentor> newData = Mentor.loadMentorArrayFromJSON(json);
-        mData.clear();
-        mData.addAll(newData);
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... nothing) {
+
+                // Decode JSON
+                final ArrayList<Mentor> newData = Mentor.loadMentorArrayFromJSON(json);
+
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
+                            mData.clear();
+                            mData.addAll(newData);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
     public static class MentorListAdapter extends ArrayAdapter<Mentor> {

@@ -76,30 +76,49 @@ public class UpdatesFragment extends BaseListFragment {
     }
 
     @Override
-    protected void onUpdate(String json) {
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... nothing) {
 
-        ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
+                final ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
 
-        // Note that both of the data lists are sorted, with the newest items first.
-        // We want to avoid adding a bunch of elements to the front of the ArrayList,
-        // which each takes O(n) time...
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
 
-        // If there's new data, then copy over all the elements in newData to mData,
-        // and refresh the ListView.
-        if (newData.size() > mData.size()) {
-            int delta = newData.size() - mData.size();
+                            // Note that both of the data lists are sorted, with the
+                            // newest items first. We want to avoid adding a bunch of
+                            // elements to the front of the ArrayList, which each takes
+                            // O(n) time...
 
-            // Append that many elements to the end of mData
-            // (so mData.size() == newData.size())
-            for (int i = 0; i < delta; i++) {
-                mData.add(null);
+                            // If there's new data, then copy over all the elements in
+                            // newData to mData, and refresh the ListView.
+                            if (newData.size() > mData.size()) {
+                                int delta = newData.size() - mData.size();
+
+                                // Append that many elements to the end of mData
+                                // (so mData.size() == newData.size())
+                                for (int i = 0; i < delta; i++) {
+                                    mData.add(null);
+                                }
+
+                                // Now, copy all the elements from newData into mData.
+                                for (int i = 0; i < newData.size(); i++) {
+                                    mData.set(i, newData.get(i));
+                                }
+                            }
+                        }
+                    });
+                }
+
+                return null;
             }
-
-            // Now, copy all the elements from newData into mData.
-            for (int i = 0; i < newData.size(); i++) {
-                mData.set(i, newData.get(i));
-            }
-        }
+        }.execute();
     }
 
     public static class UpdatesFragmentAdapter extends ArrayAdapter<Update> {

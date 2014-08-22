@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -67,10 +68,30 @@ public class PrizesFragment extends BaseListFragment {
     }
 
     @Override
-    protected void onUpdate(String json) {
-        ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
-        mData.clear();
-        mData.addAll(newData);
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... nothing) {
+
+                final ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
+
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
+                            mData.clear();
+                            mData.addAll(newData);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
     public static class PrizesFragmentAdapter extends ArrayAdapter<Prize> {

@@ -66,10 +66,32 @@ public class TeamFragment extends BaseListFragment {
     }
 
     @Override
-    protected void onUpdate(String json) {
-        ArrayList<TeamMember> newData = TeamMember.loadTeamMemberArrayFromJSON(json);
-        mData.clear();
-        mData.addAll(newData);
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... nothing) {
+
+                // Decode JSON
+                final ArrayList<TeamMember> newData =
+                        TeamMember.loadTeamMemberArrayFromJSON(json);
+
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
+                            mData.clear();
+                            mData.addAll(newData);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
     public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> {

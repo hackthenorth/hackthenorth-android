@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
@@ -89,15 +90,6 @@ public class ScheduleFragment extends BaseListFragment
     }
 
     @Override
-    protected void onUpdate(String json) {
-
-        ArrayList<ScheduleItem> newData = ScheduleItem.loadScheduleFromJSON(json);
-
-        mData.clear();
-        mData.addAll(newData);
-    }
-
-    @Override
     public void onPositiveClick(ConfirmDialogFragment fragment) {
         // Get the email intent from the ScheduleFragmentAdapter and start it.
         int position = fragment.getArguments().getInt(CONFIRM_DIALOG_POSITION_KEY);
@@ -107,6 +99,35 @@ public class ScheduleFragment extends BaseListFragment
     @Override
     public void onNegativeClick(ConfirmDialogFragment fragment) {
         // Do nothing
+    }
+
+    @Override
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... nothing) {
+
+                // Decode JSON
+                final ArrayList<ScheduleItem> newData =
+                        ScheduleItem.loadScheduleFromJSON(json);
+
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
+                            mData.clear();
+                            mData.addAll(newData);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
     public static class ScheduleFragmentAdapter extends ArrayAdapter<Model> {

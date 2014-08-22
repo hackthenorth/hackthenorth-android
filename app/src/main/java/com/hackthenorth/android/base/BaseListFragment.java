@@ -16,13 +16,7 @@ import java.util.ArrayList;
 
 public abstract class BaseListFragment extends Fragment {
 
-    /**
-     * Decode the json data and make any necessary adjustments to the internal data list.
-     * Do not call notifyDataSetChanged on the adapter.
-     *
-     * @param json json to decode
-     */
-    abstract protected void onUpdate(String json);
+    protected abstract void handleJSONUpdateInBackground(String json);
 
     /**
      * Creates a BroadcastReceiver that is listening to broadcasts of the type action.
@@ -44,7 +38,7 @@ public abstract class BaseListFragment extends Fragment {
                     // Update with the new data
                     String key = intent.getAction();
                     String json = intent.getStringExtra(key);
-                    handleJSONInBackground(json, adapter);
+                    handleJSONUpdateInBackground(json);
                 }
             }
         };
@@ -56,28 +50,5 @@ public abstract class BaseListFragment extends Fragment {
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
         manager.registerReceiver(receiver, filter);
 
-    }
-
-    protected void handleJSONInBackground(String json, final ArrayAdapter adapter) {
-        final Activity activity = getActivity();
-        new AsyncTask<String, Void, Void>(){
-            @Override
-            protected Void doInBackground(String... strings) {
-                String json = strings[0];
-
-                onUpdate(json);
-
-                if (activity != null && adapter != null) {
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-
-                return null;
-            }
-        }.execute(json);
     }
 }
