@@ -11,6 +11,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
@@ -26,6 +28,8 @@ import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
+import com.hackthenorth.android.model.Instruction;
+import com.hackthenorth.android.model.Model;
 import com.hackthenorth.android.model.ScheduleItem;
 import com.hackthenorth.android.util.DateTimeUtil;
 import com.hackthenorth.android.ui.ConfirmDialogFragment.ConfirmDialogFragmentListener;
@@ -42,35 +46,19 @@ public class ScheduleFragment extends BaseListFragment
     public static final String CONFIRM_DIALOG_POSITION_KEY = "position";
 
     private ListView mListView;
-    private ArrayList<ScheduleItem> mData;
     private ScheduleFragmentAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
+    private ArrayList<Model> mData = new ArrayList<Model>();
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_SCHEDULE
-                        .equals(intent.getAction())) {
+        // Set up adapter
+        mAdapter = new ScheduleFragmentAdapter(activity, R.layout.schedule_list_item, mData);
+        mAdapter.setFragment(this);
 
-                    // Update with the new data
-                    String key = intent.getAction();
-                    String json = intent.getStringExtra(key);
-                    onUpdate(json);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_SCHEDULE);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        // Register for updates
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE, mAdapter);
 
         HTTPFirebase.GET("/schedule", activity,
                 HackTheNorthApplication.Actions.SYNC_SCHEDULE);
@@ -84,8 +72,8 @@ public class ScheduleFragment extends BaseListFragment
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
 
-        // If we're ready, set up the adapter with the list now.
-        setupAdapterIfReady();
+        // Hook it up to the ListView
+        mListView.setAdapter(mAdapter);
 
         return view;
     }
@@ -101,44 +89,6 @@ public class ScheduleFragment extends BaseListFragment
         }
     }
 
-    // Receive a JSON update
-    public void onUpdate(String json) {
-
-        // Set or update our data
-        if (mData == null) {
-            // Returns a list of ScheduleItem sorted by start_time
-            mData = ScheduleItem.loadScheduleFromJSON(json);
-
-            // If we're ready, set up the adapter with the list.
-            setupAdapterIfReady();
-
-        } else {
-            // Decode and display data in the background.
-            handleJSONInBackground(json, mAdapter);
-        }
-    }
-
-    private void setupAdapterIfReady() {
-        // Only set up adapter if our ListView and our data are ready.
-        if (mListView != null && mData != null) {
-
-            // Create adapter
-            mAdapter = new ScheduleFragmentAdapter(mListView.getContext(),
-                    R.layout.schedule_list_item, mData);
-            mAdapter.setFragment(this);
-
-            // Hook it up to the ListView
-            mListView.setAdapter(mAdapter);
-        }
-    }
-
-    @Override
-    protected void setupFromJSON(String json) {
-        ArrayList<ScheduleItem> newData = ScheduleItem.loadScheduleFromJSON(json);
-        mData.clear();
-        mData.addAll(newData);
-    }
-
     @Override
     public void onPositiveClick(ConfirmDialogFragment fragment) {
         // Get the email intent from the ScheduleFragmentAdapter and start it.
@@ -151,13 +101,42 @@ public class ScheduleFragment extends BaseListFragment
         // Do nothing
     }
 
-    public static class ScheduleFragmentAdapter extends ArrayAdapter<ScheduleItem> {
+    @Override
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... nothing) {
+
+                // Decode JSON
+                final ArrayList<ScheduleItem> newData =
+                        ScheduleItem.loadScheduleFromJSON(json);
+
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
+                            mData.clear();
+                            mData.addAll(newData);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute();
+    }
+
+    public static class ScheduleFragmentAdapter extends ArrayAdapter<Model> {
         private int mResource;
-        private ArrayList<ScheduleItem> mData;
+        private ArrayList<Model> mData;
         private Fragment mFragment;
 
         public ScheduleFragmentAdapter(Context context, int resource,
-                                       ArrayList<ScheduleItem> objects) {
+                                       ArrayList<Model> objects) {
             super(context, resource, objects);
 
             mResource = resource;
@@ -169,74 +148,91 @@ public class ScheduleFragment extends BaseListFragment
         }
 
         public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                // If we don't have a view to reuse, inflate a new one.
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-                        Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(mResource, parent, false);
-            }
-
-            // Set up the click event
-            final Intent intent = getIntent(position);
-            final Context context = convertView.getContext();
-
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ConfirmDialogFragmentListener listener =
-                            new ConfirmDialogFragmentListener() {
-                                @Override
-                                public void onPositiveClick(ConfirmDialogFragment fragment) {
-                                    context.startActivity(intent);
-                                }
-
-                                @Override
-                                public void onNegativeClick(ConfirmDialogFragment fragment) {
-                                    // do nothing
-                                }
-                            };
-                    ConfirmDialogFragment dialog = ConfirmDialogFragment.getInstance(
-                            "Send email?", "Would you like to send an email to the contact for this prize?",
-                            "YES", "CANCEL");
-
-                    // Set the target fragment for the callback
-                    dialog.setTargetFragment(mFragment, 0);
-
-                    // Keep track of the position here so the fragment knows which
-                    // intent to send off.
-                    Bundle args = dialog.getArguments();
-                    args.putInt(CONFIRM_DIALOG_POSITION_KEY, position);
-                    dialog.setArguments(args);
-
-                    // Add the dialog to the fragment.
-                    dialog.show(mFragment.getFragmentManager(), CONFIRM_DIALOG_TAG);
-                }
-            });
 
             // Get the data for this position
-            ScheduleItem scheduleItem = mData.get(position);
+            Model model = mData.get(position);
 
-            ((TextView)convertView.findViewById(R.id.schedule_item_name))
-                    .setText(scheduleItem.name);
-            ((TextView)convertView.findViewById(R.id.schedule_item_description))
-                    .setText(scheduleItem.description);
-            ((TextView)convertView.findViewById(R.id.schedule_item_speaker))
-                    .setText(scheduleItem.speaker);
+            if (model instanceof ScheduleItem) {
+                final ScheduleItem scheduleItem = (ScheduleItem)model;
 
-            // TODO: This probably shouldn't be text; use the string to display an icon,
-            // TODO: or style the card accordingly.
-            ((TextView)convertView.findViewById(R.id.schedule_item_type))
-                    .setText(scheduleItem.type);
-            ((TextView)convertView.findViewById(R.id.schedule_item_start_time))
-                    .setText(scheduleItem.start_time);
-            ((TextView)convertView.findViewById(R.id.schedule_item_end_time))
-                    .setText(scheduleItem.end_time);
+                if (convertView == null ||
+                        convertView.getId() != R.id.schedule_list_item) {
+                    // If we don't have a view to reuse, inflate a new one.
+                    LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
+                            Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(mResource, parent, false);
+                }
+
+                // Set up the click event
+                final Intent intent = getIntent(position);
+                final Context context = convertView.getContext();
+
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Resources res = context.getResources();
+                        String title = res.getString(R.string.calendar_dialog_title);
+                        String message = String.format(res.getString(R.string.calendar_dialog_message),
+                                scheduleItem.name);
+                        String yes = res.getString(R.string.dialog_button_yes);
+                        String cancel = res.getString(R.string.dialog_button_cancel);
+
+                        ConfirmDialogFragment dialog = ConfirmDialogFragment.getInstance(
+                                title, message, yes, cancel);
+
+                        // Set the target fragment for the callback
+                        dialog.setTargetFragment(mFragment, 0);
+
+                        // Keep track of the position here so the fragment knows which
+                        // intent to send off.
+                        Bundle args = dialog.getArguments();
+                        args.putInt(CONFIRM_DIALOG_POSITION_KEY, position);
+                        dialog.setArguments(args);
+
+                        // Add the dialog to the fragment.
+                        dialog.show(mFragment.getFragmentManager(), CONFIRM_DIALOG_TAG);
+                    }
+                });
+
+                ((TextView)convertView.findViewById(R.id.schedule_item_name))
+                        .setText(scheduleItem.name);
+                ((TextView)convertView.findViewById(R.id.schedule_item_description))
+                        .setText(scheduleItem.description);
+                ((TextView)convertView.findViewById(R.id.schedule_item_speaker))
+                        .setText(scheduleItem.speaker);
+
+                // TODO: This probably shouldn't be text; use the string to display an icon,
+                // TODO: or style the card accordingly.
+                ((TextView)convertView.findViewById(R.id.schedule_item_type))
+                        .setText(scheduleItem.type);
+                ((TextView)convertView.findViewById(R.id.schedule_item_start_time))
+                        .setText(scheduleItem.start_time);
+                ((TextView)convertView.findViewById(R.id.schedule_item_end_time))
+                        .setText(scheduleItem.end_time);
+
+            } else if (model instanceof Instruction) {
+                final Instruction instruction = (Instruction)model;
+
+                if (convertView == null ||
+                        convertView.getId() != R.id.instruction_list_item) {
+
+                    // If we don't have a view to reuse, inflate a new one.
+                    LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
+                            Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.instruction_list_item, parent, false);
+                }
+            }
 
             return convertView;
         }
 
         public Intent getIntent(int position) {
-            ScheduleItem item = mData.get(position);
+            Model model = mData.get(position);
+            if (!(model instanceof ScheduleItem)) {
+                return null;
+            }
+            ScheduleItem item = (ScheduleItem)model;
 
             SimpleDateFormat format = DateTimeUtil.getISO8601SimpleDateFormat();
             Date start = null, end = null;

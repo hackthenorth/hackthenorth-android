@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -27,35 +28,17 @@ public class PrizesFragment extends BaseListFragment {
     public static final String TAG = "UpdateListFragment";
 
     private ListView mListView;
-    private ArrayList<Prize> mData;
+    private ArrayList<Prize> mData = new ArrayList<Prize>();
     private PrizesFragmentAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_PRIZES
-                        .equals(intent.getAction())) {
+        // Create adapter
+        mAdapter = new PrizesFragmentAdapter(activity, R.layout.prizes_list_item, mData);
 
-                    // Update with the new data
-                    String key = HackTheNorthApplication.Actions.SYNC_PRIZES;
-                    String json = intent.getStringExtra(key);
-                    onUpdate(json);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_PRIZES);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_PRIZES, mAdapter);
 
         HTTPFirebase.GET("/prizes", activity,
                 HackTheNorthApplication.Actions.SYNC_PRIZES);
@@ -66,11 +49,9 @@ public class PrizesFragment extends BaseListFragment {
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.prizes_fragment, container, false);
 
-        // Save a reference to the list view
+        // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-
-        // If we're ready, set up the adapter with the list now.
-        setupAdapterIfReady();
+        mListView.setAdapter(mAdapter);
 
         return view;
     }
@@ -86,41 +67,31 @@ public class PrizesFragment extends BaseListFragment {
         }
     }
 
-    // Receive a JSON update
-    public void onUpdate(String json) {
-
-        // Set or update our data
-        if (mData == null) {
-            mData = Prize.loadPrizesFromJSON(json);
-
-            // If we're ready, set up the adapter with the list.
-            setupAdapterIfReady();
-
-        } else {
-
-            // Decode and display data in the background.
-            handleJSONInBackground(json, mAdapter);
-        }
-    }
-
-    private void setupAdapterIfReady() {
-        // Only set up adapter if our ListView and our data are ready.
-        if (mListView != null && mData != null) {
-
-            // Create adapter
-            mAdapter = new PrizesFragmentAdapter(mListView.getContext(),
-                    R.layout.prizes_list_item, mData);
-
-            // Hook it up to the ListView
-            mListView.setAdapter(mAdapter);
-        }
-    }
-
     @Override
-    protected void setupFromJSON(String json) {
-        ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
-        mData.clear();
-        mData.addAll(newData);
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... nothing) {
+
+                final ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
+
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
+                            mData.clear();
+                            mData.addAll(newData);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
     public static class PrizesFragmentAdapter extends ArrayAdapter<Prize> {

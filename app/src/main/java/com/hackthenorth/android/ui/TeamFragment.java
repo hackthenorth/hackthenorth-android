@@ -33,35 +33,18 @@ public class TeamFragment extends BaseListFragment {
     public static final String TAG = "TeamFragment";
 
     private ListView mListView;
-    private ArrayList<TeamMember> mData;
+    private ArrayList<TeamMember> mData = new ArrayList<TeamMember>();
     private TeamFragmentAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_TEAM.equals(intent.getAction())) {
+        // Create adapter
+        mAdapter = new TeamFragmentAdapter(activity, R.layout.team_list_item, mData);
 
-                    // Forward to fragment
-                    String key = HackTheNorthApplication.Actions.SYNC_TEAM;
-                    String json = intent.getStringExtra(key);
-
-                    onUpdate(json);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_TEAM);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        // Register for updates
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_TEAM, mAdapter);
 
         HTTPFirebase.GET("/team", activity, HackTheNorthApplication.Actions.SYNC_TEAM);
     }
@@ -76,45 +59,39 @@ public class TeamFragment extends BaseListFragment {
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
 
-        // If we're ready, set up the adapter with the list now.
-        setupAdapterIfReady();
+        // Hook it up to the ListView
+        mListView.setAdapter(mAdapter);
 
         return view;
     }
 
-    // Receive a JSON team member
-    public void onUpdate(String json) {
-
-        // Set or update our data
-        if (mData == null) {
-            mData = TeamMember.loadTeamMemberArrayFromJSON(json);
-
-            // If we're ready, set up the adapter with the list.
-            setupAdapterIfReady();
-
-        } else {
-            // Decode and display data in the background.
-            handleJSONInBackground(json, mAdapter);
-        }
-    }
-
-    private void setupAdapterIfReady() {
-        // Only set up adapter if our ListView and our data are ready.
-        if (mListView != null && mData != null) {
-
-            // Create adapter
-            mAdapter = new TeamFragmentAdapter(mListView.getContext(), R.layout.team_list_item, mData);
-
-            // Hook it up to the ListView
-            mListView.setAdapter(mAdapter);
-        }
-    }
-
     @Override
-    protected void setupFromJSON(String json) {
-        ArrayList<TeamMember> newData = TeamMember.loadTeamMemberArrayFromJSON(json);
-        mData.clear();
-        mData.addAll(newData);
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... nothing) {
+
+                // Decode JSON
+                final ArrayList<TeamMember> newData =
+                        TeamMember.loadTeamMemberArrayFromJSON(json);
+
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
+                            mData.clear();
+                            mData.addAll(newData);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute();
     }
 
     public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> {

@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class Update {
+public class Update extends Model {
 
     private static final String TAG = "Update";
     public String id;

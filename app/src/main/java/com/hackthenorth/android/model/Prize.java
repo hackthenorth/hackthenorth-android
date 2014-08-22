@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Prize {
+public class Prize extends Model {
 
     private static final String TAG = "Prize";
 

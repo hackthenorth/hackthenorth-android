@@ -38,35 +38,18 @@ public class UpdatesFragment extends BaseListFragment {
     public static final String TAG = "UpdateListFragment";
 
     private ListView mListView;
-    private ArrayList<Update> mData;
-    private InfoListAdapter mAdapter;
-    private BroadcastReceiver mBroadcastReceiver;
+    private ArrayList<Update> mData = new ArrayList<Update>();
+    private UpdatesFragmentAdapter mAdapter;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Set up BroadcastReceiver for updates.
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (HackTheNorthApplication.Actions.SYNC_UPDATES
-                        .equals(intent.getAction())) {
+        // Create adapter
+        mAdapter = new UpdatesFragmentAdapter(activity, R.layout.update_list_item, mData);
 
-                    // Update with the new data
-                    String key = HackTheNorthApplication.Actions.SYNC_UPDATES;
-                    String json = intent.getStringExtra(key);
-                    onUpdate(json);
-                }
-            }
-        };
-
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(HackTheNorthApplication.Actions.SYNC_UPDATES);
-
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(activity);
-        manager.registerReceiver(mBroadcastReceiver, filter);
+        // Register for updates
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_UPDATES, mAdapter);
 
         HTTPFirebase.GET("/updates", activity,
                 HackTheNorthApplication.Actions.SYNC_UPDATES);
@@ -76,13 +59,11 @@ public class UpdatesFragment extends BaseListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.updates_fragment, container, false);
-        
-        // Save a reference to the list view
+
+        // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-        
-        // If we're ready, set up the adapter with the list now.
-        setupAdapterIfReady();
-        
+        mListView.setAdapter(mAdapter);
+
         return view;
     }
 
@@ -94,67 +75,57 @@ public class UpdatesFragment extends BaseListFragment {
         HTNNotificationManager.clearUpdatesNotification(getActivity());
     }
 
-    // Receive a JSON update
-    public void onUpdate(String json) {
-
-        // Set or update our data
-        if (mData == null) {
-            mData = Update.loadUpdateArrayFromJSON(json);
-
-            // If we're ready, set up the adapter with the list.
-            setupAdapterIfReady();
-
-        } else {
-            // Decode and display the data in the background.
-            handleJSONInBackground(json, mAdapter);
-        }
-    }
-
     @Override
-    protected void setupFromJSON(String json) {
+    protected void handleJSONUpdateInBackground(final String json) {
+        final Activity activity = getActivity();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... nothing) {
 
-        ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
+                final ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
 
-        // Note that both of the data lists are sorted, with the newest items first.
-        // We want to avoid adding a bunch of elements to the front of the ArrayList,
-        // which each takes O(n) time...
+                if (activity != null && mAdapter != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Copy the data into the ListView on the main thread and
+                            // refresh.
 
-        // If there's new data, then copy over all the elements in newData to mData,
-        // and refresh the ListView.
-        if (newData.size() > mData.size()) {
-            int delta = newData.size() - mData.size();
+                            // Note that both of the data lists are sorted, with the
+                            // newest items first. We want to avoid adding a bunch of
+                            // elements to the front of the ArrayList, which each takes
+                            // O(n) time...
 
-            // Append that many elements to the end of mData
-            // (so mData.size() == newData.size())
-            for (int i = 0; i < delta; i++) {
-                mData.add(null);
+                            // If there's new data, then copy over all the elements in
+                            // newData to mData, and refresh the ListView.
+                            if (newData.size() > mData.size()) {
+                                int delta = newData.size() - mData.size();
+
+                                // Append that many elements to the end of mData
+                                // (so mData.size() == newData.size())
+                                for (int i = 0; i < delta; i++) {
+                                    mData.add(null);
+                                }
+
+                                // Now, copy all the elements from newData into mData.
+                                for (int i = 0; i < newData.size(); i++) {
+                                    mData.set(i, newData.get(i));
+                                }
+                            }
+                        }
+                    });
+                }
+
+                return null;
             }
-
-            // Now, copy all the elements from newData into mData.
-            for (int i = 0; i < newData.size(); i++) {
-                mData.set(i, newData.get(i));
-            }
-        }
+        }.execute();
     }
 
-    private void setupAdapterIfReady() {
-        // Only set up adapter if our ListView and our data are ready.
-        if (mListView != null && mData != null) {
-            
-            // Create adapter
-            mAdapter = new InfoListAdapter(mListView.getContext(), R.layout.update_list_item,
-                    mData);
-            
-            // Hook it up to the ListView
-            mListView.setAdapter(mAdapter);
-        }
-    }
-
-    public static class InfoListAdapter extends ArrayAdapter<Update> {
+    public static class UpdatesFragmentAdapter extends ArrayAdapter<Update> {
         private int mResource;
         private ArrayList<Update> mData;
         
-        public InfoListAdapter(Context context, int resource, ArrayList<Update> objects) {
+        public UpdatesFragmentAdapter(Context context, int resource, ArrayList<Update> objects) {
             super(context, resource, objects);
             
             mResource = resource;
@@ -188,8 +159,10 @@ public class UpdatesFragment extends BaseListFragment {
             // Set the data in the TextViews
             ((TextView) convertView.findViewById(R.id.update_name))
                     .setText(update.name);
-            ((TextView) convertView.findViewById(R.id.update_date))
-                    .setText(getRelativeTimestamp(update.time));
+            if (update.time != null) {
+                ((TextView) convertView.findViewById(R.id.update_date))
+                        .setText(getRelativeTimestamp(update.time));
+            }
             ((TextView) convertView.findViewById(R.id.update_description))
                     .setText(update.description);
 

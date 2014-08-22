@@ -38,4 +38,9 @@
     <string name="setting_notification_sound_summary">Select a notification tone</string>
     <string name="setting_notification_vibrate_summary">Enable vibration for new notifications</string>
 
+    <string name="calendar_dialog_title">Add Event to Calendar?</string>
+    <string name="calendar_dialog_message">Would you like to add the \"%s\" schedule item to your calendar?</string>
+    <string name="dialog_button_yes">YES</string>
+    <string name="dialog_button_cancel">CANCEL</string>
+
 </resources>
