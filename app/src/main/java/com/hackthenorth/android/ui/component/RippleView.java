@@ -58,9 +58,9 @@ public class RippleView extends FrameLayout {
             fadeInAnimator.setDuration(100);
 
             // Animate the circle to a set length
-            final ObjectAnimator circleAnimator = ObjectAnimator.ofFloat(this, "radius", 0, endRadius);
+            final ObjectAnimator circleAnimator = ObjectAnimator.ofFloat(this, "radius", 0, endRadius * 2);
             circleAnimator.setInterpolator(new DecelerateInterpolator());
-            circleAnimator.setDuration(200);
+            circleAnimator.setDuration(400);
 
             // Fade out gently
             final ObjectAnimator fadeOutAnimator = ObjectAnimator.ofInt(this, "alpha", 25, 0);
