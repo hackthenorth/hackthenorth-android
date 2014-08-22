@@ -1,105 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hackthenorth.android.ui.component.RippleView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_background"
-    android:orientation="vertical">
-
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/mentor_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textColor="@color/theme_secondary"
-        android:textSize="32sp"
-        app:typeface="roboto_thin" />
-
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/mentor_image"
-        android:layout_width="wrap_content"
-        android:layout_height="172dp"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerCrop" />
+    android:background="@drawable/card_background">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:orientation="vertical">
 
         <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/mentor_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="@string/organization"
-            android:textColor="@color/text_color_primary"
-            android:textSize="16sp"
-            app:typeface="roboto_regular" />
+            android:layout_margin="16dp"
+            android:textColor="@color/theme_secondary"
+            android:textSize="32sp"
+            app:typeface="roboto_thin" />
 
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/mentor_organization"
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/mentor_image"
+            android:layout_width="wrap_content"
+            android:layout_height="172dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@color/text_color_secondary"
-            android:textSize="14sp"
-            app:typeface="roboto_regular" />
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/organization"
+                android:textColor="@color/text_color_primary"
+                android:textSize="16sp"
+                app:typeface="roboto_regular" />
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:id="@+id/mentor_organization"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="14sp"
+                app:typeface="roboto_regular" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/availability"
+                android:textColor="@color/text_color_primary"
+                android:textSize="16sp"
+                app:typeface="roboto_regular" />
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:id="@+id/mentor_availability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="14sp"
+                app:typeface="roboto_regular" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/skills"
+                android:textColor="@color/text_color_primary"
+                android:textSize="16sp"
+                app:typeface="roboto_regular" />
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:id="@+id/mentor_skills"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="14sp"
+                app:typeface="roboto_regular" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="vertical">
+</com.hackthenorth.android.ui.component.RippleView>
 
-        <com.hackthenorth.android.ui.component.TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="@string/availability"
-            android:textColor="@color/text_color_primary"
-            android:textSize="16sp"
-            app:typeface="roboto_regular" />
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/mentor_availability"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_color_secondary"
-            android:textSize="14sp"
-            app:typeface="roboto_regular" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="vertical">
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="@string/skills"
-            android:textColor="@color/text_color_primary"
-            android:textSize="16sp"
-            app:typeface="roboto_regular" />
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/mentor_skills"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_color_secondary"
-            android:textSize="14sp"
-            app:typeface="roboto_regular" />
-    </LinearLayout>
-
-</LinearLayout>

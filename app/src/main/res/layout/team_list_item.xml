@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hackthenorth.android.ui.component.RippleView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
 
-    <com.hackthenorth.android.ui.component.CircleFadeNetworkImageView
-        android:id="@+id/team_member_avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="12dp"
-        android:padding="4dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/team_member_avatar"
-        android:orientation="vertical"
-        android:paddingRight="16dp">
+        <com.hackthenorth.android.ui.component.CircleFadeNetworkImageView
+            android:id="@+id/team_member_avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="12dp"
+            android:padding="4dp" />
 
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/team_member_name"
-            style="@style/TextViewStylePrimary"
-            android:singleLine="true"
-            app:typeface="roboto_regular" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/team_member_avatar"
+            android:orientation="vertical"
+            android:paddingRight="16dp">
 
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/team_member_role"
-            style="@style/TextViewStyleSecondary"
-            android:singleLine="true"
-            app:typeface="roboto_regular" />
+            <com.hackthenorth.android.ui.component.TextView
+                android:id="@+id/team_member_name"
+                style="@style/TextViewStylePrimary"
+                android:singleLine="true"
+                app:typeface="roboto_regular" />
 
-    </LinearLayout>
+            <com.hackthenorth.android.ui.component.TextView
+                android:id="@+id/team_member_role"
+                style="@style/TextViewStyleSecondary"
+                android:singleLine="true"
+                app:typeface="roboto_regular" />
 
-</RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</com.hackthenorth.android.ui.component.RippleView>

@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hackthenorth.android.ui.component.RippleView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_background"
-    android:padding="16dp">
+    android:background="@drawable/card_background">
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/schedule_item_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/theme_secondary"
-        android:textSize="32sp"
-        app:typeface="roboto_thin" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/schedule_item_speaker"
-        style="@style/TextViewStylePrimary" />
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/schedule_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/theme_secondary"
+            android:textSize="32sp"
+            app:typeface="roboto_thin" />
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/schedule_item_description"
-        style="@style/TextViewStyleSecondary" />
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/schedule_item_speaker"
+            style="@style/TextViewStylePrimary" />
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/schedule_item_type"
-        style="@style/TextViewStyleSecondary" />
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/schedule_item_description"
+            style="@style/TextViewStyleSecondary" />
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/schedule_item_start_time"
-        style="@style/TextViewStyleSecondary" />
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/schedule_item_type"
+            style="@style/TextViewStyleSecondary" />
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/schedule_item_end_time"
-        style="@style/TextViewStyleSecondary" />
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/schedule_item_start_time"
+            style="@style/TextViewStyleSecondary" />
 
-</LinearLayout>
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/schedule_item_end_time"
+            style="@style/TextViewStyleSecondary" />
+
+    </LinearLayout>
+
+</com.hackthenorth.android.ui.component.RippleView>
