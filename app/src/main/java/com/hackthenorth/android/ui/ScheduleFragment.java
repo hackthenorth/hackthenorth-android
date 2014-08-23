@@ -7,16 +7,15 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Instruction;
 import com.hackthenorth.android.model.Model;
 import com.hackthenorth.android.model.ScheduleItem;
-import com.hackthenorth.android.util.DateTimeUtil;
+import com.hackthenorth.android.util.DateFormatter;
 import com.hackthenorth.android.ui.ConfirmDialogFragment.ConfirmDialogFragmentListener;
 
 /**
@@ -104,7 +103,7 @@ public class ScheduleFragment extends BaseListFragment
     @Override
     protected void handleJSONUpdateInBackground(final String json) {
         final Activity activity = getActivity();
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... nothing) {
 
@@ -153,7 +152,7 @@ public class ScheduleFragment extends BaseListFragment
             Model model = mData.get(position);
 
             if (model instanceof ScheduleItem) {
-                final ScheduleItem scheduleItem = (ScheduleItem)model;
+                final ScheduleItem scheduleItem = (ScheduleItem) model;
 
                 if (convertView == null ||
                         convertView.getId() != R.id.schedule_list_item) {
@@ -195,24 +194,23 @@ public class ScheduleFragment extends BaseListFragment
                     }
                 });
 
-                ((TextView)convertView.findViewById(R.id.schedule_item_name))
-                        .setText(scheduleItem.name);
-                ((TextView)convertView.findViewById(R.id.schedule_item_description))
-                        .setText(scheduleItem.description);
-                ((TextView)convertView.findViewById(R.id.schedule_item_speaker))
-                        .setText(scheduleItem.speaker);
+                ArrayList<String> times = new ArrayList<String>();
+                times.add(scheduleItem.start_time);
+                times.add(scheduleItem.end_time);
 
-                // TODO: This probably shouldn't be text; use the string to display an icon,
-                // TODO: or style the card accordingly.
-                ((TextView)convertView.findViewById(R.id.schedule_item_type))
-                        .setText(scheduleItem.type);
-                ((TextView)convertView.findViewById(R.id.schedule_item_start_time))
-                        .setText(scheduleItem.start_time);
-                ((TextView)convertView.findViewById(R.id.schedule_item_end_time))
-                        .setText(scheduleItem.end_time);
+                convertView.findViewById(R.id.schedule_item_type)
+                        .setBackgroundDrawable(getIndicator(scheduleItem.type));
+                ((TextView) convertView.findViewById(R.id.schedule_item_name))
+                        .setText(scheduleItem.name);
+                ((TextView) convertView.findViewById(R.id.schedule_item_description))
+                        .setText(scheduleItem.description);
+                ((TextView) convertView.findViewById(R.id.schedule_item_speaker))
+                        .setText(scheduleItem.speaker);
+                ((TextView) convertView.findViewById(R.id.schedule_item_time))
+                        .setText(DateFormatter.getTimespanString(times));
 
             } else if (model instanceof Instruction) {
-                final Instruction instruction = (Instruction)model;
+                final Instruction instruction = (Instruction) model;
 
                 if (convertView == null ||
                         convertView.getId() != R.id.instruction_list_item) {
@@ -232,9 +230,9 @@ public class ScheduleFragment extends BaseListFragment
             if (!(model instanceof ScheduleItem)) {
                 return null;
             }
-            ScheduleItem item = (ScheduleItem)model;
+            ScheduleItem item = (ScheduleItem) model;
 
-            SimpleDateFormat format = DateTimeUtil.getISO8601SimpleDateFormat();
+            SimpleDateFormat format = DateFormatter.getISO8601SimpleDateFormat();
             Date start = null, end = null;
             try {
                 start = format.parse(item.start_time);
@@ -247,10 +245,8 @@ public class ScheduleFragment extends BaseListFragment
             if (start != null && end != null) {
                 result = new Intent(Intent.ACTION_INSERT)
                         .setType("vnd.android.cursor.item/event")
-                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                                start.getTime())
-                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                                end.getTime())
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, start.getTime())
+                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end.getTime())
                         .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
                         .putExtra(Events.TITLE, item.name)
                         .putExtra(Events.DESCRIPTION, item.description)
@@ -260,6 +256,27 @@ public class ScheduleFragment extends BaseListFragment
             }
 
             return result;
+        }
+
+        public Drawable getIndicator(String type) {
+            Resources res = getContext().getResources();
+            Drawable indicator = res.getDrawable(R.drawable.schedule_item_type);
+
+            if (type.equals(ScheduleItem.TYPE_EVENT)) {
+                indicator.setColorFilter(res.getColor(R.color.theme_secondary), PorterDuff.Mode.MULTIPLY);
+            } else if (type.equals(ScheduleItem.TYPE_WORKSHOP)) {
+                indicator.setColorFilter(res.getColor(R.color.workshop), PorterDuff.Mode.MULTIPLY);
+            } else if (type.equals(ScheduleItem.TYPE_TALK)) {
+                indicator.setColorFilter(res.getColor(R.color.talk), PorterDuff.Mode.MULTIPLY);
+            } else if (type.equals(ScheduleItem.TYPE_SPEAKER)) {
+                indicator.setColorFilter(res.getColor(R.color.speaker), PorterDuff.Mode.MULTIPLY);
+            } else if (type.equals(ScheduleItem.TYPE_UPDATE)) {
+                indicator.setColorFilter(res.getColor(R.color.update), PorterDuff.Mode.MULTIPLY);
+            } else if (type.equals(ScheduleItem.TYPE_FOOD)) {
+                indicator.setColorFilter(res.getColor(R.color.food), PorterDuff.Mode.MULTIPLY);
+            }
+
+            return indicator;
         }
 
         public int getCount() {

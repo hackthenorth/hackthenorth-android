@@ -8,6 +8,11 @@
     android:layout_height="wrap_content"
     android:background="@drawable/card_background">
 
+    <View
+        android:id="@+id/schedule_item_type"
+        android:layout_width="4dp"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,23 +28,19 @@
             app:typeface="roboto_thin" />
 
         <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/schedule_item_time"
+            style="@style/TextViewStyleSecondary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/schedule_item_speaker"
             style="@style/TextViewStylePrimary" />
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/schedule_item_description"
-            style="@style/TextViewStyleSecondary" />
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/schedule_item_type"
-            style="@style/TextViewStyleSecondary" />
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/schedule_item_start_time"
-            style="@style/TextViewStyleSecondary" />
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/schedule_item_end_time"
             style="@style/TextViewStyleSecondary" />
 
     </LinearLayout>

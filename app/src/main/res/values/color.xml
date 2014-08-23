@@ -12,4 +12,10 @@
     <color name="background_lightblue">#b8e3ed</color>
     <color name="background_fullblue">#3ab4d7</color>
     <color name="background_gray">#242424</color>
+
+    <color name="workshop">#FF009688</color>
+    <color name="talk">#FFE91E63</color>
+    <color name="speaker">#FF3F51B5</color>
+    <color name="update">#FFE51C23</color>
+    <color name="food">#FFFF5722</color>
 </resources>

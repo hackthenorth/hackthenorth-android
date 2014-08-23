@@ -2,7 +2,7 @@ package com.hackthenorth.android.model;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.hackthenorth.android.util.DateTimeUtil;
+import com.hackthenorth.android.util.DateFormatter;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -15,8 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ScheduleItem extends Model {
-
     private static final String TAG = "Update";
+
+    public static final String TYPE_EVENT = "event";
+    public static final String TYPE_WORKSHOP = "workshop";
+    public static final String TYPE_TALK = "talk";
+    public static final String TYPE_SPEAKER = "speaker";
+    public static final String TYPE_UPDATE = "update";
+    public static final String TYPE_FOOD = "food";
+
     public String id;
 
     public String type;
@@ -52,7 +59,7 @@ public class ScheduleItem extends Model {
             @Override
             public int compare(ScheduleItem lhs, ScheduleItem rhs) {
                 // Sort the schedule items by start_time
-                SimpleDateFormat format = DateTimeUtil.getISO8601SimpleDateFormat();
+                SimpleDateFormat format = DateFormatter.getISO8601SimpleDateFormat();
                 Date lhsStartTime = null;
                 try {
                     lhsStartTime = format.parse(lhs.start_time);
