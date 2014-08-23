@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.hackthenorth.android.ui.component.RippleView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp" />
+
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/activityName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:paddingRight="16dp"
+            android:paddingTop="20dp"
+            android:textSize="16sp"
+            app:typeface="roboto_regular"
+            />
+
+    </LinearLayout>
+</com.hackthenorth.android.ui.component.RippleView>

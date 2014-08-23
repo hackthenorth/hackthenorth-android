@@ -30,8 +30,10 @@ import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Instruction;
 import com.hackthenorth.android.model.Model;
 import com.hackthenorth.android.model.ScheduleItem;
+import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
 import com.hackthenorth.android.util.DateFormatter;
-import com.hackthenorth.android.ui.ConfirmDialogFragment.ConfirmDialogFragmentListener;
+import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
+import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFragmentListener;
 
 /**
  * A fragment for displaying lists of Update.

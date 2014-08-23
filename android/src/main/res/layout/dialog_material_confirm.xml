@@ -25,7 +25,6 @@
             style="@style/TextViewStyleSecondary"
             android:textSize="16sp"
             app:typeface="roboto_regular" />
-
     </LinearLayout>
 
     <RelativeLayout

@@ -31,7 +31,6 @@
     <string name="setting_notifications">Notifications</string>
     <string name="setting_notification_sound">Sound</string>
     <string name="setting_notification_vibrate">Vibrate</string>
-    <string name="send_email_to_prize_contact">Send Email To Prize Contact:</string>
 
     <!-- Settings summaries -->
     <string name="setting_notifications_summary">Notify me when there\'s new updates</string>
@@ -42,5 +41,8 @@
     <string name="calendar_dialog_message">Would you like to add the \"%s\" schedule item to your calendar?</string>
     <string name="dialog_button_yes">YES</string>
     <string name="dialog_button_cancel">CANCEL</string>
+    <string name="prize_dialog_title">Email the prize contact?</string>
+    <string name="prize_dialog_message">We have an email address for contacting someone about the \"%s\" prize. Would you like to email them?</string>
+    <string name="send_email">Send Email</string>
 
 </resources>

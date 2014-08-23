@@ -1,14 +1,12 @@
 package com.hackthenorth.android.ui;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.BroadcastReceiver;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +19,20 @@ import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Prize;
 import com.hackthenorth.android.ui.component.TextView;
+import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
+import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFragmentListener;
+import com.hackthenorth.android.ui.dialog.IntentChooserDialogFragment;
 
 import java.util.ArrayList;
 
-public class PrizesFragment extends BaseListFragment {
+public class PrizesFragment extends BaseListFragment implements
+        ConfirmDialogFragmentListener {
+
     public static final String TAG = "UpdateListFragment";
+
+    public static final String CONFIRM_DIALOG_TAG = "ConfirmDialog";
+    public static final String CONFIRM_DIALOG_POSITION_KEY = "position";
+    private static final String INTENT_CHOOSER_DIALOG_FRAGMENT = "intentChooserDialogFragment";
 
     private ListView mListView;
     private ArrayList<Prize> mData = new ArrayList<Prize>();
@@ -35,8 +42,8 @@ public class PrizesFragment extends BaseListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Create adapter
         mAdapter = new PrizesFragmentAdapter(activity, R.layout.prizes_list_item, mData);
+        mAdapter.setFragment(this);
 
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_PRIZES, mAdapter);
 
@@ -94,9 +101,39 @@ public class PrizesFragment extends BaseListFragment {
         }.execute();
     }
 
+    @Override
+    public void onPositiveClick(ConfirmDialogFragment fragment) {
+
+        // Start the intent chooser for this prize.
+        int position = fragment.getArguments().getInt(CONFIRM_DIALOG_POSITION_KEY);
+        Prize prize = mData.get(position);
+
+        String[] receipients = { prize.contact };
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, receipients);
+
+        String subject = String.format("Regarding the Hack The North prize"
+                + " \"%s\"", prize.name);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+
+        String title = getActivity().getString(R.string.send_email);
+
+        DialogFragment dialog = IntentChooserDialogFragment.getInstance(intent,
+                getActivity(), title);
+        dialog.show(getFragmentManager(), INTENT_CHOOSER_DIALOG_FRAGMENT);
+    }
+
+    @Override
+    public void onNegativeClick(ConfirmDialogFragment fragment) {
+        // Do nothing
+    }
+
     public static class PrizesFragmentAdapter extends ArrayAdapter<Prize> {
         private int mResource;
         private ArrayList<Prize> mData;
+        private PrizesFragment mFragment;
 
         public PrizesFragmentAdapter(Context context, int resource,
                                      ArrayList<Prize> objects) {
@@ -106,7 +143,11 @@ public class PrizesFragment extends BaseListFragment {
             mData = objects;
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public void setFragment(PrizesFragment f) {
+            mFragment = f;
+        }
+
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 // If we don't have a view to reuse, inflate a new one.
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
@@ -122,20 +163,27 @@ public class PrizesFragment extends BaseListFragment {
                 @Override
                 public void onClick(View view) {
 
-                    String[] receipients = { prize.contact };
+                    Resources res = view.getContext().getResources();
+                    String title = res.getString(R.string.prize_dialog_title);
+                    String message = String.format(res.getString(R.string.prize_dialog_message),
+                            prize.name);
+                    String yes = res.getString(R.string.dialog_button_yes);
+                    String cancel = res.getString(R.string.dialog_button_cancel);
 
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.setType("plain/text");
-                    intent.putExtra(Intent.EXTRA_EMAIL, receipients);
+                    ConfirmDialogFragment dialog = ConfirmDialogFragment.getInstance(
+                            title, message, yes, cancel);
 
-                    String subject = String.format("Regarding the Hack The North prize"
-                            + " \"%s\"", prize.name);
-                    intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                    // Set the target fragment for the callback
+                    dialog.setTargetFragment(mFragment, 0);
 
-                    String title = view.getContext()
-                            .getString(R.string.send_email_to_prize_contact);
-                    intent = Intent.createChooser(intent, title);
-                    view.getContext().startActivity(intent);
+                    // Keep track of the position here so the fragment knows which
+                    // intent to send off.
+                    Bundle args = dialog.getArguments();
+                    args.putInt(CONFIRM_DIALOG_POSITION_KEY, position);
+                    dialog.setArguments(args);
+
+                    // Add the dialog to the fragment.
+                    dialog.show(mFragment.getFragmentManager(), CONFIRM_DIALOG_TAG);
                 }
             });
 

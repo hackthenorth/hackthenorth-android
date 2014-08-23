@@ -1,4 +1,4 @@
-package com.hackthenorth.android.ui;
+package com.hackthenorth.android.ui.dialog;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
