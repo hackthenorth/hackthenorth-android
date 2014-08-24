@@ -4,23 +4,28 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
-import com.hackthenorth.android.util.Units;
+
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RippleView extends FrameLayout {
 
-    private float mDownX;
-    private float mDownY;
+    private static final String TAG = "RippleView";
 
-    private float mRadius;
-
-    private Paint mPaint;
+    private Set<Animator> animatorSet = Collections.newSetFromMap(
+            new ConcurrentHashMap<Animator, Boolean>());
 
     public RippleView(Context context) {
         super(context);
@@ -38,8 +43,6 @@ public class RippleView extends FrameLayout {
     }
 
     private void init() {
-        mPaint = new Paint();
-        setAlpha(0);
         setClickable(true);
         setFocusable(true);
     }
@@ -47,60 +50,100 @@ public class RippleView extends FrameLayout {
     @Override
     public boolean onTouchEvent(@NonNull final MotionEvent event) {
         if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-            mDownX = event.getX();
-            mDownY = event.getY();
 
-            int endRadius = Units.dpToPx(getContext(), 128);
+            int endRadius = (int)getEndRadius(event.getX(), event.getY());
+
+            final Animator animator = new Animator(this, event.getX(), event.getY(), endRadius);
+            int totalDuration = endRadius / 2;
 
             // Animate the alpha in quickly
-            final ObjectAnimator fadeInAnimator = ObjectAnimator.ofInt(this, "alpha", 0, 25);
+            final ObjectAnimator fadeInAnimator = ObjectAnimator.ofInt(animator, "alpha", 0, 25);
             fadeInAnimator.setInterpolator(new AccelerateInterpolator());
             fadeInAnimator.setDuration(100);
 
             // Animate the circle to a set length
-            final ObjectAnimator circleAnimator = ObjectAnimator.ofFloat(this, "radius", 0, endRadius * 2);
+            final ObjectAnimator circleAnimator = ObjectAnimator.ofFloat(animator, "radius", 0, endRadius);
             circleAnimator.setInterpolator(new DecelerateInterpolator());
-            circleAnimator.setDuration(400);
+            circleAnimator.setDuration(totalDuration);
 
             // Fade out gently
-            final ObjectAnimator fadeOutAnimator = ObjectAnimator.ofInt(this, "alpha", 25, 0);
+            int delay = 150;
+            final ObjectAnimator fadeOutAnimator = ObjectAnimator.ofInt(animator, "alpha", 25, 0);
             fadeOutAnimator.setInterpolator(new LinearInterpolator());
-            fadeOutAnimator.setStartDelay(150);
-            fadeOutAnimator.setDuration(300);
+            fadeOutAnimator.setStartDelay(delay);
+            fadeOutAnimator.setDuration(totalDuration - delay);
 
-            // Run the animations in a separate thread so that they aren't
-            // made choppy by performing other actions, ex. parsing data to
-            // be passed into an intent to add to calendar and then showing
-            // a dialog.
-            new Runnable() {
+            // Add the animation to the map, and remove it after the duration amount
+            animatorSet.add(animator);
+            new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    fadeInAnimator.start();
-                    circleAnimator.start();
-                    fadeOutAnimator.start();
+                    animatorSet.remove(animator);
                 }
-            }.run();
+            }, totalDuration);
+
+            fadeInAnimator.start();
+            circleAnimator.start();
+            fadeOutAnimator.start();
         }
 
-        super.onTouchEvent(event);
         return true;
     }
 
-    public void setRadius(final float radius) {
-        mRadius = radius;
-        invalidate();
-    }
+    private float getEndRadius(float x, float y) {
+        // Return length of the longest line from the given (x,y) point to a point
+        // on the bounds of the view.
 
-    public void setAlpha(final int alpha) {
-        mPaint.setAlpha(alpha);
-        invalidate();
+        float upperLeft = x * x + y * y;
+        float upperRight = (x - getWidth()) * (x - getWidth()) + y * y;
+        float lowerLeft = x * x + (y - getHeight()) * (y - getHeight());
+        float lowerRight = upperRight + lowerLeft - upperLeft;
+
+        float max = Math.max(Math.max(Math.max(upperLeft, upperRight), lowerLeft),
+                lowerRight);
+
+        return (float)Math.sqrt(max);
     }
 
     @Override
     protected void onDraw(@NonNull final Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawCircle(mDownX, mDownY, mRadius, mPaint);
-        canvas.drawRect(0, 0, getWidth(), getHeight(), mPaint);
+        for (Animator a : animatorSet) {
+            canvas.drawCircle(a.x, a.y, a.radius, a.paint);
+            canvas.drawRect(0, 0, getWidth(), getHeight(), a.paint);
+        }
+    }
+
+    private static class Animator {
+
+        public float x;
+        public float y;
+        public float radius;
+        public Paint paint;
+
+        private WeakReference<View> mView;
+
+        public Animator(View view, float downX, float downY, float radius) {
+            mView = new WeakReference<View>(view);
+            x = downX;
+            y = downY;
+            this.radius = radius;
+            paint = new Paint();
+        }
+
+        public void setRadius(final float radius) {
+            this.radius = radius;
+            if (mView.get() != null) {
+                mView.get().invalidate();
+            }
+        }
+
+        public void setAlpha(final int alpha) {
+            paint.setAlpha(alpha);
+            if (mView.get() != null) {
+                mView.get().invalidate();
+            }
+        }
     }
 }
