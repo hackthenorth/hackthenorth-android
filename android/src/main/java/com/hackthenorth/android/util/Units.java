@@ -16,4 +16,9 @@ public class Units {
         int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return dp;
     }
+
+    public static double dpToPx(Context context, double dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
 }

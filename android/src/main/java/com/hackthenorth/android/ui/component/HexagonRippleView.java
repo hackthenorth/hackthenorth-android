@@ -4,21 +4,24 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Region;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.hackthenorth.android.R;
 import com.hackthenorth.android.util.Units;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.Stack;
+import java.util.WeakHashMap;
 
 public class HexagonRippleView extends RippleView {
 
     private static final String TAG = "HexagonRippleView";
-    // O(n) drawing is fine because n won't ever be too large
-    // Could maybe use a breadth-first graph traversal if it gets to that point though heh
+
     ArrayList<RegularHexagon> mHexagons = new ArrayList<RegularHexagon>();
 
     public HexagonRippleView(Context context) {
@@ -33,20 +36,32 @@ public class HexagonRippleView extends RippleView {
 
     @Override
     public void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
-        int radius = Units.dpToPx(getContext(), 40);
-        int d = (int)(4 * radius * Math.cos(11 * Math.PI / 6));
+        // The radius of the bounding circle of the hexagon
+        double radius = Units.dpToPx(getContext(), 50);
+
+        // The length of the shortest line segment where one endpoint is the center
+        // and the other resides on the boundary of the hexagon
+        double smallRadius = Math.sqrt(radius * radius * 3.0d / 4.0d);
 
         boolean stagger = false;
-        for (int i = 0; i < h + radius; i += radius) {
-            int j = 0;
-            if (stagger) {
-                j = (int)(2 * radius * Math.cos(11 * Math.PI / 6));
-            }
-            stagger = !stagger;
 
-            for (; j < w + radius; j += d) {
+        double vadjust = Units.dpToPx(getContext(), 0.0d);
+        double hadjust = (radius * radius) / (250.0d * 250.0d);
+
+        for (double i = 0; i < h + radius; i += smallRadius + vadjust) {
+            double j = 0.0d;
+            if (stagger) {
+                j = (int)(2 * smallRadius * Math.cos(11 * Math.PI / 6));
+            }
+
+            for (; j < w + radius; j += 3 * radius) {
+                if (stagger) {
+                    j += hadjust;
+                }
+
                 mHexagons.add(new RegularHexagon(j, i, radius));
             }
+            stagger = !stagger;
         }
     }
 
@@ -56,12 +71,22 @@ public class HexagonRippleView extends RippleView {
         red.setColor(android.graphics.Color.RED);
         red.setStyle(Paint.Style.FILL_AND_STROKE);
 
+        canvas.clipRect(getPaddingLeft(), getPaddingTop(),
+                getWidth() - getPaddingRight(),
+                getHeight() - getPaddingBottom(),
+                Region.Op.REPLACE);
+
         for (Animator animator : animatorSet) {
-            for (RegularHexagon hexagon : mHexagons) {
-                if (dist(animator.x, animator.y, hexagon.x, hexagon.y) - 50 <= animator.radius) {
-                    hexagon.draw(canvas, animator.paint);
+            if (animator.paint.getAlpha() > 5) {
+                for (RegularHexagon hexagon : mHexagons) {
+                    double d = dist(animator.x, animator.y, hexagon.x, hexagon.y);
+
+                    if (d - 100 < animator.radius) {
+                        hexagon.draw(getContext(), canvas, animator.paint, animator);
+                    }
                 }
             }
+            canvas.drawRect(0, 0, getWidth(), getHeight(), animator.paint);
         }
     }
 
@@ -88,6 +113,7 @@ public class HexagonRippleView extends RippleView {
         public double x;
         public double y;
         public double radius;
+        public WeakHashMap<Animator, Integer> colors = new WeakHashMap<Animator, Integer>();
 
         public RegularHexagon(double x, double y, double radius) {
             this.x = x;
@@ -109,10 +135,23 @@ public class HexagonRippleView extends RippleView {
             return results;
         }
 
-        public void draw(Canvas canvas, Paint paint) {
+        public void draw(Context context, Canvas canvas, Paint paint, Animator animator) {
             paint.setStrokeWidth(1);
-            paint.setStyle(Paint.Style.FILL_AND_STROKE);
-            paint.setAntiAlias(true);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setAntiAlias(false);
+
+            paint = new Paint(paint);
+            // Setting the color resets the alpha, so keep track of it as we set the color
+            int alpha = paint.getAlpha();
+            Integer color = colors.get(animator);
+            if (color == null) {
+                color = Math.round(6 * Math.random()) % 4 == 0 ?
+                        context.getResources().getColor(R.color.theme_primary) :
+                        context.getResources().getColor(R.color.background_gray);
+                colors.put(animator, color);
+            }
+            paint.setColor(color);
+            paint.setAlpha(alpha);
 
             Path path = new Path();
             path.setFillType(Path.FillType.EVEN_ODD);

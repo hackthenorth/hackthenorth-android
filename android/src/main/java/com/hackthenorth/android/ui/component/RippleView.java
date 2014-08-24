@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Region;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -59,11 +60,14 @@ public class RippleView extends FrameLayout {
 
             long touchDuration = eventUp - eventDown;
             touchDuration = touchDuration < 250 ? 250 : (touchDuration > 2000 ? 2000 : touchDuration);
+            long longTouch = 2000; // 2 whole seconds!
 
-            int endRadius = Units.dpToPx(getContext(), (int) (touchDuration / 2));
+            float ratio = (float)Math.sqrt((float)longTouch / (float) touchDuration);
+
+            int endRadius = (int)getEndRadius(event.getX(), event.getY());//Units.dpToPx(getContext(), (int) (80 * ratio));
 
             final Animator animator = new Animator(this, event.getX(), event.getY(), endRadius);
-            int totalDuration = endRadius;
+            int totalDuration = endRadius / 2;
 
             // Animate the alpha in quickly
             final ObjectAnimator fadeInAnimator = ObjectAnimator.ofInt(animator, "alpha", 0, 25);
@@ -120,6 +124,12 @@ public class RippleView extends FrameLayout {
     }
 
     protected void drawRipple(@NonNull final Canvas canvas) {
+
+        canvas.clipRect(getPaddingLeft(), getPaddingTop(),
+                getWidth() - getPaddingRight(),
+                getHeight() - getPaddingBottom(),
+                Region.Op.REPLACE);
+
         for (Animator a : animatorSet) {
             canvas.drawCircle(a.x, a.y, a.radius, a.paint);
             canvas.drawRect(0, 0, getWidth(), getHeight(), a.paint);

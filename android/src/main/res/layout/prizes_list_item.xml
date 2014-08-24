@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.hackthenorth.android.ui.component.RippleView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hackthenorth.android.ui.component.HexagonRippleView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/card_background"
     android:layout_width="match_parent"
@@ -46,5 +47,5 @@
 
     </LinearLayout>
 
-</com.hackthenorth.android.ui.component.RippleView>
+</com.hackthenorth.android.ui.component.HexagonRippleView>
 

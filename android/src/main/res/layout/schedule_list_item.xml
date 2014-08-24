@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.hackthenorth.android.ui.component.RippleView
+<com.hackthenorth.android.ui.component.HexagonRippleView
     android:id="@+id/schedule_list_item"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -45,4 +45,4 @@
 
     </LinearLayout>
 
-</com.hackthenorth.android.ui.component.RippleView>
+</com.hackthenorth.android.ui.component.HexagonRippleView>
