@@ -40,6 +40,9 @@ public class HexagonRippleView extends RippleView {
     }
 
     private void initializeHexagons(int w, int h, int ow, int oh) {
+
+        // Set the ripple radius and duration
+
         if (w != ow || h != oh) {
             // Clear the hexagons
             mHexagons.clear();

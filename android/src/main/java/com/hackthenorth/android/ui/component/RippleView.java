@@ -26,10 +26,11 @@ public class RippleView extends FrameLayout {
 
     private static final String TAG = "RippleView";
 
-    protected Set<Animator> animatorSet = Collections.newSetFromMap(new ConcurrentHashMap<Animator, Boolean>());
+    // -1 to indicate that the user hasn't called setRadius or setDuration.
+    public static final int RADIUS_DEFAULT = -1;
+    public static final int DURATION_DEFAULT = -1;
 
-    private long eventDown;
-    private long eventUp;
+    protected Set<Animator> animatorSet = Collections.newSetFromMap(new ConcurrentHashMap<Animator, Boolean>());
 
     public RippleView(Context context) {
         super(context);
@@ -53,21 +54,14 @@ public class RippleView extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(@NonNull final MotionEvent event) {
-        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            eventDown = System.currentTimeMillis();
-        } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-            eventUp = System.currentTimeMillis();
+        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
 
-            long touchDuration = eventUp - eventDown;
-            touchDuration = touchDuration < 250 ? 250 : (touchDuration > 2000 ? 2000 : touchDuration);
-            long longTouch = 2000; // 2 whole seconds!
+            // Calculate the radius and the total duration.
+            int endRadius = calculateRadius(event);
+            int totalDuration = calculateDuration(event, endRadius);
 
-            float ratio = (float)Math.sqrt((float)longTouch / (float) touchDuration);
-
-            int endRadius = (int)getEndRadius(event.getX(), event.getY());//Units.dpToPx(getContext(), (int) (80 * ratio));
-
+            // Create an Animator object to hold the information for this animation.
             final Animator animator = new Animator(this, event.getX(), event.getY(), endRadius);
-            int totalDuration = endRadius / 2;
 
             // Animate the alpha in quickly
             final ObjectAnimator fadeInAnimator = ObjectAnimator.ofInt(animator, "alpha", 0, 25);
@@ -102,21 +96,6 @@ public class RippleView extends FrameLayout {
         return true;
     }
 
-    private float getEndRadius(float x, float y) {
-        // Return length of the longest line from the given (x,y) point to a point
-        // on the bounds of the view.
-
-        float upperLeft = x * x + y * y;
-        float upperRight = (x - getWidth()) * (x - getWidth()) + y * y;
-        float lowerLeft = x * x + (y - getHeight()) * (y - getHeight());
-        float lowerRight = upperRight + lowerLeft - upperLeft;
-
-        float max = Math.max(Math.max(Math.max(upperLeft, upperRight), lowerLeft),
-                lowerRight);
-
-        return (float)Math.sqrt(max);
-    }
-
     @Override
     protected void onDraw(@NonNull final Canvas canvas) {
         super.onDraw(canvas);
@@ -134,6 +113,37 @@ public class RippleView extends FrameLayout {
             canvas.drawCircle(a.x, a.y, a.radius, a.paint);
             canvas.drawRect(0, 0, getWidth(), getHeight(), a.paint);
         }
+    }
+
+    /**
+     * Calculates the terminal radius of the ripple in pixels. Override this method to
+     * provide a different radius.
+     * @param ev The ACTION_UP event that causes the ripple.
+     * @return The terminal radius of the ripple in pixels.
+     */
+    protected int calculateRadius(MotionEvent ev) {
+        // Calculate the radius as a function of the length of the touch.
+        long touchDuration = ev.getEventTime() - ev.getDownTime();
+
+        // Normalize touch duration: 250ms <= dur <= 2000ms
+        touchDuration = touchDuration < 250 ? 250 :
+                (touchDuration > 2000 ? 2000 : touchDuration);
+
+        long longTouch = 2000;
+        float ratio = (float)Math.sqrt((float) longTouch / (float) touchDuration);
+        return Units.dpToPx(getContext(), (int) (80 * ratio));
+    }
+
+    /**
+     * Calculates the duration of the ripple in milliseconds.
+     * @param ev The ACTION_UP event that caused the ripple.
+     * @param radius The terminal radius of the ripple as calculated in calculateRadius().
+     *               It is provided out of convenience since the duration is often a
+     *               function of the size of the ripple.
+     * @return The length in milliseconds of the ripple.
+     */
+    protected int calculateDuration(MotionEvent ev, int radius) {
+        return radius < 500 ? 500 : radius;
     }
 
     protected static class Animator {
