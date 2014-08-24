@@ -24,7 +24,7 @@ public class RippleView extends FrameLayout {
 
     private static final String TAG = "RippleView";
 
-    private Set<Animator> animatorSet = Collections.newSetFromMap(
+    protected Set<Animator> animatorSet = Collections.newSetFromMap(
             new ConcurrentHashMap<Animator, Boolean>());
 
     public RippleView(Context context) {
@@ -115,7 +115,7 @@ public class RippleView extends FrameLayout {
         }
     }
 
-    private static class Animator {
+    protected static class Animator {
 
         public float x;
         public float y;
