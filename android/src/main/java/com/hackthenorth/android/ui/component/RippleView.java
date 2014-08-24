@@ -55,7 +55,7 @@ public class RippleView extends FrameLayout {
     public boolean onTouchEvent(@NonNull final MotionEvent event) {
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
             eventDown = System.currentTimeMillis();
-        } else if (event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+        } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
             eventUp = System.currentTimeMillis();
 
             long touchDuration = eventUp - eventDown;

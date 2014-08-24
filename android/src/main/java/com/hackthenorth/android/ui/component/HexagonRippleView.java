@@ -36,32 +36,41 @@ public class HexagonRippleView extends RippleView {
 
     @Override
     public void onSizeChanged(int w, int h, int oldWidth, int oldHeight) {
-        // The radius of the bounding circle of the hexagon
-        double radius = Units.dpToPx(getContext(), 50);
+        initializeHexagons(w, h, oldWidth, oldHeight);
+    }
 
-        // The length of the shortest line segment where one endpoint is the center
-        // and the other resides on the boundary of the hexagon
-        double smallRadius = Math.sqrt(radius * radius * 3.0d / 4.0d);
+    private void initializeHexagons(int w, int h, int ow, int oh) {
+        if (w != ow || h != oh) {
+            // Clear the hexagons
+            mHexagons.clear();
 
-        boolean stagger = false;
+            // The radius of the bounding circle of the hexagon
+            double radius = Units.dpToPx(getContext(), 50);
 
-        double vadjust = Units.dpToPx(getContext(), 0.0d);
-        double hadjust = (radius * radius) / (250.0d * 250.0d);
+            // The length of the shortest line segment where one endpoint is the center
+            // and the other resides on the boundary of the hexagon
+            double smallRadius = Math.sqrt(radius * radius * 3.0d / 4.0d);
 
-        for (double i = 0; i < h + radius; i += smallRadius + vadjust) {
-            double j = 0.0d;
-            if (stagger) {
-                j = (int)(2 * smallRadius * Math.cos(11 * Math.PI / 6));
-            }
+            boolean stagger = false;
 
-            for (; j < w + radius; j += 3 * radius) {
+            double vadjust = Units.dpToPx(getContext(), 0.0d);
+            double hadjust = (radius * radius) / (250.0d * 250.0d);
+
+            for (double i = 0; i < h + radius; i += smallRadius + vadjust) {
+                double j = 0.0d;
                 if (stagger) {
-                    j += hadjust;
+                    j = (int) (2 * smallRadius * Math.cos(11 * Math.PI / 6));
                 }
 
-                mHexagons.add(new RegularHexagon(j, i, radius));
+                for (; j < w + radius; j += 3 * radius) {
+                    if (stagger) {
+                        j += hadjust;
+                    }
+
+                    mHexagons.add(new RegularHexagon(j, i, radius));
+                }
+                stagger = !stagger;
             }
-            stagger = !stagger;
         }
     }
 
