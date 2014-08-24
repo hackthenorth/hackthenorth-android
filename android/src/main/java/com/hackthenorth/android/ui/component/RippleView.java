@@ -108,7 +108,10 @@ public class RippleView extends FrameLayout {
     @Override
     protected void onDraw(@NonNull final Canvas canvas) {
         super.onDraw(canvas);
+        drawRipple(canvas);
+    }
 
+    protected void drawRipple(@NonNull final Canvas canvas) {
         for (Animator a : animatorSet) {
             canvas.drawCircle(a.x, a.y, a.radius, a.paint);
             canvas.drawRect(0, 0, getWidth(), getHeight(), a.paint);
