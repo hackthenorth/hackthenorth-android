@@ -14,6 +14,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
+import com.hackthenorth.android.util.Units;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -24,8 +25,10 @@ public class RippleView extends FrameLayout {
 
     private static final String TAG = "RippleView";
 
-    protected Set<Animator> animatorSet = Collections.newSetFromMap(
-            new ConcurrentHashMap<Animator, Boolean>());
+    protected Set<Animator> animatorSet = Collections.newSetFromMap(new ConcurrentHashMap<Animator, Boolean>());
+
+    private long eventDown;
+    private long eventUp;
 
     public RippleView(Context context) {
         super(context);
@@ -49,12 +52,18 @@ public class RippleView extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(@NonNull final MotionEvent event) {
-        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            eventDown = System.currentTimeMillis();
+        } else if (event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+            eventUp = System.currentTimeMillis();
 
-            int endRadius = (int)getEndRadius(event.getX(), event.getY());
+            long touchDuration = eventUp - eventDown;
+            touchDuration = touchDuration < 250 ? 250 : (touchDuration > 2000 ? 2000 : touchDuration);
+
+            int endRadius = Units.dpToPx(getContext(), (int) (touchDuration / 2));
 
             final Animator animator = new Animator(this, event.getX(), event.getY(), endRadius);
-            int totalDuration = endRadius / 2;
+            int totalDuration = endRadius;
 
             // Animate the alpha in quickly
             final ObjectAnimator fadeInAnimator = ObjectAnimator.ofInt(animator, "alpha", 0, 25);
@@ -67,11 +76,10 @@ public class RippleView extends FrameLayout {
             circleAnimator.setDuration(totalDuration);
 
             // Fade out gently
-            int delay = 150;
             final ObjectAnimator fadeOutAnimator = ObjectAnimator.ofInt(animator, "alpha", 25, 0);
             fadeOutAnimator.setInterpolator(new LinearInterpolator());
-            fadeOutAnimator.setStartDelay(delay);
-            fadeOutAnimator.setDuration(totalDuration - delay);
+            fadeOutAnimator.setStartDelay(totalDuration / 2);
+            fadeOutAnimator.setDuration(totalDuration / 2);
 
             // Add the animation to the map, and remove it after the duration amount
             animatorSet.add(animator);
