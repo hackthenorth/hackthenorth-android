@@ -31,7 +31,7 @@ public class HTTPFirebase {
                            final String action) {
 
         // First, broadcast any cached data that we have.
-        String cached = getCachedJSON(context, path);
+        final String cached = getCachedJSON(context, path);
         if (cached != null) {
             Intent intent = new Intent(action);
             intent.putExtra(action, cached);
@@ -47,7 +47,12 @@ public class HTTPFirebase {
             protected String doInBackground(Void... nothingness) {
                 String url = String.format("https://%s.firebaseio.com/%s.json",
                         FIREBASE_ID, path);
-                return HTTPRequests.GET(url);
+                String val = HTTPRequests.GET(url);
+                if (cached == null || !cached.equals(val)) {
+                    return val;
+                } else {
+                    return null;
+                }
             }
             
             @Override
