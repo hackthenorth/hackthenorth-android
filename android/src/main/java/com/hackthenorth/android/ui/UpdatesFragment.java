@@ -111,6 +111,8 @@ public class UpdatesFragment extends BaseListFragment {
                                 for (int i = 0; i < newData.size(); i++) {
                                     mData.set(i, newData.get(i));
                                 }
+
+                                mAdapter.notifyDataSetChanged();
                             }
                         }
                     });
