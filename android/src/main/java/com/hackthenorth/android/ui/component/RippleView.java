@@ -97,8 +97,8 @@ public class RippleView extends FrameLayout {
     }
 
     @Override
-    protected void onDraw(@NonNull final Canvas canvas) {
-        super.onDraw(canvas);
+    protected void dispatchDraw(@NonNull final Canvas canvas) {
+        super.dispatchDraw(canvas);
         drawRipple(canvas);
     }
 
