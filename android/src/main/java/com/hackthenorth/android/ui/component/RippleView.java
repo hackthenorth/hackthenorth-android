@@ -1,10 +1,12 @@
 package com.hackthenorth.android.ui.component;
 
 import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Region;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -26,28 +28,17 @@ public class RippleView extends FrameLayout {
 
     private static final String TAG = "RippleView";
 
-    // -1 to indicate that the user hasn't called setRadius or setDuration.
-    public static final int RADIUS_DEFAULT = -1;
-    public static final int DURATION_DEFAULT = -1;
-
     protected Set<Animator> animatorSet = Collections.newSetFromMap(new ConcurrentHashMap<Animator, Boolean>());
 
     public RippleView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
-
     public RippleView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
-
     public RippleView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
-    }
 
-    private void init() {
         setClickable(true);
         setFocusable(true);
     }
@@ -55,45 +46,47 @@ public class RippleView extends FrameLayout {
     @Override
     public boolean onTouchEvent(@NonNull final MotionEvent event) {
         if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-
-            // Calculate the radius and the total duration.
-            int endRadius = calculateRadius(event);
-            int totalDuration = calculateDuration(event, endRadius);
-
-            // Create an Animator object to hold the information for this animation.
-            final Animator animator = new Animator(this, event.getX(), event.getY(), endRadius);
-
-            // Animate the alpha in quickly
-            final ObjectAnimator fadeInAnimator = ObjectAnimator.ofInt(animator, "alpha", 0, 25);
-            fadeInAnimator.setInterpolator(new AccelerateInterpolator());
-            fadeInAnimator.setDuration(100);
-
-            // Animate the circle to a set length
-            final ObjectAnimator circleAnimator = ObjectAnimator.ofFloat(animator, "radius", 0, endRadius);
-            circleAnimator.setInterpolator(new DecelerateInterpolator());
-            circleAnimator.setDuration(totalDuration);
-
-            // Fade out gently
-            final ObjectAnimator fadeOutAnimator = ObjectAnimator.ofInt(animator, "alpha", 25, 0);
-            fadeOutAnimator.setInterpolator(new LinearInterpolator());
-            fadeOutAnimator.setStartDelay(totalDuration / 2);
-            fadeOutAnimator.setDuration(totalDuration / 2);
-
-            // Add the animation to the map, and remove it after the duration amount
-            animatorSet.add(animator);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    animatorSet.remove(animator);
-                }
-            }, totalDuration);
-
-            fadeInAnimator.start();
-            circleAnimator.start();
-            fadeOutAnimator.start();
+            startRippleAnimation(event);
         }
+        return super.onTouchEvent(event);
+    }
 
-        return true;
+    public void startRippleAnimation(MotionEvent event) {
+        // Calculate the radius and the total duration.
+        int endRadius = calculateRadius(event);
+        int totalDuration = calculateDuration(event, endRadius);
+
+        // Create an Animator object to hold the information for this animation.
+        final Animator animator = new Animator(this, event.getX(), event.getY(), endRadius);
+
+        // Animate the alpha in quickly
+        final ObjectAnimator fadeInAnimator = ObjectAnimator.ofInt(animator, "alpha", 0, 25);
+        fadeInAnimator.setInterpolator(new AccelerateInterpolator());
+        fadeInAnimator.setDuration(100);
+
+        // Animate the circle to a set length
+        final ObjectAnimator circleAnimator = ObjectAnimator.ofFloat(animator, "radius", 0, endRadius);
+        circleAnimator.setInterpolator(new DecelerateInterpolator());
+        circleAnimator.setDuration(totalDuration);
+
+        // Fade out gently
+        final ObjectAnimator fadeOutAnimator = ObjectAnimator.ofInt(animator, "alpha", 25, 0);
+        fadeOutAnimator.setInterpolator(new LinearInterpolator());
+        fadeOutAnimator.setStartDelay(totalDuration / 2);
+        fadeOutAnimator.setDuration(totalDuration / 2);
+
+        // Add the animation to the map, and remove it after the duration amount
+        animatorSet.add(animator);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                animatorSet.remove(animator);
+            }
+        }, totalDuration);
+
+        fadeInAnimator.start();
+        circleAnimator.start();
+        fadeOutAnimator.start();
     }
 
     @Override
