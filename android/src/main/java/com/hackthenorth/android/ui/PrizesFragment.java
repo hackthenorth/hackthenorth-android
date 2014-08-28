@@ -54,7 +54,7 @@ public class PrizesFragment extends BaseListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the view and return it
-        View view = inflater.inflate(R.layout.prizes_fragment, container, false);
+        View view = inflater.inflate(R.layout.list_fragment_cards, container, false);
 
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);

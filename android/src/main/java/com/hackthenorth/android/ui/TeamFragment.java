@@ -54,7 +54,7 @@ public class TeamFragment extends BaseListFragment {
                              Bundle savedInstanceState) {
 
         // Inflate the view and return it
-        View view = inflater.inflate(R.layout.team_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.list_fragment, container, false);
 
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
