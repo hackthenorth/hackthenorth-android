@@ -171,7 +171,7 @@ public class PrizesFragment extends BaseListFragment implements
                         String title = res.getString(R.string.prize_dialog_title);
                         String message = String.format(res.getString(R.string.prize_dialog_message),
                                 prize.name);
-                        String yes = res.getString(R.string.dialog_button_yes);
+                        String yes = res.getString(R.string.prize_dialog_confirm);
                         String cancel = res.getString(R.string.dialog_button_cancel);
 
                         ConfirmDialogFragment dialog = ConfirmDialogFragment.getInstance(

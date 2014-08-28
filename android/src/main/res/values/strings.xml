@@ -39,10 +39,11 @@
 
     <string name="calendar_dialog_title">Add Event to Calendar?</string>
     <string name="calendar_dialog_message">Would you like to add the \"%s\" schedule item to your calendar?</string>
-    <string name="dialog_button_yes">YES</string>
-    <string name="dialog_button_cancel">CANCEL</string>
+    <string name="dialog_button_yes">HELL YEAH!</string>
+    <string name="dialog_button_cancel">NO THANKS</string>
     <string name="prize_dialog_title">Have questions about this prize?</string>
     <string name="prize_dialog_message">We have an email address for contacting someone about the \"%s\" prize. Would you like to email them?</string>
+    <string name="prize_dialog_confirm">SURE, HOOK ME UP!</string>
     <string name="send_email">Send Email</string>
 
 </resources>

@@ -45,7 +45,7 @@ public class ConfirmDialogFragment extends DialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         Bundle args = getArguments();
-        View view = inflater.inflate(R.layout.dialog_material_confirm, null);
+        View view = inflater.inflate(R.layout.dialog_confirm, null);
 
         // Get the listener for this dialog out of the static map.
         ConfirmDialogFragmentListener t_listener;
