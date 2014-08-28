@@ -15,7 +15,7 @@ public class TeamMember extends Model {
     public String name;
     public String avatar;
     public ArrayList<String> role;
-    public String Phone;
+    public String phone;
     public String email;
     public String twitter;
 

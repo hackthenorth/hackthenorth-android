@@ -158,34 +158,39 @@ public class PrizesFragment extends BaseListFragment implements
             // Get the data for this position
             final Prize prize = mData.get(position);
 
-            // Compose email on tap
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            // Compose email on tap if we have a contact email address
+            if (prize.contact == null) {
+                convertView.setOnClickListener(null);
+            } else {
+                convertView.setOnClickListener(new View.OnClickListener() {
 
-                    Resources res = view.getContext().getResources();
-                    String title = res.getString(R.string.prize_dialog_title);
-                    String message = String.format(res.getString(R.string.prize_dialog_message),
-                            prize.name);
-                    String yes = res.getString(R.string.dialog_button_yes);
-                    String cancel = res.getString(R.string.dialog_button_cancel);
+                    @Override
+                    public void onClick(View view) {
 
-                    ConfirmDialogFragment dialog = ConfirmDialogFragment.getInstance(
-                            title, message, yes, cancel);
+                        Resources res = view.getContext().getResources();
+                        String title = res.getString(R.string.prize_dialog_title);
+                        String message = String.format(res.getString(R.string.prize_dialog_message),
+                                prize.name);
+                        String yes = res.getString(R.string.dialog_button_yes);
+                        String cancel = res.getString(R.string.dialog_button_cancel);
 
-                    // Set the target fragment for the callback
-                    dialog.setTargetFragment(mFragment, 0);
+                        ConfirmDialogFragment dialog = ConfirmDialogFragment.getInstance(
+                                title, message, yes, cancel);
 
-                    // Keep track of the position here so the fragment knows which
-                    // intent to send off.
-                    Bundle args = dialog.getArguments();
-                    args.putInt(CONFIRM_DIALOG_POSITION_KEY, position);
-                    dialog.setArguments(args);
+                        // Set the target fragment for the callback
+                        dialog.setTargetFragment(mFragment, 0);
 
-                    // Add the dialog to the fragment.
-                    dialog.show(mFragment.getFragmentManager(), CONFIRM_DIALOG_TAG);
-                }
-            });
+                        // Keep track of the position here so the fragment knows which
+                        // intent to send off.
+                        Bundle args = dialog.getArguments();
+                        args.putInt(CONFIRM_DIALOG_POSITION_KEY, position);
+                        dialog.setArguments(args);
+
+                        // Add the dialog to the fragment.
+                        dialog.show(mFragment.getFragmentManager(), CONFIRM_DIALOG_TAG);
+                    }
+                });
+            }
 
             ((TextView)convertView.findViewById(R.id.prize_name))
                     .setText(prize.name);
