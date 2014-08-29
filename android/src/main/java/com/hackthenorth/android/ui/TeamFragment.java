@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -58,6 +59,7 @@ public class TeamFragment extends BaseListFragment {
 
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setFastScrollEnabled(true);
 
         // Hook it up to the ListView
         mListView.setAdapter(mAdapter);
@@ -94,7 +96,10 @@ public class TeamFragment extends BaseListFragment {
         }.execute();
     }
 
-    public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> {
+    public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> implements SectionIndexer {
+
+        private final String sections = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
         private int mResource;
         private ArrayList<TeamMember> mData;
 
@@ -138,22 +143,6 @@ public class TeamFragment extends BaseListFragment {
             return mData.size();
         }
 
-        private String getRelativeTimestamp(String s) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ssZZZZZ");
-
-            long date = 0;
-            try {
-                date = formatter.parse(s).getTime();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            String relativeTimestamp = (String) DateUtils.getRelativeTimeSpanString(date);
-            if (relativeTimestamp.equals("in 0 minutes") || relativeTimestamp.equals("0 minutes ago"))
-                return "Just now";
-            return relativeTimestamp;
-        }
-
         private String getRolesString(ArrayList<String> rolesList) {
 
             if (rolesList == null || rolesList.size() == 0) {
@@ -167,6 +156,38 @@ public class TeamFragment extends BaseListFragment {
             }
 
             return roles;
+        }
+
+        @Override
+        public Object[] getSections() {
+
+            String[] sectionsArr = new String[sections.length()];
+            for (int i = 0; i < sections.length(); i++) {
+                sectionsArr[i] = "" + sections.charAt(i);
+            }
+
+            return sectionsArr;
+        }
+
+        @Override
+        public int getPositionForSection(int section) {
+
+            for (int i = 0; i < getCount(); i++) {
+                if (getItem(i).name.charAt(0) == sections.charAt(section)) {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
+        @Override
+        public int getSectionForPosition(int position) {
+
+            char c = getItem(position).name.toUpperCase().charAt(0);
+            int index = sections.indexOf(c);
+
+            return index > 0 ? index : 0;
         }
     }
 }

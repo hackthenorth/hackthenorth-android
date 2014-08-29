@@ -43,9 +43,7 @@ public class TeamMember extends Model {
         Collections.sort(teamMembers, new Comparator<TeamMember>() {
             @Override
             public int compare(TeamMember lhs, TeamMember rhs) {
-                // Sort them in descending order---that's why rhs is on the lhs
-                // in this expression.
-                return rhs.id.compareTo(lhs.id);
+                return lhs.name.compareTo(rhs.name);
             }
         });
 
