@@ -27,17 +27,18 @@
             app:typeface="roboto_regular" />
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp">
+        android:orientation="vertical"
+        android:gravity="right">
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/positiveButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
@@ -48,8 +49,7 @@
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/negativeButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toLeftOf="@id/positiveButton"
+            android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
@@ -57,6 +57,6 @@
             android:textSize="14sp"
             app:typeface="roboto_medium" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

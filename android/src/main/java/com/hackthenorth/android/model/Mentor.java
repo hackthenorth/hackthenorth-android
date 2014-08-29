@@ -42,9 +42,7 @@ public class Mentor extends Model {
         Collections.sort(mentors, new Comparator<Mentor>() {
             @Override
             public int compare(Mentor lhs, Mentor rhs) {
-                // Sort them in descending order---that's why rhs is on the lhs
-                // in this expression.
-                return rhs.id.compareTo(lhs.id);
+                return lhs.name.compareTo(rhs.name);
             }
         });
 

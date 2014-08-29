@@ -3,9 +3,9 @@
     <color name="theme_primary">#3ab4d7</color>
     <color name="theme_secondary">#027096</color>
 
-    <color name="text_color_primary">#ED000000</color>
+    <color name="text_color_primary">#DE000000</color>
     <color name="text_color_secondary">#8A000000</color>
-    <color name="text_color_primary_inverse">#EDFFFFFF</color>
+    <color name="text_color_primary_inverse">#DEFFFFFF</color>
     <color name="text_color_secondary_inverse">#8AFFFFFF</color>
 
     <color name="background_purple">#181244</color>
