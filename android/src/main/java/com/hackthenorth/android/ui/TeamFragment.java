@@ -41,6 +41,16 @@ public class TeamFragment extends BaseListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
+        // Keep a static cache of the arraylist, because decoding from JSON every time is
+        // a waste.
+        String key = ViewPagerAdapter.TEAM_TAG;
+        Object thing = getCachedObject(key);
+        if (thing != null) {
+            mData = (ArrayList<TeamMember>)thing;
+        } else {
+            setCachedObject(key, mData);
+        }
+
         // Create adapter
         mAdapter = new TeamFragmentAdapter(activity, R.layout.team_list_item, mData);
 

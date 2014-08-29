@@ -35,7 +35,7 @@ import com.hackthenorth.android.model.Update;
  * A fragment for displaying lists of Update.
  */
 public class UpdatesFragment extends BaseListFragment {
-    public static final String TAG = "UpdateListFragment";
+    public static final String TAG = "UpdatesFragment";
 
     private ListView mListView;
     private ArrayList<Update> mData = new ArrayList<Update>();
@@ -44,6 +44,16 @@ public class UpdatesFragment extends BaseListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        // Keep a static cache of the arraylist, because decoding from JSON every time is
+        // a waste.
+        String key = ViewPagerAdapter.UPDATES_TAG;
+        Object thing = getCachedObject(key);
+        if (thing != null) {
+            mData = (ArrayList<Update>)thing;
+        } else {
+            setCachedObject(key, mData);
+        }
 
         // Create adapter
         mAdapter = new UpdatesFragmentAdapter(activity, R.layout.update_list_item, mData);

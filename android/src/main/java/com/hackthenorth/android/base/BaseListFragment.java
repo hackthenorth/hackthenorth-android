@@ -1,20 +1,29 @@
 package com.hackthenorth.android.base;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.ArrayAdapter;
 
-import com.hackthenorth.android.HackTheNorthApplication;
-
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class BaseListFragment extends Fragment {
+
+    private static final String TAG = "BaseListFragment";
+
+    private static ConcurrentHashMap<String, Object> mMemoryCache =
+            new ConcurrentHashMap<String, Object>();
+
+    public static Object getCachedObject(String f) {
+        return mMemoryCache.get(f);
+    }
+
+    public static void setCachedObject(String f, Object o) {
+        mMemoryCache.put(f, o);
+    }
 
     protected abstract void handleJSONUpdateInBackground(String json);
 

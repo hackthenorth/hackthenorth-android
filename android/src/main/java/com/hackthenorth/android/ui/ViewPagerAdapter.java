@@ -16,6 +16,12 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public static final int MENTORS_POSITION = 3;
     public static final int TEAM_POSITION = 4;
 
+    public static final String UPDATES_TAG = "Updates";
+    public static final String SCHEDULE_TAG = "Schedule";
+    public static final String PRIZES_TAG = "Prizes";
+    public static final String MENTORS_TAG = "Mentors";
+    public static final String TEAM_TAG = "Team";
+
     private Fragment[] mFragments = new Fragment[5];
     private String[] mFragmentTitles;
 

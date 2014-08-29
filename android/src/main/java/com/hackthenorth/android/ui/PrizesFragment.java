@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 public class PrizesFragment extends BaseListFragment implements
         ConfirmDialogFragmentListener {
 
-    public static final String TAG = "UpdateListFragment";
+    public static final String TAG = "PrizesFragment";
 
     public static final String CONFIRM_DIALOG_TAG = "ConfirmDialog";
     public static final String CONFIRM_DIALOG_POSITION_KEY = "position";
@@ -41,6 +42,17 @@ public class PrizesFragment extends BaseListFragment implements
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+
+        // Keep a static cache of the arraylist, because decoding from JSON every time is
+        // a waste.
+        String key = ViewPagerAdapter.PRIZES_TAG;
+        Object thing = getCachedObject(key);
+        if (thing != null) {
+            mData = (ArrayList<Prize>)thing;
+        } else {
+            setCachedObject(key, mData);
+        }
 
         mAdapter = new PrizesFragmentAdapter(activity, R.layout.prizes_list_item, mData);
         mAdapter.setFragment(this);

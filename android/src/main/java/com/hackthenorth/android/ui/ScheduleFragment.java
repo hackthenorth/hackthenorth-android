@@ -41,7 +41,7 @@ import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFra
 public class ScheduleFragment extends BaseListFragment
         implements ConfirmDialogFragmentListener {
 
-    public static final String TAG = "UpdateListFragment";
+    public static final String TAG = "ScheduleFragment";
 
     public static final String CONFIRM_DIALOG_TAG = "ConfirmDialog";
     public static final String CONFIRM_DIALOG_POSITION_KEY = "position";
@@ -53,6 +53,16 @@ public class ScheduleFragment extends BaseListFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        // Keep a static cache of the arraylist, because decoding from JSON every time is
+        // a waste.
+        String key = ViewPagerAdapter.SCHEDULE_TAG;
+        Object thing = getCachedObject(key);
+        if (thing != null) {
+            mData = (ArrayList<Model>)thing;
+        } else {
+            setCachedObject(key, mData);
+        }
 
         // Set up adapter
         mAdapter = new ScheduleFragmentAdapter(activity, R.layout.schedule_list_item, mData);

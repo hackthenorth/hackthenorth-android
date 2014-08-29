@@ -39,6 +39,16 @@ public class MentorsFragment extends BaseListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
+        // Keep a static cache of the arraylist, because decoding from JSON every time is
+        // a waste.
+        String key = ViewPagerAdapter.MENTORS_TAG;
+        Object thing = getCachedObject(key);
+        if (thing != null) {
+            mData = (ArrayList<Mentor>)thing;
+        } else {
+            setCachedObject(key, mData);
+        }
+
         // Create adapter
         mAdapter = new MentorListAdapter(activity, R.layout.mentor_list_item, mData);
 
