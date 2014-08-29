@@ -5,11 +5,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -51,6 +53,7 @@ public class MentorsFragment extends BaseListFragment {
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
+        mListView.setFastScrollEnabled(true);
 
         return view;
     }
@@ -58,7 +61,7 @@ public class MentorsFragment extends BaseListFragment {
     @Override
     protected void handleJSONUpdateInBackground(final String json) {
         final Activity activity = getActivity();
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... nothing) {
 
@@ -83,8 +86,10 @@ public class MentorsFragment extends BaseListFragment {
         }.execute();
     }
 
-    public static class MentorListAdapter extends ArrayAdapter<Mentor> {
+    public static class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIndexer {
         private final String TAG = "MentorListAdapter";
+
+        private final String sections = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         private int mResource;
         private ArrayList<Mentor> mData;
@@ -164,6 +169,38 @@ public class MentorsFragment extends BaseListFragment {
             }
 
             return skills;
+        }
+
+        @Override
+        public Object[] getSections() {
+
+            String[] sectionsArr = new String[sections.length()];
+            for (int i = 0; i < sections.length(); i++) {
+                sectionsArr[i] = "" + sections.charAt(i);
+            }
+
+            return sectionsArr;
+        }
+
+        @Override
+        public int getPositionForSection(int section) {
+
+            for (int i = 0; i < getCount(); i++) {
+                if (getItem(i).name.charAt(0) == sections.charAt(section)) {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
+        @Override
+        public int getSectionForPosition(int position) {
+
+            char c = getItem(position).name.toUpperCase().charAt(0);
+            int index = sections.indexOf(c);
+
+            return index > 0 ? index : 0;
         }
     }
 }
