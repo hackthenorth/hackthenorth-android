@@ -80,7 +80,6 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
     private ExplodingImageView mCancelButton;
     private TextView mTitle;
     private EditText mSearchBox;
-    private ImageView mIcon;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,8 +97,6 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
         mTitle.setTypeface(tf);
         mTitle.setText(resources.getString(R.string.app_name).toUpperCase());
 
-        mIcon = (ImageView)view.findViewById(R.id.icon);
-        mIcon.setVisibility(View.VISIBLE);
         mSearchBox = (EditText)view.findViewById(R.id.searchBox);
         mSearchButton = (ExplodingImageView)view.findViewById(R.id.searchButton);
         mCancelButton = (ExplodingImageView)view.findViewById(R.id.cancelButton);
@@ -321,13 +318,11 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
                 // view that does it, so we can't really fix it nicely).
                 mTitle.setVisibility(View.INVISIBLE);
                 mSettingsMenuItem.getActionView().setVisibility(View.GONE);
-                mIcon.setVisibility(View.GONE);
             }
         });
 
         mSettingsMenuItem.getActionView().startAnimation(set);
         mTitle.startAnimation(set);
-        mIcon.startAnimation(set);
 
         //
         // Search icon animation
@@ -418,7 +413,6 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
         mTitle.setVisibility(View.VISIBLE);
         mSearchButton.setVisibility(View.VISIBLE);
         mSettingsMenuItem.getActionView().setVisibility(View.VISIBLE);
-        mIcon.setVisibility(View.VISIBLE);
         mSearchBox.setVisibility(View.GONE);
 
         actionBarState = ACTION_BAR_STATE_NORMAL;
@@ -470,7 +464,6 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
 
         mSettingsMenuItem.getActionView().startAnimation(set);
         mTitle.startAnimation(set);
-        mIcon.startAnimation(set);
 
         //
         // Search icon animation
