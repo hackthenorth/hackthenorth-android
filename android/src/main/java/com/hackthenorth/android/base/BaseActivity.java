@@ -25,37 +25,6 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
  */
 public class BaseActivity extends Activity {
 
-    protected TextView mTitle;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Resources resources = getResources();
-
-        LayoutInflater inflater = (LayoutInflater)
-                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.titleview, null);
-
-        mTitle = (TextView) view.findViewById(R.id.title);
-        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/bebas_neue.ttf");
-        mTitle.setTypeface(tf);
-        mTitle.setText(resources.getString(R.string.app_name).toUpperCase());
-
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setCustomView(view);
-
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintColor(resources.getColor(R.color.theme_primary));
-        tintManager.setNavigationBarTintEnabled(true);
-        tintManager.setNavigationBarTintColor(resources.getColor(R.color.theme_primary));
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -66,11 +35,5 @@ public class BaseActivity extends Activity {
     public void onPause() {
         super.onPause();
         VisibilityManager.activityPaused();
-    }
-
-    @Override
-    public void setTitle(CharSequence chars) {
-        mTitle.setText(chars);
-        super.setTitle(chars);
     }
 }

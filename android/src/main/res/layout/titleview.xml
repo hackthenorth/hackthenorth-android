@@ -4,16 +4,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="12dp"
-    android:background="@color/background_purple">
+    android:background="#0000"
+    >
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_launcher"
+        android:visibility="gone"
+        />
+
+    <com.hackthenorth.android.ui.component.ExplodingImageView
+        android:id="@+id/searchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        style="@android:style/Widget.Holo.ActionButton"
+        android:src="@drawable/ic_action_search"
+        android:visibility="gone"
+        />
+
+    <com.hackthenorth.android.ui.component.ExplodingImageView
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        style="@android:style/Widget.Holo.ActionButton"
+        android:src="@drawable/ic_action_cancel"
+        android:visibility="gone"
+        />
 
     <com.hackthenorth.android.ui.component.TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/icon"
         android:gravity="left|center_vertical"
         android:maxLines="1"
         android:singleLine="true"
+        android:background="#0000"
         android:textColor="@android:color/white"
         android:textSize="34sp" />
+
+    <!-- Note: We use textNoSuggestions because if we don't, then we get animation jank
+    when the EditText loses focus, which really sucks. -->
+    <EditText
+        android:id="@+id/searchBox"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/searchButton"
+        android:layout_toLeftOf="@+id/cancelButton"
+        android:inputType="textNoSuggestions"
+        android:visibility="gone"
+        android:background="#0000"
+        android:textColor="@color/text_color_primary_inverse"
+        android:textCursorDrawable="@null" />
 
 </RelativeLayout>

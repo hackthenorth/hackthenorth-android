@@ -44,5 +44,6 @@
     <string name="prize_dialog_title">Have questions about this prize?</string>
     <string name="prize_dialog_message">We have an email address for contacting someone about the \"%s\" prize. Would you like to email them?</string>
     <string name="send_email">Send Email</string>
+    <string name="action_search">Search</string>
 
 </resources>

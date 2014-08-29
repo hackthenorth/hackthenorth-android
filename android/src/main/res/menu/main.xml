@@ -4,7 +4,8 @@
 
     <item
         android:id="@+id/action_settings"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:showAsAction="ifRoom"
+        android:title="@string/action_settings"
+        android:actionLayout="@layout/settings_action_button" />
 
 </menu>

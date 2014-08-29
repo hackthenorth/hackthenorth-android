@@ -8,6 +8,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,6 +54,12 @@ public class MentorsFragment extends BaseListFragment {
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
+
+        // Hook up activity to fragment so it knows when to dismiss the search box
+        if (getActivity() instanceof AbsListView.OnScrollListener) {
+            AbsListView.OnScrollListener l = (AbsListView.OnScrollListener)getActivity();
+            mListView.setOnScrollListener(l);
+        }
 
         return view;
     }
