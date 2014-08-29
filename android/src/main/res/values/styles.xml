@@ -4,7 +4,6 @@
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:actionOverflowButtonStyle">@style/Overflow</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:displayOptions">showCustom</item>
     </style>
 
     <style name="AppBaseTheme" parent="@android:Theme.Holo.Light.DarkActionBar">
@@ -27,6 +26,8 @@
     <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/background_purple</item>
         <item name="android:titleTextStyle">@style/ActionBarTitleTextStyle</item>
+        <item name="android:displayOptions">showHome|homeAsUp|showTitle</item>
+        <item name="android:icon">@android:color/transparent</item>
         <item name="android:height">56dp</item>
     </style>
 

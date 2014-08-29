@@ -7,7 +7,6 @@
         android:id="@+id/pager_title_strip"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:paddingLeft="48dp"
         android:clipToPadding="false"
         android:background="@color/background_fullblue"
         app:pstsDividerColor="@android:color/transparent"

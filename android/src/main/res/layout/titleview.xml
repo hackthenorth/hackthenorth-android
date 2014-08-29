@@ -3,19 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="12dp"
-    android:background="#0000"
-    >
-
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/ic_launcher"
-        android:visibility="gone"
-        />
+    android:paddingLeft="24dp"
+    android:background="#0000">
 
     <com.hackthenorth.android.ui.component.ExplodingImageView
         android:id="@+id/searchButton"
@@ -24,8 +13,7 @@
         android:layout_alignParentRight="true"
         style="@android:style/Widget.Holo.ActionButton"
         android:src="@drawable/ic_action_search"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <com.hackthenorth.android.ui.component.ExplodingImageView
         android:id="@+id/cancelButton"
@@ -34,8 +22,7 @@
         android:layout_alignParentRight="true"
         style="@android:style/Widget.Holo.ActionButton"
         android:src="@drawable/ic_action_cancel"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <com.hackthenorth.android.ui.component.TextView
         android:id="@+id/title"
