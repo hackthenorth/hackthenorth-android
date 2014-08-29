@@ -2,6 +2,7 @@ package com.hackthenorth.android.ui;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +30,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
@@ -44,6 +47,7 @@ import com.hackthenorth.android.framework.GCMRegistrationManager;
 import com.hackthenorth.android.ui.component.ExplodingImageView;
 import com.hackthenorth.android.ui.component.PagerTitleStrip;
 import com.hackthenorth.android.ui.component.TextView;
+import com.hackthenorth.android.ui.mentor.MentorsFragment;
 import com.hackthenorth.android.ui.settings.SettingsActivity;
 import com.hackthenorth.android.util.Units;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -98,6 +102,22 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
         mTitle.setText(resources.getString(R.string.app_name).toUpperCase());
 
         mSearchBox = (EditText)view.findViewById(R.id.searchBox);
+        mSearchBox.setOnEditorActionListener(new android.widget.TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(android.widget.TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (mViewPagerAdapter != null) {
+                        Fragment f = mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
+                        if (f instanceof MentorsFragment) {
+                            MentorsFragment mentorsFragment = (MentorsFragment)f;
+                            mentorsFragment.getAdapter().query("ayyyy lmao");
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
         mSearchButton = (ExplodingImageView)view.findViewById(R.id.searchButton);
         mCancelButton = (ExplodingImageView)view.findViewById(R.id.cancelButton);
 

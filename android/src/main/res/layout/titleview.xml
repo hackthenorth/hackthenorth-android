@@ -44,6 +44,7 @@
         android:layout_height="match_parent"
         android:layout_toRightOf="@+id/searchButton"
         android:layout_toLeftOf="@+id/cancelButton"
+        android:imeOptions="actionSearch"
         android:inputType="textNoSuggestions"
         android:visibility="gone"
         android:background="#0000"

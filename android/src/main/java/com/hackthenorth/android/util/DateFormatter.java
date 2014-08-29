@@ -1,7 +1,6 @@
 package com.hackthenorth.android.util;
 
 import android.util.Log;
-import com.hackthenorth.android.ui.MentorsFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

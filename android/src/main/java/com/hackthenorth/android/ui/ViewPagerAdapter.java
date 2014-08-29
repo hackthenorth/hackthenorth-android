@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.ui.mentor.MentorsFragment;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     private final String TAG = "FragmentStatePagerAdapter";
