@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@android:id/list"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clipToPadding="false"
+        android:divider="@drawable/divider"
+        android:dividerHeight="1dp"
+        android:fitsSystemWindows="true"
+        android:scrollbarStyle="outsideOverlay" />
+
+    <ListView
+        android:id="@+id/searchList"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clipToPadding="false"
+        android:divider="#eee"
+        android:dividerHeight="1dp"
+        android:fitsSystemWindows="true"
+        android:scrollbarStyle="outsideOverlay"
+        android:visibility="gone" />
+
+</RelativeLayout>

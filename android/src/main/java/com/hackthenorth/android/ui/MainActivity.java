@@ -10,6 +10,8 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -44,6 +46,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseActivity;
 import com.hackthenorth.android.framework.GCMRegistrationManager;
+import com.hackthenorth.android.model.Mentor;
 import com.hackthenorth.android.ui.component.ExplodingImageView;
 import com.hackthenorth.android.ui.component.PagerTitleStrip;
 import com.hackthenorth.android.ui.component.TextView;
@@ -110,12 +113,27 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
                         Fragment f = mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
                         if (f instanceof MentorsFragment) {
                             MentorsFragment mentorsFragment = (MentorsFragment)f;
-                            mentorsFragment.getAdapter().query("ayyyy lmao");
+                            mentorsFragment.getAdapter().query(mSearchBox.getText().toString());
                             return true;
                         }
                     }
                 }
                 return false;
+            }
+        });
+        mSearchBox.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {  }
+            @Override public void afterTextChanged(Editable s) {  }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (mViewPagerAdapter != null) {
+                    Fragment f = mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
+                    if (f instanceof MentorsFragment) {
+                        MentorsFragment mentorsFragment = (MentorsFragment)f;
+                        mentorsFragment.getAdapter().query(mSearchBox.getText().toString());
+                    }
+                }
             }
         });
         mSearchButton = (ExplodingImageView)view.findViewById(R.id.searchButton);
@@ -307,6 +325,12 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
 
     private void searchBarAppear() {
 
+        Fragment f = mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
+        if (f instanceof MentorsFragment) {
+            MentorsFragment mentorsFragment = (MentorsFragment)f;
+            mentorsFragment.startSearch();
+        }
+
         //
         // Icon / Title / Settings button disappear animation
         //
@@ -424,6 +448,12 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
 
     private void searchBarDisappear() {
 
+        Fragment f = mViewPagerAdapter.getItem(ViewPagerAdapter.MENTORS_POSITION);
+        if (f instanceof MentorsFragment) {
+            MentorsFragment mentorsFragment = (MentorsFragment)f;
+            mentorsFragment.endSearch();
+        }
+
         mCancelButton.setVisibility(View.GONE);
 
         // The user may have switched to a non-searchable fragment, in which case we
@@ -436,6 +466,7 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
         mSearchBox.setVisibility(View.GONE);
 
         actionBarState = ACTION_BAR_STATE_NORMAL;
+
 
         // Set up animations for the title and the settings button to disappear
         AlphaAnimation alpha = new AlphaAnimation(0f, 1f);

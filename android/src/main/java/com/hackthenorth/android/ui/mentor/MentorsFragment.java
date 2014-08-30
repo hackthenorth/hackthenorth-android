@@ -31,15 +31,17 @@ import java.util.ArrayList;
 public class MentorsFragment extends BaseListFragment {
     private final String TAG = "MentorsFragment";
 
-    private ListView mListView;
     private ArrayList<Mentor> mData = new ArrayList<Mentor>();
+
+    private ListView mListView;
+    private ListView mSearchListView;
     private MentorListAdapter mAdapter;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        // Create adapter
+        // Create adapters
         mAdapter = new MentorListAdapter(activity, R.layout.mentor_list_item, mData);
 
         // Register for updates
@@ -51,12 +53,15 @@ public class MentorsFragment extends BaseListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the view and return it
-        View view = inflater.inflate(R.layout.list_fragment_cards, container, false);
+        View view = inflater.inflate(R.layout.mentors_fragment, container, false);
 
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
         mListView.setFastScrollEnabled(true);
+
+        mSearchListView = (ListView) view.findViewById(R.id.searchList);
+        mSearchListView.setAdapter(mAdapter);
 
         // Hook up activity to fragment so it knows when to dismiss the search box
         if (getActivity() instanceof AbsListView.OnScrollListener) {
@@ -65,6 +70,22 @@ public class MentorsFragment extends BaseListFragment {
         }
 
         return view;
+    }
+
+    public void startSearch() {
+        mListView.setVisibility(View.GONE);
+        mSearchListView.setVisibility(View.VISIBLE);
+
+        mAdapter.setResource(R.layout.mentor_search_list_item);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void endSearch() {
+        mListView.setVisibility(View.VISIBLE);
+        mSearchListView.setVisibility(View.GONE);
+
+        mAdapter.setResource(R.layout.mentor_list_item);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

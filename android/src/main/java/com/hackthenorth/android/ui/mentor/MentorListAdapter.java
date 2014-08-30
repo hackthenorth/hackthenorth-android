@@ -2,6 +2,7 @@ package com.hackthenorth.android.ui.mentor;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.SectionIndexer;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.R;
+import com.hackthenorth.android.framework.FuzzySearchIndexer;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Mentor;
 import com.hackthenorth.android.ui.component.TextView;
@@ -27,16 +29,22 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
 
     private int mResource;
     private ArrayList<Mentor> mData;
+    private FuzzySearchIndexer<Mentor> mIndexer;
 
     public MentorListAdapter(Context context, int resource, ArrayList<Mentor> objects) {
         super(context, resource, objects);
 
         mResource = resource;
         mData = objects;
+        mIndexer = new FuzzySearchIndexer<Mentor>(mData);
+    }
+
+    public void setResource(int resource) {
+        mResource = resource;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
+        if (convertView == null || convertView.getId() != mResource) {
             // If we don't have a view to reuse, inflate a new one.
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(mResource, parent, false);
@@ -47,22 +55,32 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
 
         // Set up the image view with the avatar URLs
         NetworkImageView networkImageView = (NetworkImageView) convertView.findViewById(R.id.mentor_image);
-        networkImageView.setDefaultImageResId(R.drawable.ic_launcher);
+        if (networkImageView != null) {
+            networkImageView.setDefaultImageResId(R.drawable.ic_launcher);
 
-        // If we have an avatar URL, load it here.
-        ImageLoader loader = NetworkManager.getImageLoader();
-        if (!TextUtils.isEmpty(mentor.image)) {
-            networkImageView.setVisibility(View.VISIBLE);
-            networkImageView.setImageUrl(mentor.image, loader);
-        } else {
-            networkImageView.setVisibility(View.GONE);
+            // If we have an avatar URL, load it here.
+            ImageLoader loader = NetworkManager.getImageLoader();
+            if (!TextUtils.isEmpty(mentor.image)) {
+                networkImageView.setVisibility(View.VISIBLE);
+                networkImageView.setImageUrl(mentor.image, loader);
+            } else {
+                networkImageView.setVisibility(View.GONE);
+            }
         }
 
         // Set the data in the TextViews
-        ((TextView) convertView.findViewById(R.id.mentor_name)).setText(mentor.name);
-        ((TextView) convertView.findViewById(R.id.mentor_organization)).setText(mentor.organization);
-        ((TextView) convertView.findViewById(R.id.mentor_availability)).setText(getAvailabilityString(mentor.availability));
-        ((TextView) convertView.findViewById(R.id.mentor_skills)).setText(getSkillsString(mentor.skills));
+        if (convertView.findViewById(R.id.mentor_name) != null) {
+            ((TextView) convertView.findViewById(R.id.mentor_name)).setText(mentor.name);
+        }
+        if (convertView.findViewById(R.id.mentor_organization) != null) {
+            ((TextView) convertView.findViewById(R.id.mentor_organization)).setText(mentor.organization);
+        }
+        if (convertView.findViewById(R.id.mentor_availability) != null) {
+            ((TextView) convertView.findViewById(R.id.mentor_availability)).setText(getAvailabilityString(mentor.availability));
+        }
+        if (convertView.findViewById(R.id.mentor_skills) != null) {
+            ((TextView) convertView.findViewById(R.id.mentor_skills)).setText(getSkillsString(mentor.skills));
+        }
 
         return convertView;
     }
@@ -137,9 +155,14 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
         return index > 0 ? index : 0;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        mIndexer.updateData(mData);
+    }
+
     public void query(String queryString) {
-        // ayyyyy lmaooooooo
-        Collections.shuffle(mData);
-        notifyDataSetChanged();
+        mIndexer.query(queryString);
+        super.notifyDataSetChanged();
     }
 }

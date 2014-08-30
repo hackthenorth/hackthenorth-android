@@ -2,11 +2,12 @@ package com.hackthenorth.android.model;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hackthenorth.android.framework.FuzzySearchIndexer;
 
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class Mentor extends Model {
+public class Mentor extends Model implements FuzzySearchIndexer.Tokened {
     private static final String TAG = "Mentor";
 
     public String id;
@@ -47,5 +48,13 @@ public class Mentor extends Model {
         });
 
         return mentors;
+    }
+
+    @Override
+    public ArrayList<String> getTokens() {
+        ArrayList<String> result = new ArrayList<String>(skills);
+        result.add(organization);
+        result.addAll(Arrays.asList(name.split(" ")));
+        return result;
     }
 }
