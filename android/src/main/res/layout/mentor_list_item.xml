@@ -14,7 +14,7 @@
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/mentor_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:textColor="@color/theme_secondary"
