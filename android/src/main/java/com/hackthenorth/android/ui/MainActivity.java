@@ -377,9 +377,6 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
         // Big comment because this is a lot of code
         //
 
-        // This is the margin that the action bar icon has from the left edge
-        // of the screen.
-        int leftMargin = Units.dpToPx(this, 12);
         int[] xy = new int[2];
         mSearchButton.getLocationOnScreen(xy);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
@@ -388,15 +385,8 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 1);
         mSearchButton.setLayoutParams(params);
 
-        // We adjust the left padding of the icon so that it fits nicely on the
-        // left side of the action bar.
-        int adjustment = Units.dpToPx(this, 4);
-        mSearchButton.setPadding(mSearchButton.getPaddingLeft() - leftMargin - adjustment,
-                mSearchButton.getPaddingTop(), mSearchButton.getPaddingRight(),
-                mSearchButton.getPaddingBottom());
-
         translate = new TranslateAnimation(
-                Animation.ABSOLUTE, xy[0] - leftMargin + adjustment,
+                Animation.ABSOLUTE, xy[0],
                 Animation.ABSOLUTE, 0f,
                 Animation.ABSOLUTE, 0f,
                 Animation.ABSOLUTE, 0f);
@@ -534,14 +524,10 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
             mSearchButton.setLayoutParams(params);
 
-            // We adjust the left padding of the icon so that it fits nicely on the
-            // left side of the action bar.
-            final int adjustment = Units.dpToPx(this, 4);
-            // This is the margin that the action bar icon has from the left edge
-            // of the screen.
-            final int leftMargin = Units.dpToPx(this, 12);
-            mSearchButton.setPadding(mSearchButton.getPaddingLeft() + leftMargin + adjustment,
-                    mSearchButton.getPaddingTop(), mSearchButton.getPaddingRight(),
+            mSearchButton.setPadding(
+                    mSearchButton.getPaddingLeft(),
+                    mSearchButton.getPaddingTop(),
+                    mSearchButton.getPaddingRight(),
                     mSearchButton.getPaddingBottom());
 
             // We use a predraw listener here because we need to measure where the icon
@@ -555,7 +541,7 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
                     mSearchButton.getLocationOnScreen(xy);
 
                     TranslateAnimation translate = new TranslateAnimation(
-                            Animation.ABSOLUTE, -xy[0] + adjustment,
+                            Animation.ABSOLUTE, -xy[0],
                             Animation.ABSOLUTE, 0f,
                             Animation.ABSOLUTE, 0f,
                             Animation.ABSOLUTE, 0f);
@@ -618,17 +604,7 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
                 public void onAnimationEnd(Animation animation) {
                     mSearchButton.setVisibility(View.GONE);
 
-                    // We adjust the left padding of the icon so that it fits nicely on the
-                    // left side of the action bar.
-                    final int adjustment = Units.dpToPx(activity, 4);
-                    // This is the margin that the action bar icon has from the left edge
-                    // of the screen.
-                    final int leftMargin = Units.dpToPx(activity, 12);
-                    mSearchButton.setPadding(mSearchButton.getPaddingLeft() + leftMargin + adjustment,
-                            mSearchButton.getPaddingTop(), mSearchButton.getPaddingRight(),
-                            mSearchButton.getPaddingBottom());
-
-                    // Lastly, change the relative layout things back.
+                    // Change the relative layout things back.
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
                             mSearchButton.getLayoutParams();
                     params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
