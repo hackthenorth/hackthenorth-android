@@ -50,6 +50,7 @@ import com.hackthenorth.android.model.Mentor;
 import com.hackthenorth.android.ui.component.ExplodingImageView;
 import com.hackthenorth.android.ui.component.PagerTitleStrip;
 import com.hackthenorth.android.ui.component.TextView;
+import com.hackthenorth.android.ui.mentor.MentorListAdapter;
 import com.hackthenorth.android.ui.mentor.MentorsFragment;
 import com.hackthenorth.android.ui.settings.SettingsActivity;
 import com.hackthenorth.android.util.Units;
@@ -131,7 +132,10 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
                     Fragment f = mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
                     if (f instanceof MentorsFragment) {
                         MentorsFragment mentorsFragment = (MentorsFragment)f;
-                        mentorsFragment.getAdapter().query(mSearchBox.getText().toString());
+                        MentorListAdapter adapter = mentorsFragment.getAdapter();
+                        if (adapter != null) {
+                            adapter.query(mSearchBox.getText().toString());
+                        }
                     }
                 }
             }
