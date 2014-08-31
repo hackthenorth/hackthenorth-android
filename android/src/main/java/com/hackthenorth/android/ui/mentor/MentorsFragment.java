@@ -24,6 +24,7 @@ import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Mentor;
+import com.hackthenorth.android.ui.ViewPagerAdapter;
 import com.hackthenorth.android.util.DateFormatter;
 
 import java.util.ArrayList;
@@ -40,6 +41,16 @@ public class MentorsFragment extends BaseListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
+        // Keep a static cache of the arraylist, because decoding from JSON every time is
+        // a waste.
+        String key = ViewPagerAdapter.MENTORS_TAG;
+        Object thing = getCachedObject(key);
+        if (thing != null) {
+            mData = (ArrayList<Mentor>)thing;
+        } else {
+            setCachedObject(key, mData);
+        }
 
         // Create adapters
         mAdapter = new MentorListAdapter(activity, R.layout.mentor_list_item, mData);
