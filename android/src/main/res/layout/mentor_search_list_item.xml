@@ -2,28 +2,45 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:background="@android:color/white"
+    android:padding="8dp" >
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/mentor_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/text_color_primary"
+            android:textSize="16sp"
+            android:singleLine="true"
+            app:typeface="roboto_regular"
+            />
+
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/mentor_organization"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/text_color_secondary"
+            android:singleLine="true"
+            app:typeface="roboto_regular"
+            />
     </LinearLayout>
 
     <com.hackthenorth.android.ui.component.TextView
         android:id="@+id/mentor_skills"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color_secondary"
+        app:typeface="roboto_regular"
+        />
 </LinearLayout>

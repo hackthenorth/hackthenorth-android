@@ -7,7 +7,7 @@ import com.hackthenorth.android.framework.FuzzySearchIndexer;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class Mentor extends Model implements FuzzySearchIndexer.Tokened {
+public class Mentor extends Model implements FuzzySearchIndexer.Tokened, Comparable<Mentor> {
     private static final String TAG = "Mentor";
 
     public String id;
@@ -56,5 +56,16 @@ public class Mentor extends Model implements FuzzySearchIndexer.Tokened {
         result.add(organization);
         result.addAll(Arrays.asList(name.split(" ")));
         return result;
+    }
+
+    @Override
+    public int compareTo(Mentor another) {
+        if (name == null) {
+            return 1;
+        } else if (another == null) {
+            return -1;
+        } else {
+            return name.compareTo(another.name);
+        }
     }
 }

@@ -620,7 +620,10 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (searchable(mViewPager.getCurrentItem())) {
-            startSearchBarAction(ACTION_DISAPPEAR);
+            // dismiss the keyboard
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService(Service.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mSearchBox.getWindowToken(), 0);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.hackthenorth.android.framework;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,7 +11,7 @@ import java.util.Map;
 
 import com.hackthenorth.android.framework.FuzzySearchIndexer.Tokened;
 
-public class FuzzySearchIndexer<T extends Tokened> {
+public class FuzzySearchIndexer<T extends Tokened & Comparable<T>> {
     private static final String TAG = "FuzzySearchIndexer";
 
     public interface Tokened {
@@ -26,41 +28,58 @@ public class FuzzySearchIndexer<T extends Tokened> {
     public void query(String queriesString) {
 
         // Get all the query strings from the query string
-        String[] queries = queriesString.split("\\s+");
+        String[] queries;
+        if ("".equals(queriesString)) {
+            queries = new String[0];
+        } else {
+            queries = queriesString.split("\\s+");
+        }
 
-        ArrayList<HashMap<String, Double>> tokenCostsList =
-                new ArrayList<HashMap<String, Double>>(queries.length);
-
+        String print = "";
         for (String query : queries) {
-            HashMap<String, Double> tokenCosts = getTokenCosts(query);
-            tokenCostsList.add(tokenCosts);
+            print += query + ", ";
         }
+        Log.i(TAG, "queries: " + print);
+        if (queries.length == 0) {
+            // Use the default sorting
+            Collections.sort(mObjects);
 
-        // Rank the objects
-        HashMap<T, Double> objectCosts = new HashMap<T, Double>(mObjects.size());
-        for (T object : mObjects) {
-            objectCosts.put(object, 0d);
-        }
+        } else {
 
-        for (Map.Entry<String, HashSet<T>> entry : mTokensMap.entrySet()) {
-            for (T object : entry.getValue()) {
-                double cost = objectCosts.get(object);
-                for (HashMap<String, Double> tokenCosts : tokenCostsList) {
-                    cost += tokenCosts.get(entry.getKey());
+            ArrayList<HashMap<String, Double>> tokenCostsList =
+                    new ArrayList<HashMap<String, Double>>(queries.length);
+
+            for (String query : queries) {
+                HashMap<String, Double> tokenCosts = getTokenCosts(query);
+                tokenCostsList.add(tokenCosts);
+            }
+
+            // Rank the objects
+            HashMap<T, Double> objectCosts = new HashMap<T, Double>(mObjects.size());
+            for (T object : mObjects) {
+                objectCosts.put(object, 0d);
+            }
+
+            for (Map.Entry<String, HashSet<T>> entry : mTokensMap.entrySet()) {
+                for (T object : entry.getValue()) {
+                    double cost = objectCosts.get(object);
+                    for (HashMap<String, Double> tokenCosts : tokenCostsList) {
+                        cost += tokenCosts.get(entry.getKey());
+                    }
+                    objectCosts.put(object, cost);
                 }
-                objectCosts.put(object, cost);
             }
-        }
 
-        final HashMap<T, Double> costs = objectCosts;
-        Collections.sort(mObjects, new Comparator<T>() {
-            @Override
-            public int compare(T lhs, T rhs) {
-                double ls = costs.get(lhs);
-                double rs = costs.get(rhs);
-                return ls == rs ? 0 : (ls < rs? 1 : -1);
-            }
-        });
+            final HashMap<T, Double> costs = objectCosts;
+            Collections.sort(mObjects, new Comparator<T>() {
+                @Override
+                public int compare(T lhs, T rhs) {
+                    double ls = costs.get(lhs);
+                    double rs = costs.get(rhs);
+                    return ls == rs ? 0 : (ls < rs ? 1 : -1);
+                }
+            });
+        }
     }
 
     public HashMap<String, Double> getTokenCosts(String query) {
