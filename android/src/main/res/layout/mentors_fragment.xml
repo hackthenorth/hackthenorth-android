@@ -25,8 +25,8 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:clipToPadding="false"
-        android:divider="#eee"
-        android:dividerHeight="1dp"
+        android:divider="@null"
+        android:dividerHeight="0dp"
         android:fitsSystemWindows="true"
         android:scrollbarStyle="outsideOverlay"
         android:visibility="gone" />
