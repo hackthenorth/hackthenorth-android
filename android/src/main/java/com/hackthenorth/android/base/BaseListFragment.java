@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.ArrayAdapter;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +16,9 @@ public abstract class BaseListFragment extends Fragment {
     private static ConcurrentHashMap<String, Object> mMemoryCache =
             new ConcurrentHashMap<String, Object>();
 
+    private BroadcastReceiver mReceiver;
+    private Context mContext;
+
     public static Object getCachedObject(String f) {
         return mMemoryCache.get(f);
     }
@@ -25,39 +27,51 @@ public abstract class BaseListFragment extends Fragment {
         mMemoryCache.put(f, o);
     }
 
-    protected abstract void handleJSONUpdateInBackground(String json);
+    protected abstract void handleJSONUpdateInBackground(String json, String action);
 
     /**
-     * Creates a BroadcastReceiver that is listening to broadcasts of the type action.
+     * Given an action string, the handleJSONUpdateInBackground method will be called whenever there
+     * is an update.
      *
-     * @param context Used to set up the LocalBroadcastReceiver. Must be non-null.
-     * @param action The action to listen to in the broadcast receiver.
-     * @param adapter The adapter to pass to handleJSONInBackground in onReceive of the
-     *                BroadcastReceiver.
+     * @param context The current Fragment context.
+     * @param action The action to sync to. This is the same action string you would pass to
+     *               HTTPFirebase.GET().
      */
-    protected void registerForSync(Context context, final String action,
-                                   final ArrayAdapter adapter) {
+    protected void registerForSync(Context context, final String action) {
 
-        // Set up BroadcastReceiver for updates.
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (action != null && action.equals(intent.getAction())) {
+        final String className = getClass().getSimpleName();
+        final String TAG = className;
+        if (mReceiver == null) {
+            // Set up BroadcastReceiver for updates.
+            mContext = context;
+            mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (action != null && action.equals(intent.getAction())) {
 
-                    // Update with the new data
-                    String key = intent.getAction();
-                    String json = intent.getStringExtra(key);
-                    handleJSONUpdateInBackground(json);
+                        // Update with the new data
+                        String key = intent.getAction();
+                        String json = intent.getStringExtra(key);
+                        handleJSONUpdateInBackground(json, action);
+                    }
                 }
-            }
-        };
+            };
 
-        // Register our broadcast receiver.
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(action);
+            // Register our broadcast receiver.
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(action);
 
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-        manager.registerReceiver(receiver, filter);
+            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
+            manager.registerReceiver(mReceiver, filter);
+        }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Unregister the broadcast receiver here
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
+        manager.unregisterReceiver(mReceiver);
     }
 }

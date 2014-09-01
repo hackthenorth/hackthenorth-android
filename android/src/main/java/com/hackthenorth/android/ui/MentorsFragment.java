@@ -42,7 +42,7 @@ public class MentorsFragment extends BaseListFragment {
         mAdapter = new MentorListAdapter(activity, R.layout.mentor_list_item, mData);
 
         // Register for updates
-        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_MENTORS, mAdapter);
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_MENTORS);
 
         HTTPFirebase.GET("/mentors", activity, HackTheNorthApplication.Actions.SYNC_MENTORS);
     }
@@ -86,7 +86,7 @@ public class MentorsFragment extends BaseListFragment {
     }
 
     @Override
-    protected void handleJSONUpdateInBackground(final String json) {
+    protected void handleJSONUpdateInBackground(final String json, String action) {
         final Activity activity = getActivity();
         new AsyncTask<Void, Void, Void>() {
             @Override

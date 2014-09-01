@@ -55,7 +55,7 @@ public class TeamFragment extends BaseListFragment {
         mAdapter = new TeamFragmentAdapter(activity, R.layout.team_list_item, mData);
 
         // Register for updates
-        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_TEAM, mAdapter);
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_TEAM);
 
         HTTPFirebase.GET("/team", activity, HackTheNorthApplication.Actions.SYNC_TEAM);
     }
@@ -78,7 +78,7 @@ public class TeamFragment extends BaseListFragment {
     }
 
     @Override
-    protected void handleJSONUpdateInBackground(final String json) {
+    protected void handleJSONUpdateInBackground(final String json, String action) {
         final Activity activity = getActivity();
         new AsyncTask<Void, Void, Void>(){
             @Override

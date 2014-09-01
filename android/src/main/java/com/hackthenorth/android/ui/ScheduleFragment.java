@@ -69,7 +69,7 @@ public class ScheduleFragment extends BaseListFragment
         mAdapter.setFragment(this);
 
         // Register for updates
-        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE, mAdapter);
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE);
 
         HTTPFirebase.GET("/schedule", activity,
                 HackTheNorthApplication.Actions.SYNC_SCHEDULE);
@@ -113,7 +113,7 @@ public class ScheduleFragment extends BaseListFragment
     }
 
     @Override
-    protected void handleJSONUpdateInBackground(final String json) {
+    protected void handleJSONUpdateInBackground(final String json, String actio) {
         final Activity activity = getActivity();
         new AsyncTask<Void, Void, Void>() {
             @Override

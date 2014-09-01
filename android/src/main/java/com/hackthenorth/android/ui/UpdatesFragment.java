@@ -59,7 +59,7 @@ public class UpdatesFragment extends BaseListFragment {
         mAdapter = new UpdatesFragmentAdapter(activity, R.layout.update_list_item, mData);
 
         // Register for updates
-        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_UPDATES, mAdapter);
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_UPDATES);
 
         HTTPFirebase.GET("/updates", activity,
                 HackTheNorthApplication.Actions.SYNC_UPDATES);
@@ -86,7 +86,7 @@ public class UpdatesFragment extends BaseListFragment {
     }
 
     @Override
-    protected void handleJSONUpdateInBackground(final String json) {
+    protected void handleJSONUpdateInBackground(final String json, String action) {
         final Activity activity = getActivity();
         new AsyncTask<Void, Void, Void>() {
             @Override

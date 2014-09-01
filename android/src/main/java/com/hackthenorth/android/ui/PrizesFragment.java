@@ -57,7 +57,7 @@ public class PrizesFragment extends BaseListFragment implements
         mAdapter = new PrizesFragmentAdapter(activity, R.layout.prizes_list_item, mData);
         mAdapter.setFragment(this);
 
-        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_PRIZES, mAdapter);
+        registerForSync(activity, HackTheNorthApplication.Actions.SYNC_PRIZES);
 
         HTTPFirebase.GET("/prizes", activity,
                 HackTheNorthApplication.Actions.SYNC_PRIZES);
@@ -87,7 +87,7 @@ public class PrizesFragment extends BaseListFragment implements
     }
 
     @Override
-    protected void handleJSONUpdateInBackground(final String json) {
+    protected void handleJSONUpdateInBackground(final String json, String action) {
         final Activity activity = getActivity();
         new AsyncTask<Void, Void, Void>(){
             @Override
