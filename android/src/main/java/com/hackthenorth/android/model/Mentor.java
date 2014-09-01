@@ -18,6 +18,10 @@ public class Mentor extends Model implements FuzzySearchIndexer.Tokened, Compara
     public String organization;
     public ArrayList<ArrayList<String>> availability;
     public ArrayList<String> skills;
+    public String email;
+    public String twitter;
+    public String github;
+    public String phone;
 
     public Mentor() {
     }

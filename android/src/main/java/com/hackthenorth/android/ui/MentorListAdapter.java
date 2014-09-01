@@ -1,4 +1,4 @@
-package com.hackthenorth.android.ui.mentor;
+package com.hackthenorth.android.ui;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -80,6 +80,20 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
         }
         if (convertView.findViewById(R.id.mentor_skills) != null) {
             ((TextView) convertView.findViewById(R.id.mentor_skills)).setText(getSkillsString(mentor.skills));
+        }
+
+        // Show methods of contacting them
+        if (convertView.findViewById(R.id.mentor_email) != null && !TextUtils.isEmpty(mentor.email)) {
+            convertView.findViewById(R.id.mentor_email).setVisibility(View.VISIBLE);
+        }
+        if (convertView.findViewById(R.id.mentor_twitter) != null && !TextUtils.isEmpty(mentor.twitter)) {
+            convertView.findViewById(R.id.mentor_twitter).setVisibility(View.VISIBLE);
+        }
+        if (convertView.findViewById(R.id.mentor_github) != null && !TextUtils.isEmpty(mentor.github)) {
+            convertView.findViewById(R.id.mentor_github).setVisibility(View.VISIBLE);
+        }
+        if (convertView.findViewById(R.id.mentor_phone) != null && !TextUtils.isEmpty(mentor.phone)) {
+            convertView.findViewById(R.id.mentor_phone).setVisibility(View.VISIBLE);
         }
 
         return convertView;

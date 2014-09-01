@@ -1,31 +1,17 @@
-package com.hackthenorth.android.ui.mentor;
+package com.hackthenorth.android.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnScrollChangedListener;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SectionIndexer;
-import android.widget.TextView;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
-import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Mentor;
-import com.hackthenorth.android.ui.ViewPagerAdapter;
-import com.hackthenorth.android.util.DateFormatter;
 
 import java.util.ArrayList;
 
