@@ -75,9 +75,9 @@ public class MentorsFragment extends BaseListFragment {
         mSearchListView.setAdapter(mAdapter);
 
         // Hook up activity to fragment so it knows when to dismiss the search box
-        if (getActivity() instanceof AbsListView.OnScrollListener) {
-            AbsListView.OnScrollListener l = (AbsListView.OnScrollListener)getActivity();
-            mSearchListView.setOnScrollListener(l);
+        if (getActivity() instanceof View.OnTouchListener) {
+            View.OnTouchListener l = (View.OnTouchListener)getActivity();
+            mSearchListView.setOnTouchListener(l);
         }
 
         return view;

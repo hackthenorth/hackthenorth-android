@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -56,7 +57,7 @@ import com.hackthenorth.android.ui.settings.SettingsActivity;
 import com.hackthenorth.android.util.Units;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-public class MainActivity extends BaseActivity implements AbsListView.OnScrollListener {
+public class MainActivity extends BaseActivity implements View.OnTouchListener {
 
     private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
@@ -618,15 +619,13 @@ public class MainActivity extends BaseActivity implements AbsListView.OnScrollLi
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (searchable(mViewPager.getCurrentItem())) {
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             // dismiss the keyboard
             InputMethodManager imm = (InputMethodManager)
                     getSystemService(Service.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mSearchBox.getWindowToken(), 0);
         }
+        return false;
     }
-
-    @Override public void onScroll(AbsListView view, int firstVisibleItem,
-                                   int visibleItemCount, int totalItemCount) {}
 }
