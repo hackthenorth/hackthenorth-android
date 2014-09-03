@@ -36,6 +36,7 @@ import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
 import com.hackthenorth.android.util.DateFormatter;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFragmentListener;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 /**
  * A fragment for displaying lists of Update.
@@ -53,8 +54,8 @@ public class ScheduleFragment extends BaseListFragment
     private ArrayList<Model> mData = new ArrayList<Model>();
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Keep a static cache of the arraylist, because decoding from JSON every time is
         // a waste.
@@ -65,15 +66,14 @@ public class ScheduleFragment extends BaseListFragment
         } else {
             setCachedObject(key, mData);
         }
+    }
 
-        // Set up adapter
-        mAdapter = new ScheduleFragmentAdapter(activity, R.layout.schedule_list_item, mData);
-        mAdapter.setFragment(this);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE);
-
-        HTTPFirebase.GET("/schedule", activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE);
     }
 
     @Override
@@ -81,11 +81,18 @@ public class ScheduleFragment extends BaseListFragment
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.list_fragment_cards, container, false);
 
+        // Set up adapter
+        mAdapter = new ScheduleFragmentAdapter(inflater.getContext(), R.layout.schedule_list_item,
+                mData);
+        mAdapter.setFragment(this);
+
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
 
-        // Hook it up to the ListView
-        mListView.setAdapter(mAdapter);
+        // Animation adapter
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mAdapter);
+        animationAdapter.setAbsListView(mListView);
+        mListView.setAdapter(animationAdapter);
 
         return view;
     }

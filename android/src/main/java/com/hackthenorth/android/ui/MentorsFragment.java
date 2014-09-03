@@ -14,6 +14,7 @@ import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Mentor;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +29,8 @@ public class MentorsFragment extends BaseListFragment {
     private MentorListAdapter mAdapter;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Keep a static cache of the arraylist, because decoding from JSON every time is
         // a waste.
@@ -40,9 +41,11 @@ public class MentorsFragment extends BaseListFragment {
         } else {
             setCachedObject(key, mData);
         }
+    }
 
-        // Create adapters
-        mAdapter = new MentorListAdapter(activity, R.layout.mentor_list_item, mData);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_MENTORS);
@@ -53,13 +56,23 @@ public class MentorsFragment extends BaseListFragment {
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.mentors_fragment, container, false);
 
+        // Create adapters
+        mAdapter = new MentorListAdapter(inflater.getContext(), R.layout.mentor_list_item, mData);
+
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setAdapter(mAdapter);
         mListView.setFastScrollEnabled(true);
 
         mSearchListView = (ListView) view.findViewById(R.id.searchList);
-        mSearchListView.setAdapter(mAdapter);
+
+        // Animation adapters
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mAdapter);
+        animationAdapter.setAbsListView(mListView);
+        mListView.setAdapter(animationAdapter);
+
+        AlphaInAnimationAdapter searchAnimationAdapter = new AlphaInAnimationAdapter(mAdapter);
+        searchAnimationAdapter.setAbsListView(mListView);
+        mListView.setAdapter(searchAnimationAdapter);
 
         // Hook up activity to fragment so it knows when to dismiss the search box
         if (getActivity() instanceof View.OnTouchListener) {

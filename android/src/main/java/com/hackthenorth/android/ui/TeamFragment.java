@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.TeamMember;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,8 +42,8 @@ public class TeamFragment extends BaseListFragment {
     private TeamFragmentAdapter mAdapter;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Keep a static cache of the arraylist, because decoding from JSON every time is
         // a waste.
@@ -52,9 +54,11 @@ public class TeamFragment extends BaseListFragment {
         } else {
             setCachedObject(key, mData);
         }
+    }
 
-        // Create adapter
-        mAdapter = new TeamFragmentAdapter(activity, R.layout.team_list_item, mData);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_TEAM);
@@ -71,8 +75,15 @@ public class TeamFragment extends BaseListFragment {
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setFastScrollEnabled(true);
 
+        // Create adapter
+        mAdapter = new TeamFragmentAdapter(inflater.getContext(), R.layout.team_list_item, mData);
+
+        // Wrap the adapter in AlphaInAnimatorAdapter for prettiness
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mAdapter);
+        animationAdapter.setAbsListView(mListView);
+
         // Hook it up to the ListView
-        mListView.setAdapter(mAdapter);
+        mListView.setAdapter(animationAdapter);
 
         return view;
     }

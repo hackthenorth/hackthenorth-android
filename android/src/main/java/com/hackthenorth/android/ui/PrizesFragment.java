@@ -25,6 +25,7 @@ import com.hackthenorth.android.ui.component.TextView;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFragmentListener;
 import com.hackthenorth.android.ui.dialog.IntentChooserDialogFragment;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,9 +44,8 @@ public class PrizesFragment extends BaseListFragment implements
     private PrizesFragmentAdapter mAdapter;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Keep a static cache of the arraylist, because decoding from JSON every time is
         // a waste.
@@ -56,9 +56,11 @@ public class PrizesFragment extends BaseListFragment implements
         } else {
             setCachedObject(key, mData);
         }
+    }
 
-        mAdapter = new PrizesFragmentAdapter(activity, R.layout.prizes_list_item, mData);
-        mAdapter.setFragment(this);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_PRIZES);
     }
@@ -68,9 +70,17 @@ public class PrizesFragment extends BaseListFragment implements
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.list_fragment_cards, container, false);
 
+        mAdapter = new PrizesFragmentAdapter(inflater.getContext(), R.layout.prizes_list_item,
+                mData);
+        mAdapter.setFragment(this);
+
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setAdapter(mAdapter);
+
+        // Animation adapter
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mAdapter);
+        animationAdapter.setAbsListView(mListView);
+        mListView.setAdapter(animationAdapter);
 
         return view;
     }

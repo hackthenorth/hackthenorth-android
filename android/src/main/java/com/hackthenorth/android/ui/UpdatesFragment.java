@@ -32,6 +32,7 @@ import com.hackthenorth.android.framework.HTNNotificationManager;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Update;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 /**
  * A fragment for displaying lists of Update.
@@ -44,8 +45,8 @@ public class UpdatesFragment extends BaseListFragment {
     private UpdatesFragmentAdapter mAdapter;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Keep a static cache of the arraylist, because decoding from JSON every time is
         // a waste.
@@ -56,9 +57,11 @@ public class UpdatesFragment extends BaseListFragment {
         } else {
             setCachedObject(key, mData);
         }
+    }
 
-        // Create adapter
-        mAdapter = new UpdatesFragmentAdapter(activity, R.layout.update_list_item, mData);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_UPDATES);
@@ -71,9 +74,17 @@ public class UpdatesFragment extends BaseListFragment {
         // Inflate the view and return it
         View view = inflater.inflate(R.layout.list_fragment, container, false);
 
+        // Create adapter
+        mAdapter = new UpdatesFragmentAdapter(inflater.getContext(), R.layout.update_list_item,
+                mData);
+
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setAdapter(mAdapter);
+
+        // Animation adapter
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mAdapter);
+        animationAdapter.setAbsListView(mListView);
+        mListView.setAdapter(animationAdapter);
 
         return view;
     }
