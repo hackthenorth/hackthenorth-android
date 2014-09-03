@@ -2,10 +2,18 @@ package com.hackthenorth.android.framework;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An HTTP / Intent-based module for Firebase.
@@ -14,11 +22,13 @@ import android.util.Log;
  * 
  */
 public class HTTPFirebase {
-    
-    private static final String FIREBASE_URL = "https://hackthenorth.firebaseio.com/mobile";
-    private static final String FIREBASE_CACHE_KEY = "FIREBASE_CACHE";
 
     protected static final String TAG = "HTTPFirebase";
+
+    private static final boolean DEBUG = true;
+    
+    private static final String FIREBASE_URL = "https://hackthenorth.firebaseio.com/mobile";
+
 
     /**
      * @param path
@@ -32,85 +42,82 @@ public class HTTPFirebase {
     public static void GET(final String path, final Context context,
                            final String action) {
 
-        // First, broadcast any cached data that we have.
-        final String cached = getCachedJSON(context, path);
-        if (cached != null) {
-            Intent intent = new Intent(action);
-            intent.putExtra(action, cached);
+        String url = String.format("%s/%s.json", FIREBASE_URL, path);
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Broadcast the new data
+                        Intent intent = new Intent(action);
+                        intent.putExtra(action, response);
 
-            LocalBroadcastManager manager =
-                    LocalBroadcastManager.getInstance(context);
-            manager.sendBroadcast(intent);
-        }
+                        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
+                        manager.sendBroadcast(intent);
+                    }
+                },
 
-        // Start an AsyncTask to GET the string
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... nothingness) {
-                String url = String.format("%s/%s.json", FIREBASE_URL, path);
-                String val = HTTPRequests.GET(url);
-                if (cached == null || !cached.equals(val)) {
-                    return val;
-                } else {
-                    return null;
-                }
-            }
-            
-            @Override
-            protected void onPostExecute(String result) {
-                if (result != null) {
-                    // Put the data into the cache
-                    setCachedJSON(context, path, result);
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, error.toString());
+                        // TODO
+                    }
+                });
 
-                    // Broadcast the new data
-                    Intent intent = new Intent(action);
-                    intent.putExtra(action, result);
-
-                    LocalBroadcastManager manager =
-                            LocalBroadcastManager.getInstance(context);
-                    manager.sendBroadcast(intent);
-                }
-            }
-        }.execute();
+        NetworkManager.getRequestQueue().add(request);
     }
 
     /**
      *
      * @param path
-     *            The path of the Firebase data to PUT
+     *            The path of the Firebase data to PATCH
      * @param data
-     *            The data to push to the Firebase ref
+     *            The data to PATCH to the Firebase path
      */
-    public static void PUT(String path, String data) {
+    public static void PATCH(final String path, final String data) {
 
-        // Start an AsyncTask to PUT the string
-        new AsyncTask<String, Void, String>() {
+        String url = String.format("%s/%s.json", FIREBASE_URL, path);
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i(TAG, "patch response: " + response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG, error.toString());
+                    }
+                }
+        ) {
+
             @Override
-            protected String doInBackground(String... strings) {
-                // Specify the path of the firebase data
-                String path = strings[0];
-                String data = strings[1];
-
-                String url = String.format("%s/%s.json", FIREBASE_URL, path);
-                return HTTPRequests.PUT(url, data);
+            public Map<String, String> getParams() {
+                return Collections.emptyMap();
             }
 
             @Override
-            protected void onPostExecute(String result) {
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>(1);
+                headers.put("X-HTTP-Method-Override", "PATCH");
+                return headers;
             }
-        }.execute(path, data);
-    }
 
-    private static String getCachedJSON(Context context, String path) {
-        SharedPreferences preferences = context.getSharedPreferences(FIREBASE_CACHE_KEY,
-                Context.MODE_PRIVATE);
-        return preferences.getString(path, null);
-    }
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
 
-    private static void setCachedJSON(Context context, String path, String json) {
-        SharedPreferences.Editor editor = context.getSharedPreferences(FIREBASE_CACHE_KEY,
-                Context.MODE_PRIVATE).edit();
-        editor.putString(path, json);
-        editor.commit();
+            @Override
+            public byte[] getBody() {
+                try {
+                    return data.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    return data.getBytes();
+                }
+            }
+        };
+        NetworkManager.getRequestQueue().add(request);
     }
 }

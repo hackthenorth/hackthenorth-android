@@ -73,8 +73,7 @@ public class ScheduleFragment extends BaseListFragment
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE);
 
-        HTTPFirebase.GET("/schedule", activity,
-                HackTheNorthApplication.Actions.SYNC_SCHEDULE);
+        HTTPFirebase.GET("/schedule", activity, HackTheNorthApplication.Actions.SYNC_SCHEDULE);
     }
 
     @Override
@@ -141,7 +140,7 @@ public class ScheduleFragment extends BaseListFragment
 
                 return null;
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static class ScheduleFragmentAdapter extends ArrayAdapter<Model> {

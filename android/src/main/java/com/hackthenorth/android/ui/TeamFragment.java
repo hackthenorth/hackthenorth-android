@@ -58,8 +58,6 @@ public class TeamFragment extends BaseListFragment {
 
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_TEAM);
-
-        HTTPFirebase.GET("/team", activity, HackTheNorthApplication.Actions.SYNC_TEAM);
     }
 
     @Override
@@ -77,6 +75,17 @@ public class TeamFragment extends BaseListFragment {
         mListView.setAdapter(mAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Re-GET data from Firebase here
+        if (getActivity() != null) {
+            HTTPFirebase.GET("/team", getActivity(),
+                    HackTheNorthApplication.Actions.SYNC_TEAM);
+        }
     }
 
     @Override
@@ -106,7 +115,7 @@ public class TeamFragment extends BaseListFragment {
 
                 return null;
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> implements SectionIndexer {

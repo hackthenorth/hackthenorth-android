@@ -47,4 +47,8 @@ public class NetworkManager {
     public static ImageLoader getImageLoader() {
         return mImageLoader;
     }
+
+    public static RequestQueue getRequestQueue() {
+        return mRequestQueue;
+    }
 }

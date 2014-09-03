@@ -61,9 +61,6 @@ public class PrizesFragment extends BaseListFragment implements
         mAdapter.setFragment(this);
 
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_PRIZES);
-
-        HTTPFirebase.GET("/prizes", activity,
-                HackTheNorthApplication.Actions.SYNC_PRIZES);
     }
 
     @Override
@@ -115,7 +112,7 @@ public class PrizesFragment extends BaseListFragment implements
 
                 return null;
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

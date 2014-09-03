@@ -103,8 +103,7 @@ public class GCMRegistrationManager {
      * ID for this device, we remove it.
      */
     private static void sendRegistrationIdToFirebase(Context context, String regid) {
-        HTTPFirebase.PUT(String.format("/notifications/android/%s", regid),
-                "\"dummy\"");
+        HTTPFirebase.PATCH("/gcm/uuid/", String.format("{\"%s\":\"%s\"}", regid, "dummy"));
     }
 
     /**

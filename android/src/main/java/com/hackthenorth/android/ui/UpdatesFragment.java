@@ -63,8 +63,7 @@ public class UpdatesFragment extends BaseListFragment {
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_UPDATES);
 
-        HTTPFirebase.GET("/updates", activity,
-                HackTheNorthApplication.Actions.SYNC_UPDATES);
+        HTTPFirebase.GET("/updates", activity, HackTheNorthApplication.Actions.SYNC_UPDATES);
     }
 
     @Override
@@ -134,7 +133,7 @@ public class UpdatesFragment extends BaseListFragment {
 
                 return null;
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static class UpdatesFragmentAdapter extends ArrayAdapter<Update> {

@@ -46,8 +46,6 @@ public class MentorsFragment extends BaseListFragment {
 
         // Register for updates
         registerForSync(activity, HackTheNorthApplication.Actions.SYNC_MENTORS);
-
-        HTTPFirebase.GET("/mentors", activity, HackTheNorthApplication.Actions.SYNC_MENTORS);
     }
 
     @Override
@@ -70,6 +68,17 @@ public class MentorsFragment extends BaseListFragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Re-GET data from Firebase here
+        if (getActivity() != null) {
+            HTTPFirebase.GET("/mentors", getActivity(),
+                    HackTheNorthApplication.Actions.SYNC_MENTORS);
+        }
     }
 
     public void startSearch() {
@@ -115,7 +124,7 @@ public class MentorsFragment extends BaseListFragment {
 
                 return null;
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public MentorListAdapter getAdapter() {
