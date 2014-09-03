@@ -1,6 +1,9 @@
 package com.hackthenorth.android.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.hackthenorth.android.util.DateFormatter;
 
@@ -14,8 +17,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ScheduleItem extends Model {
-    private static final String TAG = "Update";
+public class ScheduleItem extends Model implements Comparable<ScheduleItem> {
+
+    private static final String TAG = "ScheduleItem";
 
     public static final String TYPE_EVENT = "event";
     public static final String TYPE_WORKSHOP = "workshop";
@@ -23,8 +27,6 @@ public class ScheduleItem extends Model {
     public static final String TYPE_SPEAKER = "speaker";
     public static final String TYPE_UPDATE = "update";
     public static final String TYPE_FOOD = "food";
-
-    public String id;
 
     public String type;
 
@@ -36,52 +38,29 @@ public class ScheduleItem extends Model {
     public String start_time;
     public String end_time;
 
-    // This method takes a JSON string and returns an ArrayList of ScheduleItem from
-    // the JSON data.
-    public static ArrayList<ScheduleItem> loadScheduleFromJSON(String json) {
+    @Override
+    public int compareTo(@NonNull ScheduleItem another) {
 
-        // Deserialize using GSON.
-        Gson gson = new Gson();
-        Type type = new TypeToken<HashMap<String, ScheduleItem>>(){}.getType();
-        HashMap<String, ScheduleItem> scheduleItemMap = gson.fromJson(json, type);
-
-        // Build an ArrayList of schedule items from the hashmap.
-        ArrayList<ScheduleItem> scheduleItems =
-                new ArrayList<ScheduleItem>(scheduleItemMap.size());
-        for (Map.Entry<String, ScheduleItem> entry : scheduleItemMap.entrySet()) {
-            ScheduleItem scheduleItem = entry.getValue();
-            scheduleItem.id = entry.getKey();
-            scheduleItems.add(scheduleItem);
+        // Sort the schedule items by start_time
+        SimpleDateFormat format = DateFormatter.getISO8601SimpleDateFormat();
+        Date lhsStartTime = null;
+        try {
+            lhsStartTime = format.parse(start_time);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
-        // Sort the list
-        Collections.sort(scheduleItems, new Comparator<ScheduleItem>() {
-            @Override
-            public int compare(ScheduleItem lhs, ScheduleItem rhs) {
-                // Sort the schedule items by start_time
-                SimpleDateFormat format = DateFormatter.getISO8601SimpleDateFormat();
-                Date lhsStartTime = null;
-                try {
-                    lhsStartTime = format.parse(lhs.start_time);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+        Date rhsStartTime = null;
+        try {
+            rhsStartTime = format.parse(another.start_time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-                Date rhsStartTime = null;
-                try {
-                    rhsStartTime = format.parse(rhs.start_time);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                if (lhsStartTime == null) {
-                    return -1;
-                } else {
-                    return lhsStartTime.compareTo(rhsStartTime);
-                }
-            }
-        });
-
-        return scheduleItems;
+        if (lhsStartTime == null) {
+            return -1;
+        } else {
+            return lhsStartTime.compareTo(rhsStartTime);
+        }
     }
 }

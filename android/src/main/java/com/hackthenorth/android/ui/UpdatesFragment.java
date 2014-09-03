@@ -3,6 +3,7 @@ package com.hackthenorth.android.ui;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.gson.reflect.TypeToken;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
@@ -92,7 +94,9 @@ public class UpdatesFragment extends BaseListFragment {
             @Override
             protected Void doInBackground(Void... nothing) {
 
-                final ArrayList<Update> newData = Update.loadUpdateArrayFromJSON(json);
+                final ArrayList<Update> newData = new ArrayList<Update>();
+                Update.loadArrayListFromJSON(newData, new TypeToken<HashMap<String, Update>>(){},
+                        json);
 
                 if (activity != null && mAdapter != null) {
                     activity.runOnUiThread(new Runnable() {

@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.google.gson.reflect.TypeToken;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
@@ -14,6 +16,7 @@ import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Mentor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MentorsFragment extends BaseListFragment {
     private final String TAG = "MentorsFragment";
@@ -93,7 +96,9 @@ public class MentorsFragment extends BaseListFragment {
             protected Void doInBackground(Void... nothing) {
 
                 // Decode JSON
-                final ArrayList<Mentor> newData = Mentor.loadMentorArrayFromJSON(json);
+                final ArrayList<Mentor> newData = new ArrayList<Mentor>();
+                Mentor.loadArrayListFromJSON(newData, new TypeToken<HashMap<String, Mentor>>(){},
+                        json);
 
                 if (activity != null && mAdapter != null) {
                     activity.runOnUiThread(new Runnable() {

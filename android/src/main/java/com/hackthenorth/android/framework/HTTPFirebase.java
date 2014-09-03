@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 /**
  * An HTTP / Intent-based module for Firebase.
@@ -14,14 +15,15 @@ import android.support.v4.content.LocalBroadcastManager;
  */
 public class HTTPFirebase {
     
-    private static final String FIREBASE_ID = "shane-hackthenorth";
+    private static final String FIREBASE_URL = "https://hackthenorth.firebaseio.com/mobile";
     private static final String FIREBASE_CACHE_KEY = "FIREBASE_CACHE";
 
     protected static final String TAG = "HTTPFirebase";
 
     /**
      * @param path
-     *            The path of the Firebase data to GET
+     *            The path of the Firebase data to GET. Note: do not include '.json' at the end
+     *            of this path!
      * @param context
      *            Application context for broadcasting the intent
      * @param action
@@ -45,8 +47,7 @@ public class HTTPFirebase {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... nothingness) {
-                String url = String.format("https://%s.firebaseio.com/%s.json",
-                        FIREBASE_ID, path);
+                String url = String.format("%s/%s.json", FIREBASE_URL, path);
                 String val = HTTPRequests.GET(url);
                 if (cached == null || !cached.equals(val)) {
                     return val;
@@ -90,8 +91,7 @@ public class HTTPFirebase {
                 String path = strings[0];
                 String data = strings[1];
 
-                String url = String.format("https://%s.firebaseio.com/%s.json",
-                        FIREBASE_ID, path);
+                String url = String.format("%s/%s.json", FIREBASE_URL, path);
                 return HTTPRequests.PUT(url, data);
             }
 

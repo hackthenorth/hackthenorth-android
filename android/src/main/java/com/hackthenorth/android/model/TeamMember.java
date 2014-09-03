@@ -1,15 +1,15 @@
 package com.hackthenorth.android.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class TeamMember extends Model {
+public class TeamMember extends Model implements Comparable<TeamMember> {
     private static final String TAG = "TeamMember";
-
-    public String id;
 
     // Fields
     public String name;
@@ -19,34 +19,12 @@ public class TeamMember extends Model {
     public String email;
     public String twitter;
 
-    public TeamMember() {
-    }
-
-    // This method takes a JSON string and returns an ArrayList of TeamMember from
-    // the JSON data.
-    public static ArrayList<TeamMember> loadTeamMemberArrayFromJSON(String json) {
-
-        // Deserialize using GSON.
-        Gson gson = new Gson();
-        Type type = new TypeToken<HashMap<String, TeamMember>>(){}.getType();
-        HashMap<String, TeamMember> teamMemberMap = gson.fromJson(json, type);
-
-        // Build an ArrayList of teamMembers from the hashmap.
-        ArrayList<TeamMember> teamMembers = new ArrayList<TeamMember>(teamMemberMap.size());
-        for (Map.Entry<String, TeamMember> entry : teamMemberMap.entrySet()) {
-            TeamMember teamMember = entry.getValue();
-            teamMember.id = entry.getKey();
-            teamMembers.add(teamMember);
+    @Override
+    public int compareTo(@NonNull TeamMember another) {
+        if (name == null) {
+            return -1;
+        } else {
+            return name.compareTo(another.name);
         }
-
-        // Sort the list
-        Collections.sort(teamMembers, new Comparator<TeamMember>() {
-            @Override
-            public int compare(TeamMember lhs, TeamMember rhs) {
-                return lhs.name.compareTo(rhs.name);
-            }
-        });
-
-        return teamMembers;
     }
 }

@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.gson.reflect.TypeToken;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
+import com.hackthenorth.android.model.Model;
 import com.hackthenorth.android.model.Prize;
 import com.hackthenorth.android.ui.component.TextView;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
@@ -25,6 +27,7 @@ import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFra
 import com.hackthenorth.android.ui.dialog.IntentChooserDialogFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PrizesFragment extends BaseListFragment implements
         ConfirmDialogFragmentListener {
@@ -93,7 +96,9 @@ public class PrizesFragment extends BaseListFragment implements
             @Override
             protected Void doInBackground(Void... nothing) {
 
-                final ArrayList<Prize> newData = Prize.loadPrizesFromJSON(json);
+                final ArrayList<Prize> newData = new ArrayList<Prize>();
+                Prize.loadArrayListFromJSON(newData, new TypeToken<HashMap<String, Prize>>(){},
+                        json);
 
                 if (activity != null && mAdapter != null) {
                     activity.runOnUiThread(new Runnable() {

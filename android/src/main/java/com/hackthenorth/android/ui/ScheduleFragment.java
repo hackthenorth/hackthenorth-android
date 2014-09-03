@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -23,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
@@ -120,8 +122,9 @@ public class ScheduleFragment extends BaseListFragment
             protected Void doInBackground(Void... nothing) {
 
                 // Decode JSON
-                final ArrayList<ScheduleItem> newData =
-                        ScheduleItem.loadScheduleFromJSON(json);
+                final ArrayList<ScheduleItem> newData = new ArrayList<ScheduleItem>();
+                ScheduleItem.loadArrayListFromJSON(newData, new TypeToken<HashMap<String, ScheduleItem>>(){},
+                        json);
 
                 if (activity != null && mAdapter != null) {
                     activity.runOnUiThread(new Runnable() {

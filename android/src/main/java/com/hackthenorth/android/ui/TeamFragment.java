@@ -19,6 +19,7 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.gson.reflect.TypeToken;
 import com.hackthenorth.android.HackTheNorthApplication;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
@@ -29,6 +30,7 @@ import com.hackthenorth.android.model.TeamMember;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TeamFragment extends BaseListFragment {
     public static final String TAG = "TeamFragment";
@@ -85,8 +87,9 @@ public class TeamFragment extends BaseListFragment {
             protected Void doInBackground(Void... nothing) {
 
                 // Decode JSON
-                final ArrayList<TeamMember> newData =
-                        TeamMember.loadTeamMemberArrayFromJSON(json);
+                final ArrayList<TeamMember> newData = new ArrayList<TeamMember>();
+                TeamMember.loadArrayListFromJSON(newData, new TypeToken<HashMap<String, TeamMember>>(){},
+                        json);
 
                 if (activity != null && mAdapter != null) {
                     activity.runOnUiThread(new Runnable() {
