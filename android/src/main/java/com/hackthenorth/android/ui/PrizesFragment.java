@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -132,11 +133,8 @@ public class PrizesFragment extends BaseListFragment implements
         int position = fragment.getArguments().getInt(CONFIRM_DIALOG_POSITION_KEY);
         Prize prize = mData.get(position);
 
-        String[] receipients = { prize.contact };
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, receipients);
+        Intent intent = new Intent(Intent.ACTION_SENDTO,
+                Uri.fromParts("mailto", prize.contact, null));
 
         String subject = String.format("Regarding the Hack The North prize"
                 + " \"%s\"", prize.name);

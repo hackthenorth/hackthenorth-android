@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,8 @@ public class IntentChooserDialogFragment extends DialogFragment {
 
     public static final String TITLE_KEY = "title";
     public static final String INTENT_KEY = "intent";
+    public static final String URI_KEY = "uri";
+    private static final String TAG = "IntentChooserDialogFragment";
 
     public static IntentChooserDialogFragment getInstance(Intent intent, Context context,
                                                           String title)  {
@@ -55,7 +59,7 @@ public class IntentChooserDialogFragment extends DialogFragment {
         List<ResolveInfo> infos = manager.queryIntentActivities(intent, 0);
 
         IntentChooseDialogFragmentAdapter adapter = new IntentChooseDialogFragmentAdapter(
-                getActivity(), R.layout.intent_chooser_list_item, infos, intent, this);
+                getActivity(), R.layout.list_dialog_item, infos, intent, this);
         ((ListView)view.findViewById(android.R.id.list))
                 .setAdapter(adapter);
 
@@ -97,7 +101,7 @@ public class IntentChooserDialogFragment extends DialogFragment {
 
             final ResolveInfo info = mData.get(position);
 
-            ((TextView)convertView.findViewById(R.id.activityName))
+            ((TextView)convertView.findViewById(R.id.text))
                     .setText(info.activityInfo.loadLabel(manager));
 
             Drawable drawable = info.activityInfo.loadIcon(manager);

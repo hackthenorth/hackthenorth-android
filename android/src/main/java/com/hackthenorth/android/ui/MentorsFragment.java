@@ -1,8 +1,12 @@
 package com.hackthenorth.android.ui;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +18,16 @@ import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Mentor;
+import com.hackthenorth.android.ui.dialog.IntentChooserDialogFragment;
+import com.hackthenorth.android.ui.dialog.ListDialogFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class MentorsFragment extends BaseListFragment {
+public class MentorsFragment extends BaseListFragment implements
+        ListDialogFragment.ListDialogFragmentListener {
     private final String TAG = "MentorsFragment";
 
     private ArrayList<Mentor> mData = new ArrayList<Mentor>();
@@ -57,7 +65,8 @@ public class MentorsFragment extends BaseListFragment {
         View view = inflater.inflate(R.layout.mentors_fragment, container, false);
 
         // Create adapters
-        mAdapter = new MentorListAdapter(inflater.getContext(), R.layout.mentor_list_item, mData);
+        mAdapter = new MentorListAdapter(inflater.getContext(), R.layout.mentor_list_item, mData,
+                this);
 
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
@@ -142,5 +151,64 @@ public class MentorsFragment extends BaseListFragment {
 
     public MentorListAdapter getAdapter() {
         return mAdapter;
+    }
+
+    @Override
+    public void onItemClick(ListDialogFragment fragment, int position) {
+        // Get the position of the mentor in the list.
+        int mentorPosition = fragment.getArguments().getInt(MentorListAdapter.MENTOR_POSITION);
+        Mentor mentor = mAdapter.getItem(mentorPosition);
+
+        List<Integer> canonicalContactTypesList = mAdapter.getCanonicalContactTypesList(mentor);
+        openContactAction(canonicalContactTypesList.get(position), mentor);
+
+        fragment.dismiss();
+    }
+
+    private void openContactAction(int contactType, Mentor mentor) {
+
+        if (getActivity() == null) return;
+
+        Intent intent = null;
+        String title = null;
+        Resources res = getActivity().getResources();
+
+        switch(contactType) {
+            case MentorListAdapter.TWITTER_CONTACT_TYPE:
+                String twitter = mentor.twitter;
+                twitter = twitter.charAt(0) == '@' ? twitter.substring(1, twitter.length()) : twitter;
+                intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(String.format("http://twitter.com/%s", twitter)));
+                title = res.getString(R.string.open_twitter_profile);
+                break;
+            case MentorListAdapter.GITHUB_CONTACT_TYPE:
+                String github = mentor.github;
+                github = github.charAt(0) == '@' ? github.substring(1, github.length()) : github;
+                intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(String.format("http://github.com/%s", github)));
+                title = res.getString(R.string.open_github_profile);
+                break;
+            case MentorListAdapter.EMAIL_CONTACT_TYPE:
+                String email = mentor.email;
+                intent = new Intent(Intent.ACTION_SENDTO,
+                        Uri.fromParts("mailto", email, null));
+                title = res.getString(R.string.send_email);
+                break;
+            case MentorListAdapter.PHONE_CONTACT_TYPE:
+                String phone = mentor.phone;
+                intent = new Intent(Intent.ACTION_DIAL,
+                        Uri.fromParts("tel", phone, null));
+                title = res.getString(R.string.dial_phone);
+                break;
+        }
+
+        IntentChooserDialogFragment dialog = IntentChooserDialogFragment.getInstance(intent,
+                getActivity(), title);
+        dialog.show(getFragmentManager(), "another hmmmm?");
+    }
+
+    @Override
+    public void onCancelButtonClick(ListDialogFragment fragment) {
+        fragment.dismiss();
     }
 }
