@@ -72,21 +72,6 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
         // Get the data for this position
         final Mentor mentor = mData.get(position);
 
-        // Set up the image view with the avatar URLs
-        NetworkImageView networkImageView = (NetworkImageView) convertView.findViewById(R.id.mentor_image);
-        if (networkImageView != null) {
-            networkImageView.setDefaultImageResId(R.drawable.ic_launcher);
-
-            // If we have an avatar URL, load it here.
-            ImageLoader loader = NetworkManager.getImageLoader();
-            if (!TextUtils.isEmpty(mentor.image)) {
-                networkImageView.setVisibility(View.VISIBLE);
-                networkImageView.setImageUrl(mentor.image, loader);
-            } else {
-                networkImageView.setVisibility(View.GONE);
-            }
-        }
-
         if (contactable(mentor)) {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override

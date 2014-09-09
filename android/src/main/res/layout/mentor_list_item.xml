@@ -12,32 +12,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/mentor_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" >
-
-            <com.android.volley.toolbox.NetworkImageView
-                android:id="@+id/mentor_image"
-                android:layout_width="match_parent"
-                android:layout_height="172dp"
-                android:scaleType="centerCrop" />
-
-            <com.hackthenorth.android.ui.component.TextView
-                android:id="@+id/mentor_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:textColor="@color/text_color_primary_inverse"
-                android:textSize="24sp"
-                android:background="#4000"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                app:typeface="roboto_regular"
-                tools:text="Barack Obama" />
-            </RelativeLayout>
+            android:layout_margin="16dp"
+            android:textColor="@color/theme_secondary"
+            android:textSize="32sp"
+            app:typeface="roboto_thin" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -52,8 +34,8 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="@string/organization"
-                android:textColor="@color/text_color_primary"
-                android:textSize="16sp"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="14sp"
                 app:typeface="roboto_regular" />
 
             <com.hackthenorth.android.ui.component.TextView
@@ -61,8 +43,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:textColor="@color/text_color_secondary"
-                android:textSize="14sp"
+                android:textColor="@color/text_color_primary"
+                android:textSize="16sp"
                 app:typeface="roboto_regular"
                 tools:text="USA" />
         </LinearLayout>
@@ -73,7 +55,8 @@
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <com.hackthenorth.android.ui.component.TextView
                 android:layout_width="wrap_content"
@@ -107,16 +90,16 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="@string/skills"
-                android:textColor="@color/text_color_primary"
-                android:textSize="16sp"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="14sp"
                 app:typeface="roboto_regular" />
 
             <com.hackthenorth.android.ui.component.TextView
                 android:id="@+id/mentor_skills"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_color_secondary"
-                android:textSize="14sp"
+                android:textColor="@color/text_color_primary"
+                android:textSize="16sp"
                 app:typeface="roboto_regular"
                 tools:text="Baking" />
         </LinearLayout>
