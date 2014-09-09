@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    android:padding="12dp"
-    >
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
 
     <LinearLayout
         android:id="@+id/textContainer"
@@ -26,8 +23,8 @@
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/content"
-            android:layout_marginTop="16dp"
             style="@style/TextViewStyleSecondary"
+            android:layout_marginTop="16dp"
             android:textSize="16sp"
             app:typeface="roboto_regular" />
     </LinearLayout>
@@ -38,21 +35,26 @@
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textContainer"
-        android:layout_above="@+id/cancelButton"
-        android:dividerHeight="0dp"
-        android:divider="@null" />
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
-    <com.hackthenorth.android.ui.component.TextView
-        android:id="@+id/cancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_vertical"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:textColor="@color/text_color_primary"
-        android:textSize="14sp"
-        app:typeface="roboto_medium" />
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp">
+
+        <com.hackthenorth.android.ui.component.TextView
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/text_color_primary"
+            android:textSize="14sp"
+            app:typeface="roboto_medium" />
+
+    </RelativeLayout>
+</LinearLayout>

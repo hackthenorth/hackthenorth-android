@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.hackthenorth.android.R;
@@ -19,22 +18,22 @@ import com.hackthenorth.android.ui.component.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListDialogFragment extends DialogFragment {
+public class ContactOptionsDialogFragment extends DialogFragment {
 
     private static String TITLE_KEY = "title";
     private static String CONTENT_KEY = "content";
+    private static String TITLES_KEY = "titles";
     private static String ITEMS_KEY = "items";
-    private static String RES_IDS_KEY = "resIds";
     private static String CANCEL_BUTTON_TEXT_KEY = "cancelButtonText";
 
     public static interface ListDialogFragmentListener {
-        public void onItemClick(ListDialogFragment fragment, int position);
-        public void onCancelButtonClick(ListDialogFragment fragment);
+        public void onItemClick(ContactOptionsDialogFragment fragment, int position);
+        public void onCancelButtonClick(ContactOptionsDialogFragment fragment);
     }
 
     /**
      * Do not use this method! It is used internally to stay connected to the listener fragment. You
-     * will break the listener if you use it after calling ListDialogFragment#getInstance().
+     * will break the listener if you use it after calling ContactOptionsDialogFragment#getInstance().
      */
     @Deprecated
     @Override
@@ -52,18 +51,17 @@ public class ListDialogFragment extends DialogFragment {
      * @param title Title text. Can be null.
      * @param content Text to be displayed underneath the title and above the list. Can be null.
      * @param items ArrayList of items. Can not be null.
-     * @param resIds ArrayList of resIds. Will be loaded as images beside the items. Can not be null.
      * @param cancelButtonText Cancel button text. If null, then there will be no cancel button.
      * @param <T> The fragment / listener type; extends fragment and implements
      *           ListDialogFragmentListener.
      * @return
      */
     public static <T extends Fragment & ListDialogFragmentListener>
-    ListDialogFragment getInstance(T listener, String title, String content,
-                                   ArrayList<String> items, ArrayList<Integer> resIds,
-                                   String cancelButtonText) {
+    ContactOptionsDialogFragment getInstance(T listener, String title, String content,
+                                             ArrayList<String> titles, ArrayList<String> items,
+                                             String cancelButtonText) {
 
-        ListDialogFragment f = new ListDialogFragment();
+        ContactOptionsDialogFragment f = new ContactOptionsDialogFragment();
 
         // Save the listener as the target fragment. This relationship will be maintained across
         // rotations!
@@ -76,8 +74,8 @@ public class ListDialogFragment extends DialogFragment {
         Bundle args = new Bundle();
         args.putString(TITLE_KEY, title);
         args.putString(CONTENT_KEY, content);
+        args.putStringArrayList(TITLES_KEY, titles);
         args.putStringArrayList(ITEMS_KEY, items);
-        args.putIntegerArrayList(RES_IDS_KEY, resIds);
         args.putString(CANCEL_BUTTON_TEXT_KEY, cancelButtonText);
         f.setArguments(args);
 
@@ -113,22 +111,22 @@ public class ListDialogFragment extends DialogFragment {
         }
 
         // Set up the list: Data, adapter, listview
+        ArrayList<String> titles = args.getStringArrayList(TITLES_KEY);
         ArrayList<String> items = args.getStringArrayList(ITEMS_KEY);
-        ArrayList<Integer> resIds = args.getIntegerArrayList(RES_IDS_KEY);
-        ArrayList<ListDialogItem> data = new ArrayList<ListDialogItem>(items.size());
+        ArrayList<ContactOptionItem> data = new ArrayList<ContactOptionItem>(items.size());
         for (int i = 0; i < items.size(); i++ ) {
-            ListDialogItem item = new ListDialogItem();
+            ContactOptionItem item = new ContactOptionItem();
+            item.title = titles.get(i);
             item.text = items.get(i);
-            item.resId = resIds.get(i);
             data.add(item);
         }
 
         ListDialogFragmentAdapter adapter = new ListDialogFragmentAdapter(
-                view.getContext(), R.layout.list_dialog_item, data, this, listener);
+                view.getContext(), R.layout.contact_option_list_item, data, this, listener);
         ListView list = (ListView)view.findViewById(android.R.id.list);
         list.setAdapter(adapter);
 
-        final ListDialogFragment f = this;
+        final ContactOptionsDialogFragment f = this;
         String cancelButtonText = args.getString(CANCEL_BUTTON_TEXT_KEY, null);
         TextView cancelButton = (TextView)view.findViewById(R.id.cancelButton);
         if (cancelButtonText != null) {
@@ -150,22 +148,23 @@ public class ListDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    private static class ListDialogItem {
+    private static class ContactOptionItem {
+        public String title;
         public String text;
         public int resId;
     }
 
-    public static class ListDialogFragmentAdapter extends ArrayAdapter<ListDialogItem> {
+    public static class ListDialogFragmentAdapter extends ArrayAdapter<ContactOptionItem> {
 
-        List<ListDialogItem> mData;
-        ListDialogFragment mFragment;
+        List<ContactOptionItem> mData;
+        ContactOptionsDialogFragment mFragment;
         ListDialogFragmentListener mListener;
         Context mContext;
         int mResource;
 
         public ListDialogFragmentAdapter(Context context, int resource,
-                                         ArrayList<ListDialogItem> data,
-                                         ListDialogFragment fragment,
+                                         ArrayList<ContactOptionItem> data,
+                                         ContactOptionsDialogFragment fragment,
                                          ListDialogFragmentListener listener) {
             super(context, resource, data);
 
@@ -185,14 +184,13 @@ public class ListDialogFragment extends DialogFragment {
                 convertView = inflater.inflate(mResource, null);
             }
 
-            ListDialogItem item = mData.get(position);
-
-            ((ImageView)convertView.findViewById(R.id.image))
-                    .setImageResource(item.resId);
+            ContactOptionItem item = mData.get(position);
+            ((TextView)convertView.findViewById(R.id.title))
+                    .setText(item.title);
             ((TextView)convertView.findViewById(R.id.text))
                     .setText(item.text);
 
-            final ListDialogFragment dialog = mFragment;
+            final ContactOptionsDialogFragment dialog = mFragment;
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

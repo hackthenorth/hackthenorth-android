@@ -46,10 +46,10 @@
     <string name="prize_dialog_confirm">HOOK ME UP!</string>
     <string name="send_email">Send Email</string>
     <string name="action_search">Search</string>
-    <string name="email_mentor">Email: %s</string>
-    <string name="twitter_mentor">Twitter: %s</string>
-    <string name="github_mentor">Github: %s</string>
-    <string name="phone_mentor">Phone: %s</string>
+    <string name="email_mentor">Email</string>
+    <string name="twitter_mentor">Twitter</string>
+    <string name="github_mentor">Github</string>
+    <string name="phone_mentor">Phone</string>
     <string name="contact_mentor">Contact this mentor</string>
     <string name="open_twitter_profile">Open Twitter Profile</string>
     <string name="open_github_profile">Open Github Profile</string>

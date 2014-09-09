@@ -4,25 +4,20 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.framework.FuzzySearchIndexer;
-import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.Mentor;
 import com.hackthenorth.android.ui.component.TextView;
-import com.hackthenorth.android.ui.dialog.ListDialogFragment;
+import com.hackthenorth.android.ui.dialog.ContactOptionsDialogFragment;
 import com.hackthenorth.android.util.DateFormatter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIndexer {
@@ -78,20 +73,30 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
                 public void onClick(View v) {
 
                     // Show a list dialog fragment for contacting the mentors.
-                    List<Integer> canonicalContactTypes = getCanonicalContactTypesList(mentor);
-                    ArrayList<String> items = new ArrayList<String>(canonicalContactTypes.size());
-                    ArrayList<Integer> resIds = new ArrayList<Integer>(canonicalContactTypes.size());
+                    ArrayList<String> titles = new ArrayList<String>();
+                    ArrayList<String> items = new ArrayList<String>();
 
-                    for (int contactType : canonicalContactTypes) {
-                        items.add(getContactTextForType(contactType, mentor));
-                        resIds.add(getResIdForType(contactType));
+                    if (!TextUtils.isEmpty(mentor.email)) {
+                        titles.add(mContext.getString(R.string.email_mentor));
+                        items.add(mentor.email);
+                    }
+                    if (!TextUtils.isEmpty(mentor.twitter)) {
+                        titles.add(mContext.getString(R.string.twitter_mentor));
+                        items.add(mentor.twitter);
+                    }
+                    if (!TextUtils.isEmpty(mentor.github)) {
+                        titles.add(mContext.getString(R.string.github_mentor));
+                        items.add(mentor.github);
+                    }
+                    if (!TextUtils.isEmpty(mentor.phone)) {
+                        titles.add(mContext.getString(R.string.phone_mentor));
+                        items.add(mentor.phone);
                     }
 
                     Resources res = mContext.getResources();
-                    ListDialogFragment dialog = ListDialogFragment.getInstance(mFragment,
+                    ContactOptionsDialogFragment dialog = ContactOptionsDialogFragment.getInstance(mFragment,
                             res.getString(R.string.contact_mentor),
-                            null,
-                            items, resIds,
+                            null, titles, items,
                             res.getString(R.string.dialog_button_cancel));
 
                     Bundle args = dialog.getArguments();
@@ -171,20 +176,6 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
                 return String.format(res.getString(R.string.phone_mentor), mentor.phone);
         }
         return null;
-    }
-
-    public int getResIdForType(int contactType) {
-        switch(contactType) {
-            case EMAIL_CONTACT_TYPE:
-                return R.drawable.email;
-            case TWITTER_CONTACT_TYPE:
-                return R.drawable.twitter;
-            case GITHUB_CONTACT_TYPE:
-                return R.drawable.github;
-            case PHONE_CONTACT_TYPE:
-                return R.drawable.phone;
-        }
-        return 0;
     }
 
     private String getAvailabilityString(ArrayList<ArrayList<String>> timeslots) {

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +17,8 @@ import com.hackthenorth.android.R;
 import com.hackthenorth.android.base.BaseListFragment;
 import com.hackthenorth.android.framework.HTTPFirebase;
 import com.hackthenorth.android.model.Mentor;
+import com.hackthenorth.android.ui.dialog.ContactOptionsDialogFragment;
 import com.hackthenorth.android.ui.dialog.IntentChooserDialogFragment;
-import com.hackthenorth.android.ui.dialog.ListDialogFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MentorsFragment extends BaseListFragment implements
-        ListDialogFragment.ListDialogFragmentListener {
+        ContactOptionsDialogFragment.ListDialogFragmentListener {
     private final String TAG = "MentorsFragment";
 
     private ArrayList<Mentor> mData = new ArrayList<Mentor>();
@@ -154,7 +153,7 @@ public class MentorsFragment extends BaseListFragment implements
     }
 
     @Override
-    public void onItemClick(ListDialogFragment fragment, int position) {
+    public void onItemClick(ContactOptionsDialogFragment fragment, int position) {
         // Get the position of the mentor in the list.
         int mentorPosition = fragment.getArguments().getInt(MentorListAdapter.MENTOR_POSITION);
         Mentor mentor = mAdapter.getItem(mentorPosition);
@@ -208,7 +207,7 @@ public class MentorsFragment extends BaseListFragment implements
     }
 
     @Override
-    public void onCancelButtonClick(ListDialogFragment fragment) {
+    public void onCancelButtonClick(ContactOptionsDialogFragment fragment) {
         fragment.dismiss();
     }
 }
