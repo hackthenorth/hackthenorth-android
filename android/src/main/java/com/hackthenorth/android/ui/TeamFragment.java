@@ -6,18 +6,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SectionIndexer;
-import android.widget.TextView;
+import android.widget.*;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.google.gson.reflect.TypeToken;
@@ -50,7 +50,7 @@ public class TeamFragment extends BaseListFragment {
         String key = ViewPagerAdapter.TEAM_TAG;
         Object thing = getCachedObject(key);
         if (thing != null) {
-            mData = (ArrayList<TeamMember>)thing;
+            mData = (ArrayList<TeamMember>) thing;
         } else {
             setCachedObject(key, mData);
         }
@@ -102,13 +102,14 @@ public class TeamFragment extends BaseListFragment {
     @Override
     protected void handleJSONUpdateInBackground(final String json, String action) {
         final Activity activity = getActivity();
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... nothing) {
 
                 // Decode JSON
                 final ArrayList<TeamMember> newData = new ArrayList<TeamMember>();
-                TeamMember.loadArrayListFromJSON(newData, new TypeToken<HashMap<String, TeamMember>>(){},
+                TeamMember.loadArrayListFromJSON(newData, new TypeToken<HashMap<String, TeamMember>>() {
+                        },
                         json);
 
                 if (activity != null && mAdapter != null) {
@@ -165,9 +166,22 @@ public class TeamFragment extends BaseListFragment {
                 networkImageView.setImageUrl(null, loader);
             }
 
+            Drawable contact = getContext().getResources().getDrawable(R.drawable.ic_contact);
+            contact.setColorFilter(getContext().getResources().getColor(R.color.theme_secondary), PorterDuff.Mode.MULTIPLY);
+            contact.setAlpha(!TextUtils.isEmpty(teamMember.email) || !TextUtils.isEmpty(teamMember.twitter) ||
+                    !TextUtils.isEmpty(teamMember.phone) ? 222 : 143);
+
             // Set the data in the TextViews
             ((TextView) convertView.findViewById(R.id.team_member_name)).setText(teamMember.name);
             ((TextView) convertView.findViewById(R.id.team_member_role)).setText(getRolesString(teamMember.role));
+            ((ImageView) convertView.findViewById(R.id.team_member_contact)).setImageDrawable(contact);
+
+            convertView.findViewById(R.id.team_member_contact).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO
+                }
+            });
 
             return convertView;
         }
