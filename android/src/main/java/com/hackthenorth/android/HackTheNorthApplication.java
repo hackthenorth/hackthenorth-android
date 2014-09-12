@@ -3,6 +3,7 @@ package com.hackthenorth.android;
 import android.app.Application;
 
 import com.hackthenorth.android.framework.NetworkManager;
+import com.taplytics.sdk.Taplytics;
 
 // TODO: Is there a better place to put these constants?
 public class HackTheNorthApplication extends Application {
@@ -24,5 +25,8 @@ public class HackTheNorthApplication extends Application {
     public void onCreate() {
         // Initialize the NetworkManager.
         NetworkManager.initialize(getApplicationContext());
+        Taplytics.startTaplytics(this, "c24c6425a9dd30745bf3fbf12dbbfc659c15fff3");
+
+        setTheme(R.style.AppBaseTheme);
     }
 }

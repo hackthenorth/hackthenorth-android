@@ -1,11 +1,5 @@
 package com.hackthenorth.android.ui;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -33,10 +27,15 @@ import com.hackthenorth.android.model.Instruction;
 import com.hackthenorth.android.model.Model;
 import com.hackthenorth.android.model.ScheduleItem;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
-import com.hackthenorth.android.util.DateFormatter;
-import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFragmentListener;
+import com.hackthenorth.android.util.DateFormatter;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * A fragment for displaying lists of Update.
