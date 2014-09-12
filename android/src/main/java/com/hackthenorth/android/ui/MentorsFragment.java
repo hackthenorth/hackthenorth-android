@@ -33,7 +33,9 @@ public class MentorsFragment extends BaseListFragment implements
 
     private ListView mListView;
     private ListView mSearchListView;
+
     private MentorListAdapter mAdapter;
+    private MentorListAdapter mSearchAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,8 @@ public class MentorsFragment extends BaseListFragment implements
         // Create adapters
         mAdapter = new MentorListAdapter(inflater.getContext(), R.layout.mentor_list_item, mData,
                 this);
+        mSearchAdapter = new MentorListAdapter(inflater.getContext(),
+                R.layout.mentor_search_list_item, mData, this);
 
         // Set up list
         mListView = (ListView) view.findViewById(android.R.id.list);
@@ -78,9 +82,9 @@ public class MentorsFragment extends BaseListFragment implements
         animationAdapter.setAbsListView(mListView);
         mListView.setAdapter(animationAdapter);
 
-        AlphaInAnimationAdapter searchAnimationAdapter = new AlphaInAnimationAdapter(mAdapter);
-        searchAnimationAdapter.setAbsListView(mListView);
-        mListView.setAdapter(searchAnimationAdapter);
+        AlphaInAnimationAdapter searchAnimationAdapter = new AlphaInAnimationAdapter(mSearchAdapter);
+        searchAnimationAdapter.setAbsListView(mSearchListView);
+        mSearchListView.setAdapter(searchAnimationAdapter);
 
         // Hook up activity to fragment so it knows when to dismiss the search box
         if (getActivity() instanceof View.OnTouchListener) {
@@ -139,6 +143,7 @@ public class MentorsFragment extends BaseListFragment implements
                             mData.clear();
                             mData.addAll(newData);
                             mAdapter.notifyDataSetChanged();
+                            mSearchAdapter.notifyDataSetChanged();
                         }
                     });
                 }
@@ -150,6 +155,10 @@ public class MentorsFragment extends BaseListFragment implements
 
     public MentorListAdapter getAdapter() {
         return mAdapter;
+    }
+
+    public MentorListAdapter getSearchAdapter() {
+        return mSearchAdapter;
     }
 
     @Override

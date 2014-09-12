@@ -96,6 +96,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener {
         mTitle.setText(resources.getString(R.string.app_name).toUpperCase());
 
         mSearchBox = (EditText)view.findViewById(R.id.searchBox);
+        // This action is run when the user clicks the "search" button on the keyboard.
         mSearchBox.setOnEditorActionListener(new android.widget.TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(android.widget.TextView v, int actionId, KeyEvent event) {
@@ -103,8 +104,14 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener {
                     if (mViewPagerAdapter != null) {
                         Fragment f = mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
                         if (f instanceof MentorsFragment) {
+                            // MentorsFragment has two adapters: a regular adapter, and an adapter
+                            // for the search items list. We get the search adapter, and make the
+                            // query on that adapter.
                             MentorsFragment mentorsFragment = (MentorsFragment)f;
-                            mentorsFragment.getAdapter().query(mSearchBox.getText().toString());
+                            MentorListAdapter adapter = mentorsFragment.getSearchAdapter();
+                            if (adapter != null) {
+                                adapter.query(mSearchBox.getText().toString());
+                            }
                             return true;
                         }
                     }
@@ -112,6 +119,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener {
                 return false;
             }
         });
+        // Send the queries as the user is typing
         mSearchBox.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {  }
             @Override public void afterTextChanged(Editable s) {  }
@@ -122,7 +130,7 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener {
                     Fragment f = mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
                     if (f instanceof MentorsFragment) {
                         MentorsFragment mentorsFragment = (MentorsFragment)f;
-                        MentorListAdapter adapter = mentorsFragment.getAdapter();
+                        MentorListAdapter adapter = mentorsFragment.getSearchAdapter();
                         if (adapter != null) {
                             adapter.query(mSearchBox.getText().toString());
                         }

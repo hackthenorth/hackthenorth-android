@@ -127,6 +127,7 @@ public class FuzzySearchIndexer<T extends Tokened & Comparable<T>> {
     }
 
     public void updateData(ArrayList<T> objects) {
+
         // Build a new map
         mTokensMap = new HashMap<String, HashSet<T>>();
 
