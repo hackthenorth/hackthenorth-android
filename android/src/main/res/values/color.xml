@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="theme_primary">#3ab4d7</color>
-    <color name="theme_secondary">#027096</color>
 
     <color name="text_color_primary">#DE000000</color>
     <color name="text_color_secondary">#8A000000</color>
     <color name="text_color_primary_inverse">#DEFFFFFF</color>
     <color name="text_color_secondary_inverse">#8AFFFFFF</color>
 
-    <color name="background_purple">#181244</color>
-    <color name="background_lightblue">#b8e3ed</color>
-    <color name="background_fullblue">#3ab4d7</color>
-    <color name="background_gray">#242424</color>
+    <color name="blue_light">#FFB8E3ED</color>
+    <color name="blue">#FF3AB4D7</color>
+    <color name="blue_dark">#FF027096</color>
+    <color name="purple">#FF181244</color>
+    <color name="background_gray">#FF242424</color>
 
     <color name="workshop">#FF009688</color>
     <color name="talk">#FFE91E63</color>

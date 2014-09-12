@@ -42,7 +42,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:textColor="@color/theme_primary"
+            android:textColor="@color/blue"
             android:textSize="14sp"
             app:typeface="roboto_medium" />
 

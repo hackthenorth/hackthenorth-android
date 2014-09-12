@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:textColor="@color/theme_secondary"
+            android:textColor="@color/blue_dark"
             android:textSize="32sp"
             app:typeface="roboto_thin" />
 

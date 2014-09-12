@@ -34,7 +34,6 @@ import com.hackthenorth.android.model.Model;
 import com.hackthenorth.android.model.ScheduleItem;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
 import com.hackthenorth.android.util.DateFormatter;
-import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment;
 import com.hackthenorth.android.ui.dialog.ConfirmDialogFragment.ConfirmDialogFragmentListener;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
@@ -284,7 +283,7 @@ public class ScheduleFragment extends BaseListFragment
             Drawable indicator = res.getDrawable(R.drawable.schedule_item_type);
 
             if (type.equals(ScheduleItem.TYPE_EVENT)) {
-                indicator.setColorFilter(res.getColor(R.color.theme_secondary), PorterDuff.Mode.MULTIPLY);
+                indicator.setColorFilter(res.getColor(R.color.blue_dark), PorterDuff.Mode.MULTIPLY);
             } else if (type.equals(ScheduleItem.TYPE_WORKSHOP)) {
                 indicator.setColorFilter(res.getColor(R.color.workshop), PorterDuff.Mode.MULTIPLY);
             } else if (type.equals(ScheduleItem.TYPE_TALK)) {

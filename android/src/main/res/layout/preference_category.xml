@@ -9,6 +9,6 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:paddingTop="16dip"
-    android:textColor="@color/theme_secondary"
+    android:textColor="@color/blue_dark"
     android:textSize="16sp"
     app:typeface="roboto_bold" />

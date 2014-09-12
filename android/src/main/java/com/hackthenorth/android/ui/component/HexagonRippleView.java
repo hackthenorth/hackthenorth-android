@@ -8,15 +8,11 @@ import android.graphics.Path;
 import android.graphics.Region;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.hackthenorth.android.R;
 import com.hackthenorth.android.util.Units;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
-import java.util.Stack;
 import java.util.WeakHashMap;
 
 public class HexagonRippleView extends RippleView {
@@ -205,7 +201,7 @@ public class HexagonRippleView extends RippleView {
             Integer color = colors.get(animator);
             if (color == null) {
                 color = Math.round(4 * Math.random()) % 4 == 0 ?
-                        context.getResources().getColor(R.color.theme_primary) :
+                        context.getResources().getColor(R.color.blue) :
                         context.getResources().getColor(R.color.background_gray);
                 colors.put(animator, color);
             }

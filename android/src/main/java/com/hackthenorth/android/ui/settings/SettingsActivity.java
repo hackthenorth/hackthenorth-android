@@ -43,9 +43,9 @@ public class SettingsActivity extends PreferenceActivity {
 
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintColor(resources.getColor(R.color.theme_primary));
+        tintManager.setStatusBarTintColor(resources.getColor(R.color.blue));
         tintManager.setNavigationBarTintEnabled(true);
-        tintManager.setNavigationBarTintColor(resources.getColor(R.color.theme_primary));
+        tintManager.setNavigationBarTintColor(resources.getColor(R.color.blue));
 
         Fragment settingsFragment = new SettingsFragment();
         getFragmentManager().beginTransaction()

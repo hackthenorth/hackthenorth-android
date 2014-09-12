@@ -1,19 +1,12 @@
 package com.hackthenorth.android.ui;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +22,6 @@ import com.hackthenorth.android.framework.NetworkManager;
 import com.hackthenorth.android.model.TeamMember;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -167,7 +158,7 @@ public class TeamFragment extends BaseListFragment {
             }
 
             Drawable contact = getContext().getResources().getDrawable(R.drawable.ic_contact);
-            contact.setColorFilter(getContext().getResources().getColor(R.color.theme_secondary), PorterDuff.Mode.MULTIPLY);
+            contact.setColorFilter(getContext().getResources().getColor(R.color.blue_dark), PorterDuff.Mode.MULTIPLY);
             contact.setAlpha(!TextUtils.isEmpty(teamMember.email) || !TextUtils.isEmpty(teamMember.twitter) ||
                     !TextUtils.isEmpty(teamMember.phone) ? 222 : 143);
 
