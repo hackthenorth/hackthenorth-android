@@ -163,21 +163,6 @@ public class MentorListAdapter extends ArrayAdapter<Mentor> implements SectionIn
         return list;
     }
 
-    public String getContactTextForType(int contactType, Mentor mentor) {
-        Resources res = mContext.getResources();
-        switch(contactType) {
-            case EMAIL_CONTACT_TYPE:
-                return String.format(res.getString(R.string.email_mentor), mentor.email);
-            case TWITTER_CONTACT_TYPE:
-                return String.format(res.getString(R.string.twitter_mentor), mentor.twitter);
-            case GITHUB_CONTACT_TYPE:
-                return String.format(res.getString(R.string.github_mentor), mentor.github);
-            case PHONE_CONTACT_TYPE:
-                return String.format(res.getString(R.string.phone_mentor), mentor.phone);
-        }
-        return null;
-    }
-
     private String getAvailabilityString(ArrayList<ArrayList<String>> timeslots) {
 
         if (timeslots == null || timeslots.size() == 0) {
