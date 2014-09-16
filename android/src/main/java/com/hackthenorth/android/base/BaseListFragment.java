@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -41,6 +42,7 @@ public abstract class BaseListFragment extends Fragment {
 
         final String className = getClass().getSimpleName();
         final String TAG = className;
+
         if (mReceiver == null) {
             // Set up BroadcastReceiver for updates.
             mContext = context;
@@ -64,14 +66,5 @@ public abstract class BaseListFragment extends Fragment {
             LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
             manager.registerReceiver(mReceiver, filter);
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // Unregister the broadcast receiver here
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
-        manager.unregisterReceiver(mReceiver);
     }
 }

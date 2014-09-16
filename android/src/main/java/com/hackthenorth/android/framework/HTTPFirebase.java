@@ -2,6 +2,7 @@ package com.hackthenorth.android.framework;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -28,7 +29,7 @@ public class HTTPFirebase {
     private static final boolean DEBUG = true;
     
     private static final String FIREBASE_URL = "https://hackthenorth.firebaseio.com/mobile";
-
+    private static final String FIREBASE_CACHE_KEY = "firebaseCacheKey";
 
     /**
      * @param path
@@ -42,17 +43,31 @@ public class HTTPFirebase {
     public static void GET(final String path, final Context context,
                            final String action) {
 
+        final String cachedResponse = getCachedResponse(context, path);
+        if (cachedResponse != null) {
+            // Broadcast the cached data
+            Intent intent = new Intent(action);
+            intent.putExtra(action, cachedResponse);
+
+            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
+            manager.sendBroadcast(intent);
+        }
+
         String url = String.format("%s/%s.json", FIREBASE_URL, path);
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Broadcast the new data
-                        Intent intent = new Intent(action);
-                        intent.putExtra(action, response);
+                        if (cachedResponse == null || !cachedResponse.equals(response)) {
+                            // Broadcast the new data
+                            Intent intent = new Intent(action);
+                            intent.putExtra(action, response);
 
-                        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-                        manager.sendBroadcast(intent);
+                            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
+                            manager.sendBroadcast(intent);
+
+                            cacheResponse(context, path, response);
+                        }
                     }
                 },
 
@@ -119,5 +134,16 @@ public class HTTPFirebase {
             }
         };
         NetworkManager.getRequestQueue().add(request);
+    }
+
+    private static void cacheResponse(Context context, String key, String response) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(FIREBASE_CACHE_KEY, 0).edit();
+        editor.putString(key, response);
+        editor.commit();
+    }
+
+    private static String getCachedResponse(Context context, String key) {
+        SharedPreferences prefs = context.getSharedPreferences(FIREBASE_CACHE_KEY, 0);
+        return prefs.getString(key, null);
     }
 }
