@@ -326,7 +326,7 @@ public class PagerTitleStrip extends HorizontalScrollView {
         rectPaint.setColor(underlineColor);
         canvas.drawRect(0, height - underlineHeight, tabsContainer.getWidth(), height, rectPaint);
 
-        // draw divider
+        // draw divider_avatar
 
         dividerPaint.setColor(dividerColor);
         for (int i = 0; i < tabCount - 1; i++) {

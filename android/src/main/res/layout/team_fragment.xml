@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:clipToPadding="false"
-    android:divider="@drawable/divider_avatar"
+    android:divider="@drawable/divider_noavatar"
     android:dividerHeight="1dp"
     android:fitsSystemWindows="true"
     android:scrollbarStyle="outsideOverlay" />

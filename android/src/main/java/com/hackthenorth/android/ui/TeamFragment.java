@@ -29,6 +29,7 @@ import com.hackthenorth.android.ui.dialog.IntentChooserDialogFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class TeamFragment extends BaseListFragment implements ContactOptionsDial
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        addHardcodedTeamData(mData);
 
         // Keep a static cache of the arraylist, because decoding from JSON every time is
         // a waste.
@@ -76,7 +79,7 @@ public class TeamFragment extends BaseListFragment implements ContactOptionsDial
                              Bundle savedInstanceState) {
 
         // Inflate the view and return it
-        View view = inflater.inflate(R.layout.list_fragment, container, false);
+        View view = inflater.inflate(R.layout.team_fragment, container, false);
 
         // Save a reference to the list view
         mListView = (ListView) view.findViewById(android.R.id.list);
@@ -123,9 +126,11 @@ public class TeamFragment extends BaseListFragment implements ContactOptionsDial
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            // Copy the data into the ListView on the main thread and
-                            // refresh.
                             mData.clear();
+
+                            // Add Kartik and Kevin's data hardcoded here
+                            addHardcodedTeamData(mData);
+
                             mData.addAll(newData);
                             mAdapter.notifyDataSetChanged();
                         }
@@ -201,9 +206,25 @@ public class TeamFragment extends BaseListFragment implements ContactOptionsDial
         dialog.show(getFragmentManager(), "another hmmmm?");
     }
 
-    public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> implements SectionIndexer {
+    private void addHardcodedTeamData(ArrayList<TeamMember> mData) {
 
-        private final String sections = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        TeamMember kartik = new TeamMember();
+        kartik.name = "Kartik Talwar";
+        kartik.phone = "+16472254089";
+        kartik.email = "kartik@hackthenorth.com";
+        kartik.role = new ArrayList<String>(Arrays.asList("organizer"));
+
+        TeamMember kevin = new TeamMember();
+        kevin.name = "Kevin Lau";
+        kevin.phone = "+16476278630";
+        kevin.email = "kevin@hackthenorth.com";
+        kevin.role = new ArrayList<String>(Arrays.asList("organizer"));
+
+        mData.add(kartik);
+        mData.add(kevin);
+    }
+
+    public static class TeamFragmentAdapter extends ArrayAdapter<TeamMember> {
 
         // Contact types
         public static final int EMAIL_CONTACT_TYPE = 0;
@@ -234,6 +255,7 @@ public class TeamFragment extends BaseListFragment implements ContactOptionsDial
             // Get the data for this position
             final TeamMember teamMember = mData.get(position);
 
+            /* DISABLED AVATARS
             // Set up the image view with the avatar URLs
             NetworkImageView networkImageView = (NetworkImageView) convertView.findViewById(R.id.team_member_avatar);
             networkImageView.setDefaultImageResId(R.drawable.ic_launcher);
@@ -245,6 +267,7 @@ public class TeamFragment extends BaseListFragment implements ContactOptionsDial
             } else {
                 networkImageView.setImageUrl(null, loader);
             }
+            */
 
             Drawable contact = getContext().getResources().getDrawable(R.drawable.ic_contact);
             contact.setColorFilter(getContext().getResources().getColor(R.color.blue_dark), PorterDuff.Mode.MULTIPLY);
@@ -318,38 +341,6 @@ public class TeamFragment extends BaseListFragment implements ContactOptionsDial
             return team.twitter != null ||
                     team.phone != null ||
                     team.email != null;
-        }
-
-        @Override
-        public Object[] getSections() {
-
-            String[] sectionsArr = new String[sections.length()];
-            for (int i = 0; i < sections.length(); i++) {
-                sectionsArr[i] = "" + sections.charAt(i);
-            }
-
-            return sectionsArr;
-        }
-
-        @Override
-        public int getPositionForSection(int section) {
-
-            for (int i = 0; i < getCount(); i++) {
-                if (getItem(i).name.charAt(0) == sections.charAt(section)) {
-                    return i;
-                }
-            }
-
-            return 0;
-        }
-
-        @Override
-        public int getSectionForPosition(int position) {
-
-            char c = getItem(position).name.toUpperCase().charAt(0);
-            int index = sections.indexOf(c);
-
-            return index > 0 ? index : 0;
         }
     }
 }
