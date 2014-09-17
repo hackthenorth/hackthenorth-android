@@ -112,6 +112,10 @@ public class MainActivity extends BaseActivity implements View.OnTouchListener {
                             if (adapter != null) {
                                 adapter.query(mSearchBox.getText().toString());
                             }
+                            // dismiss the keyboard
+                            InputMethodManager imm = (InputMethodManager)
+                                    getSystemService(Service.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(mSearchBox.getWindowToken(), 0);
                             return true;
                         }
                     }

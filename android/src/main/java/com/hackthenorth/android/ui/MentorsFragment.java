@@ -1,6 +1,7 @@
 package com.hackthenorth.android.ui;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.google.gson.reflect.TypeToken;
@@ -22,6 +25,7 @@ import com.hackthenorth.android.ui.dialog.IntentChooserDialogFragment;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -76,6 +80,22 @@ public class MentorsFragment extends BaseListFragment implements
         mListView.setFastScrollEnabled(true);
 
         mSearchListView = (ListView) view.findViewById(R.id.searchList);
+        mSearchListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    if (getActivity() != null) {
+                        // dismiss the keyboard
+                        InputMethodManager imm = (InputMethodManager)
+                                getActivity().getSystemService(Service.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(mSearchListView.getWindowToken(), 0);
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
 
         // Animation adapters
         AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mAdapter);
@@ -107,18 +127,13 @@ public class MentorsFragment extends BaseListFragment implements
     }
 
     public void startSearch() {
-        mListView.setVisibility(View.GONE);
         mSearchListView.setVisibility(View.VISIBLE);
-
-        mAdapter.setResource(R.layout.mentor_search_list_item);
-        mAdapter.notifyDataSetChanged();
     }
 
     public void endSearch() {
-        mListView.setVisibility(View.VISIBLE);
         mSearchListView.setVisibility(View.GONE);
 
-        mAdapter.setResource(R.layout.mentor_list_item);
+        Collections.sort(mData);
         mAdapter.notifyDataSetChanged();
     }
 
