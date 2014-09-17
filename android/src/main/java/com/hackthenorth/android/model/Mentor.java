@@ -23,7 +23,10 @@ public class Mentor extends Model implements FuzzySearchIndexer.Tokened, Compara
 
     @Override
     public ArrayList<String> getTokens() {
-        ArrayList<String> result = new ArrayList<String>(skills);
+        ArrayList<String> result = new ArrayList<String>();
+        if (skills != null) {
+            result.addAll(skills);
+        }
         result.add(organization);
         result.addAll(Arrays.asList(name.split(" ")));
         return result;
