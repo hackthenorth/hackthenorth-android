@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -222,12 +223,28 @@ public class ScheduleFragment extends BaseListFragment
                         .setBackgroundDrawable(getIndicator(scheduleItem.type));
                 ((TextView) convertView.findViewById(R.id.schedule_item_name))
                         .setText(scheduleItem.name);
-                ((TextView) convertView.findViewById(R.id.schedule_item_description))
-                        .setText(scheduleItem.description);
                 ((TextView) convertView.findViewById(R.id.schedule_item_speaker))
                         .setText(scheduleItem.speaker);
                 ((TextView) convertView.findViewById(R.id.schedule_item_time))
                         .setText(DateFormatter.getTimespanString(times));
+
+                // Make the description disappear if there is no text
+                TextView descriptionText = (TextView)convertView.findViewById(R.id.schedule_item_description);
+                if (TextUtils.isEmpty(scheduleItem.description)) {
+                    descriptionText.setVisibility(View.GONE);
+                } else {
+                    descriptionText.setVisibility(View.VISIBLE);
+                    descriptionText.setText(scheduleItem.description);
+                }
+
+                // Make the speaker disappear if there is no text
+                TextView speakerText = (TextView)convertView.findViewById(R.id.schedule_item_speaker);
+                if (TextUtils.isEmpty(scheduleItem.speaker)) {
+                    speakerText.setVisibility(View.GONE);
+                } else {
+                    speakerText.setVisibility(View.VISIBLE);
+                    speakerText.setText(scheduleItem.speaker);
+                }
 
             } else if (model instanceof Instruction) {
                 final Instruction instruction = (Instruction) model;

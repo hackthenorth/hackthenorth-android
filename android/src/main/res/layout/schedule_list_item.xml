@@ -31,13 +31,10 @@
             android:id="@+id/schedule_item_time"
             style="@style/TextViewStyleSecondary" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/schedule_item_speaker"
-            style="@style/TextViewStylePrimary" />
+            style="@style/TextViewStylePrimary"
+            android:layout_marginTop="16dp" />
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/schedule_item_description"
