@@ -17,6 +17,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public static final int MENTORS_POSITION = 4;
     public static final int TEAM_POSITION = 5;
 
+    public static final int NUM_FRAGMENTS = 6;
+
     public static final String UPDATES_TAG = "Updates";
     public static final String SPONSORS_TAG = "Sponsors";
     public static final String SCHEDULE_TAG = "Schedule";
@@ -24,7 +26,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public static final String MENTORS_TAG = "Mentors";
     public static final String TEAM_TAG = "Team";
 
-    private Fragment[] mFragments = new Fragment[6];
+    private Fragment[] mFragments = new Fragment[NUM_FRAGMENTS];
     private String[] mFragmentTitles;
 
     public ViewPagerAdapter(Context context, FragmentManager fm) {
@@ -64,7 +66,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return NUM_FRAGMENTS;
     }
 
     @Override
