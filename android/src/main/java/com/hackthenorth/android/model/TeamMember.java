@@ -21,11 +21,12 @@ public class TeamMember extends Model implements Comparable<TeamMember> {
 
     @Override
     public int compareTo(@NonNull TeamMember another) {
-        if (another.id == null) {
+        if (id == null) {
+            // neither option really makes sense, so hopefully this never happens
             return 1;
         } else {
             // descending order
-            return another.id.compareTo(id);
+            return id.compareTo(another.id);
         }
     }
 }

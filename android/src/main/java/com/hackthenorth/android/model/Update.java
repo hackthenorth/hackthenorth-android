@@ -37,10 +37,6 @@ public class Update extends Model implements Comparable<Update> {
 
     @Override
     public int compareTo(@NonNull Update another) {
-        if (id == null) {
-            return 1;
-        } else {
-            return id.compareTo(another.id);
-        }
+        return another.id.compareTo(id);
     }
 }
