@@ -11,18 +11,20 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     private final String TAG = "FragmentStatePagerAdapter";
 
     public static final int UPDATES_POSITION = 0;
-    public static final int SCHEDULE_POSITION = 1;
-    public static final int PRIZES_POSITION = 2;
-    public static final int MENTORS_POSITION = 3;
-    public static final int TEAM_POSITION = 4;
+    public static final int SPONSORS_POSITION = 1;
+    public static final int SCHEDULE_POSITION = 2;
+    public static final int PRIZES_POSITION = 3;
+    public static final int MENTORS_POSITION = 4;
+    public static final int TEAM_POSITION = 5;
 
     public static final String UPDATES_TAG = "Updates";
+    public static final String SPONSORS_TAG = "Sponsors";
     public static final String SCHEDULE_TAG = "Schedule";
     public static final String PRIZES_TAG = "Prizes";
     public static final String MENTORS_TAG = "Mentors";
     public static final String TEAM_TAG = "Team";
 
-    private Fragment[] mFragments = new Fragment[5];
+    private Fragment[] mFragments = new Fragment[6];
     private String[] mFragmentTitles;
 
     public ViewPagerAdapter(Context context, FragmentManager fm) {
@@ -36,19 +38,22 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int i) {
         if (mFragments[i] == null) {
             switch (i) {
-                case 0:
+                case UPDATES_POSITION:
                     mFragments[i] = new UpdatesFragment();
                     break;
-                case 1:
+                case SPONSORS_POSITION:
+                    mFragments[i] = new SponsorsFragment();
+                    break;
+                case SCHEDULE_POSITION:
                     mFragments[i] = new ScheduleFragment();
                     break;
-                case 2:
+                case PRIZES_POSITION:
                     mFragments[i] = new PrizesFragment();
                     break;
-                case 3:
+                case MENTORS_POSITION:
                     mFragments[i] = new MentorsFragment();
                     break;
-                case 4:
+                case TEAM_POSITION:
                     mFragments[i] = new TeamFragment();
                     break;
             }

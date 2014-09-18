@@ -18,6 +18,8 @@ public class HackTheNorthApplication extends Application {
                 "com.hackthenorth.android.intent.action.SYNC_PRIZES";
         public final static String SYNC_TEAM =
                 "com.hackthenorth.android.intent.action.SYNC_TEAM";
+        public final static String SYNC_SPONSORS =
+                "com.hackthenorth.android.intent.action.SYNC_SPONSORS";
     }
 
     @Override

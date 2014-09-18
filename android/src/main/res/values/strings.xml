@@ -18,6 +18,7 @@
     <!--Fragment titles-->
     <string-array name="fragment_titles">
         <item>UPDATES</item>
+        <item>SPONSORS</item>
         <item>SCHEDULE</item>
         <item>PRIZES</item>
         <item>MENTORS</item>
