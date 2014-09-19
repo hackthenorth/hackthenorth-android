@@ -215,16 +215,25 @@ public class ScheduleFragment extends BaseListFragment
                     }
                 });
 
-                ArrayList<String> times = new ArrayList<String>();
-                times.add(scheduleItem.start_time);
-                times.add(scheduleItem.end_time);
-
                 convertView.findViewById(R.id.schedule_item_type)
                         .setBackgroundDrawable(getIndicator(scheduleItem.type));
                 ((TextView) convertView.findViewById(R.id.schedule_item_name))
                         .setText(scheduleItem.name);
                 ((TextView) convertView.findViewById(R.id.schedule_item_speaker))
                         .setText(scheduleItem.speaker);
+
+                // Make the description disappear if there is no text
+                TextView locationText = (TextView)convertView.findViewById(R.id.schedule_item_location);
+                if (TextUtils.isEmpty(scheduleItem.location)) {
+                    locationText.setVisibility(View.GONE);
+                } else {
+                    locationText.setVisibility(View.VISIBLE);
+                    locationText.setText(scheduleItem.location);
+                }
+
+                ArrayList<String> times = new ArrayList<String>();
+                times.add(scheduleItem.start_time);
+                times.add(scheduleItem.end_time);
                 ((TextView) convertView.findViewById(R.id.schedule_item_time))
                         .setText(DateFormatter.getTimespanString(times));
 
@@ -238,12 +247,21 @@ public class ScheduleFragment extends BaseListFragment
                 }
 
                 // Make the speaker disappear if there is no text
+                Resources res = context.getResources();
                 TextView speakerText = (TextView)convertView.findViewById(R.id.schedule_item_speaker);
                 if (TextUtils.isEmpty(scheduleItem.speaker)) {
                     speakerText.setVisibility(View.GONE);
                 } else {
                     speakerText.setVisibility(View.VISIBLE);
                     speakerText.setText(scheduleItem.speaker);
+                }
+
+                if (speakerText.getVisibility() != View.VISIBLE &&
+                        descriptionText.getVisibility() != View.VISIBLE) {
+                    // Hide the holder if both things are invisible, so that we don't see the extra
+                    // margin
+                    convertView.findViewById(R.id.schedule_item_description_holder)
+                            .setVisibility(View.GONE);
                 }
 
             } else if (model instanceof Instruction) {

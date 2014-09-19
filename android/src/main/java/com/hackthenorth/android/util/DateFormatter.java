@@ -32,18 +32,24 @@ public class DateFormatter {
             timespan += start.day + " ";
 
             if (start.period.equals(end.period)) {
-                // If both times are in the same period, only write the period at the end
-                timespan += start.hour + ":" + start.minute +
-                        " - " + end.hour + ":" + end.minute + end.period;
+
+                if (start.minute.equals(end.minute) && start.minute.equals(end.minute)) {
+                    // If they're the same time, only show the single time!
+                    timespan += start.hour + ":" + start.minute + start.period;
+                } else {
+                    // If both times are in the same period, only write the period at the end
+                    timespan += start.hour + ":" + start.minute +
+                            "\u2013" + end.hour + ":" + end.minute + end.period;
+                }
             } else {
                 // Both times have different periods, write each one
                 timespan += start.hour + ":" + start.minute + start.period +
-                        " - " + end.hour + ":" + end.minute + end.period;
+                        "\u2013" + end.hour + ":" + end.minute + end.period;
             }
         } else {
             // Both times are on different days, write each one
             timespan += start.day + " " + start.hour + ":" + start.minute + start.period +
-                    " - " + end.day + " " + end.hour + ":" + end.minute + end.period;
+                    "\u2013" + end.day + " " + end.hour + ":" + end.minute + end.period;
         }
 
         return timespan;

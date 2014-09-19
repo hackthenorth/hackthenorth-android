@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp" >
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/schedule_item_name"
@@ -29,16 +29,26 @@
 
         <com.hackthenorth.android.ui.component.TextView
             android:id="@+id/schedule_item_time"
-            style="@style/TextViewStyleSecondary" />
+            style="@style/TextViewStylePrimary" />
 
         <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/schedule_item_speaker"
-            style="@style/TextViewStylePrimary"
-            android:layout_marginTop="16dp" />
-
-        <com.hackthenorth.android.ui.component.TextView
-            android:id="@+id/schedule_item_description"
+            android:id="@+id/schedule_item_location"
             style="@style/TextViewStyleSecondary" />
+
+        <LinearLayout
+            android:id="@+id/schedule_item_description_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" >
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:id="@+id/schedule_item_speaker"
+                style="@style/TextViewStylePrimary" />
+
+            <com.hackthenorth.android.ui.component.TextView
+                android:id="@+id/schedule_item_description"
+                style="@style/TextViewStyleSecondary" />
+        </LinearLayout>
 
     </LinearLayout>
 
