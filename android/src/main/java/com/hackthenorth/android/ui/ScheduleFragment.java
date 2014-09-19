@@ -262,6 +262,9 @@ public class ScheduleFragment extends BaseListFragment
                     // margin
                     convertView.findViewById(R.id.schedule_item_description_holder)
                             .setVisibility(View.GONE);
+                } else {
+                    convertView.findViewById(R.id.schedule_item_description_holder)
+                            .setVisibility(View.VISIBLE);
                 }
 
             } else if (model instanceof Instruction) {
