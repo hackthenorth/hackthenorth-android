@@ -10,14 +10,6 @@ android {
         versionCode 3
         versionName '1.0.2'
     }
-    buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-    productFlavors {
-    }
 }
 
 dependencies {
